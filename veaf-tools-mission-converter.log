@@ -1,0 +1,77 @@
+2025-10-20 20:46:26,928 - veaf-tools-mission-converter - DEBUG - Normalizing the mission file D:\dev\_VEAF\VEAF-Foothold-Syria\MA_Foothold_SY_2.3.7_Modern_ICAO_OLBA.miz to a temporary file C:\Users\David\AppData\Local\Temp\tmp2spi6wi4\temp_mission.miz
+2025-10-20 20:46:27,821 - veaf-tools-mission-converter - DEBUG - Extracting the mission file C:\Users\David\AppData\Local\Temp\tmp2spi6wi4\temp_mission.miz to the folder C:\Users\David\AppData\Local\Temp\tmp2spi6wi4
+2025-10-20 20:46:27,917 - veaf-tools-mission-converter - WARNING - Copied required file 'D:\dev\_VEAF\VEAF-Foothold-Syria\src\options' from default folder 'D:\dev\_VEAF\VEAF-Mission-Creation-Tools\src\defaults\mission-folder'
+2025-10-20 20:46:27,919 - veaf-tools-mission-converter - WARNING - Copied required file 'D:\dev\_VEAF\VEAF-Foothold-Syria\src\presets.yaml' from default folder 'D:\dev\_VEAF\VEAF-Mission-Creation-Tools\src\defaults\mission-folder'
+2025-10-20 20:46:27,921 - veaf-tools-mission-converter - WARNING - Copied required file 'D:\dev\_VEAF\VEAF-Foothold-Syria\src\scripts\missionConfig.lua' from default folder 'D:\dev\_VEAF\VEAF-Mission-Creation-Tools\src\defaults\mission-folder'
+2025-10-20 20:46:27,922 - veaf-tools-mission-converter - WARNING - Copied required file 'D:\dev\_VEAF\VEAF-Foothold-Syria\src\scripts\veafDynamicConfig.lua' from default folder 'D:\dev\_VEAF\VEAF-Mission-Creation-Tools\src\defaults\mission-folder'
+2025-10-20 20:46:27,923 - veaf-tools-mission-converter - DEBUG - Create the initial mission file from the mission folder
+2025-10-20 20:46:27,923 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\mist.lua
+2025-10-20 20:46:27,924 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\DCS-SimpleTextToSpeech.lua
+2025-10-20 20:46:27,924 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\WeatherMark.lua
+2025-10-20 20:46:27,925 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\CTLD.lua
+2025-10-20 20:46:27,925 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\AIEN.lua
+2025-10-20 20:46:27,926 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\CSAR.lua
+2025-10-20 20:46:27,926 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\Hercules_Cargo.lua
+2025-10-20 20:46:27,926 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\skynet-iads-compiled.lua
+2025-10-20 20:46:27,927 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\TheUniversalMission.lua
+2025-10-20 20:46:27,927 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\veaf-scripts.lua
+2025-10-20 20:46:27,928 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\missionConfig.lua
+2025-10-20 20:46:27,928 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\veafDynamicConfig.lua
+2025-10-20 20:46:27,929 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\missionConfig.lua
+2025-10-20 20:46:27,929 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\veafDynamicConfig.lua
+2025-10-20 20:46:27,930 - veaf-tools-mission-converter - DEBUG - Processing file mission
+2025-10-20 20:46:27,931 - veaf-tools-mission-converter - DEBUG - Processing file theatre
+2025-10-20 20:46:27,931 - veaf-tools-mission-converter - DEBUG - Processing file warehouses
+2025-10-20 20:46:27,932 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\admin.wav
+2025-10-20 20:46:27,933 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\beacon.ogg
+2025-10-20 20:46:27,933 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\beaconsilent.ogg
+2025-10-20 20:46:27,933 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\BH.ogg
+2025-10-20 20:46:27,934 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\cancel.ogg
+2025-10-20 20:46:27,934 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\cas.ogg
+2025-10-20 20:46:27,935 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\dictionary
+2025-10-20 20:46:27,935 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\ding.ogg
+2025-10-20 20:46:27,936 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\image.jpg
+2025-10-20 20:46:27,936 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\mapResource
+2025-10-20 20:46:27,936 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\micclick.ogg
+2025-10-20 20:46:27,937 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\radio1.ogg
+2025-10-20 20:46:27,937 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\radio2.ogg
+2025-10-20 20:46:27,937 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\troops_load_ao.ogg
+2025-10-20 20:46:27,938 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\troops_load_ready.ogg
+2025-10-20 20:46:27,938 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\troops_load_to_action.ogg
+2025-10-20 20:46:27,939 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\troops_unload_everybody_off.ogg
+2025-10-20 20:46:27,939 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\troops_unload_get_off.ogg
+2025-10-20 20:46:27,939 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\troops_unload_here_we_go.ogg
+2025-10-20 20:46:27,940 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\troops_unload_moving_out.ogg
+2025-10-20 20:46:27,940 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\troops_unload_thanks.ogg
+2025-10-20 20:46:27,940 - veaf-tools-mission-converter - DEBUG - Processing file l10n\DEFAULT\Watch your six.ogg
+2025-10-20 20:46:27,941 - veaf-tools-mission-converter - DEBUG - Processing file KNEEBOARD\IMAGES\Channel_kneeboard-PRI.png
+2025-10-20 20:46:27,941 - veaf-tools-mission-converter - DEBUG - Processing file KNEEBOARD\IMAGES\Lineup_Mission_Kneeboard.png
+2025-10-20 20:46:27,942 - veaf-tools-mission-converter - DEBUG - Processing file KNEEBOARD\IMAGES\Syria Extenden-1.png
+2025-10-20 20:46:27,942 - veaf-tools-mission-converter - DEBUG - Processing file KNEEBOARD\IMAGES\Syria Extenden-2.png
+2025-10-20 20:46:27,943 - veaf-tools-mission-converter - DEBUG - Processing file KNEEBOARD\AJS37\IMAGES\Channel_kneeboard-AJS37-clean.png
+2025-10-20 20:46:27,943 - veaf-tools-mission-converter - DEBUG - Processing file options
+2025-10-20 20:46:27,943 - veaf-tools-mission-converter - DEBUG - Preprocessed 43 files
+2025-10-20 20:46:27,943 - veaf-tools-mission-converter - DEBUG - Creating the mission file
+2025-10-20 20:46:27,954 - veaf-tools-mission-converter - DEBUG - Mission file created at MA_Foothold_SY_2.3.7_Modern_ICAO_OLBA_20251020.miz
+2025-10-20 20:46:27,954 - veaf-tools-mission-converter - DEBUG - Reading mission file MA_Foothold_SY_2.3.7_Modern_ICAO_OLBA_20251020.miz
+2025-10-20 20:46:28,290 - veaf-tools-mission-converter - DEBUG - Find the VEAF triggers in the dictionary
+2025-10-20 20:46:28,290 - veaf-tools-mission-converter - DEBUG - Find the VEAF triggers in the mapResource
+2025-10-20 20:46:28,290 - veaf-tools-mission-converter - DEBUG - Clear the VEAF triggers from the dictionary
+2025-10-20 20:46:28,290 - veaf-tools-mission-converter - DEBUG - Clear the VEAF triggers from the mapResource
+2025-10-20 20:46:28,291 - veaf-tools-mission-converter - DEBUG - Writing mission file
+2025-10-20 20:46:28,950 - veaf-tools-mission-converter - DEBUG - Writing mission file done
+2025-10-20 20:46:28,951 - veaf-tools-mission-converter - DEBUG - Normalizing the mission file MA_Foothold_SY_2.3.7_Modern_ICAO_OLBA_20251020.miz to a temporary file C:\Users\David\AppData\Local\Temp\tmpziewz628\temp_mission.miz
+2025-10-20 20:46:29,972 - veaf-tools-mission-converter - DEBUG - Extracting the mission file C:\Users\David\AppData\Local\Temp\tmpziewz628\temp_mission.miz to the folder C:\Users\David\AppData\Local\Temp\tmpziewz628
+2025-10-20 20:46:30,077 - veaf-tools-mission-converter - DEBUG - Create the initial mission file from the mission folder
+2025-10-20 20:46:30,077 - veaf-tools-mission-converter - DEBUG - Preprocessed 43 files
+2025-10-20 20:46:30,077 - veaf-tools-mission-converter - DEBUG - Creating the mission file
+2025-10-20 20:46:30,088 - veaf-tools-mission-converter - DEBUG - Mission file created at MA_Foothold_SY_2.3.7_Modern_ICAO_OLBA_20251020.miz
+2025-10-20 20:46:30,088 - veaf-tools-mission-converter - DEBUG - Reading mission file MA_Foothold_SY_2.3.7_Modern_ICAO_OLBA_20251020.miz
+2025-10-20 20:46:30,431 - veaf-tools-mission-converter - DEBUG - Find the VEAF triggers in the dictionary
+2025-10-20 20:46:30,431 - veaf-tools-mission-converter - DEBUG - Find the VEAF triggers in the mapResource
+2025-10-20 20:46:30,431 - veaf-tools-mission-converter - DEBUG - Clear the VEAF triggers from the dictionary
+2025-10-20 20:46:30,431 - veaf-tools-mission-converter - DEBUG - Clear the VEAF triggers from the mapResource
+2025-10-20 20:46:30,432 - veaf-tools-mission-converter - DEBUG - Writing mission file
+2025-10-20 20:46:31,099 - veaf-tools-mission-converter - DEBUG - Writing mission file done
+2025-10-20 20:46:31,099 - veaf-tools-mission-converter - INFO - Mission file 'D:\dev\_VEAF\VEAF-Foothold-Syria\MA_Foothold_SY_2.3.7_Modern_ICAO_OLBA.miz' converted to folder 'D:\dev\_VEAF\VEAF-Foothold-Syria'.
+2025-10-20 20:46:31,100 - veaf-tools-mission-converter - INFO - Mission has been built to file 'MA_Foothold_SY_2.3.7_Modern_ICAO_OLBA_20251020.miz'.
