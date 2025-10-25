@@ -1,2 +1,0 @@
-2025-10-25 19:44:33,457 - veaf-tools-mission-extractor - DEBUG - Normalizing the mission file D:\dev\_VEAF\VEAF-Foothold-Syria\MA_Foothold_SY_2.3.7_Modern_ICAO_OLBA.miz to a temporary file C:\Users\David\AppData\Local\Temp\tmpek7gn9mu\temp_mission.miz
-2025-10-25 19:44:34,328 - veaf-tools-mission-extractor - DEBUG - Extracting the mission file C:\Users\David\AppData\Local\Temp\tmpek7gn9mu\temp_mission.miz to the folder C:\Users\David\AppData\Local\Temp\tmpek7gn9mu

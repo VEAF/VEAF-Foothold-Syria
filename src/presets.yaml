@@ -8,7 +8,9 @@ radios_collection: # Lists all the radios definitions
           title: Guard/UHF
           channel: Guard
         02: Archer
-        03: Tactical
+        03: 
+          title: Tactical
+          freq: 265
         04: Arctic
         05: Ninja
         06: Pinder
@@ -20,12 +22,24 @@ radios_collection: # Lists all the radios definitions
         12: 
         13: 
         14: 
-        15: Tanker MAIN-Airforce
-        16: Tanker SEC-Airforce
-        17: Tanker MAIN-Navy
-        18: Tanker SEC-Navy
-        19: Tanker OVERHEAD-Navy
-        20: AWACS
+        15: 
+          title: Tanker MAIN-Airforce
+          freq: 266
+        16: 
+          title: Tanker SEC-Airforce
+          freq: 259
+        17: 
+          title: Tanker MAIN-Navy
+          freq: 260
+        18: 
+          title: Tanker SEC-Navy
+          freq: 268
+        19: 
+          title: Tanker OVERHEAD-Navy
+          freq: 253
+        20: 
+          title: AWACS
+          freq: 255
         21: 
         22:
         23:
@@ -43,31 +57,34 @@ radios_collection: # Lists all the radios definitions
       channels:
         01: Akrotiri
         02: Paphos
-        04: Pinarbashi
-        05: Gecitkale
-        06: Ercan
-        07: Larnaca
-        08: Incirlik
-        09: Hatay
-        10: Minakh
-        11: Gaziantep
-        14: Aleppo
-        15: Taftanaz
-        16: Bassel al-Assad
-        17: Abu al-Duhur
-        18: Jirah
-        19: Hama
-        20: Tabqa
-        21: Palmyra
-        22: Tiyas
-        23: Shayrat
-        24: Al Qusayr
-        25: Rene Mouawad
-        26: Wujah Al Hajar
-        27: Beirut
-        28: Rayak
-        29: An Nasiriyah
-        30: Damascus
+        03: Pinarbashi
+        04: Gecitkale
+        05: Ercan
+        06: Larnaca
+        07: Incirlik
+        08: Hatay
+        09: Minakh
+        10: Gaziantep
+        11: Aleppo
+        12: Taftanaz
+        13: Bassel al-Assad
+        14: Abu al-Duhur
+        15: Jirah
+        16: Hama
+        17: Tabqa
+        18: Palmyra
+        19: Tiyas
+        20: Shayrat
+        21: Al Qusayr
+        22: Rene Mouawad
+        23: Wujah Al Hajar
+        24: Beirut
+        25: Rayak
+        26: An Nasiriyah
+        27: Damascus
+        28: 
+        29: 
+        30: 
 
     radio_fm_30:
       title: FM 
@@ -141,9 +158,7 @@ presets_assignments: # defines which presets collection to use for each coalitio
       all: modern_blue_uhf_vhf_fm
       CH-47Fbl1: modern_blue_fm_uhf
   red:
-    plane: 
-      all: none
-    helicopter:
+    all: 
       all: none
 
 channels_collection: # Lists all the radio channels available on the map
