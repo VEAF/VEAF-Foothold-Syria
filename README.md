@@ -32,5 +32,5 @@ assert(loadfile(SY_DYNAMIC_PATH .. "VEAF_SY_loader.lua")) ()
 
 ## Things to do
 
-- [ ] prepare mission
-- [ ] prepare presets
+- [x] prepare mission
+- [x] prepare presets

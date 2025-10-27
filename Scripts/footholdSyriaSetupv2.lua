@@ -1304,6 +1304,8 @@ zones.carrier.airbaseName = 'CVN-72'
 zones.redcarrier.airbaseName = 'CVN-73'
 
 
+
+
 for i,v in pairs(zones) do
 	bc:addZone(v)
 end
@@ -2100,7 +2102,7 @@ end,function(sender,params)
 	end
 end)
 ----------------------------------- START own 9 line jtac AM START ----------------------------------
-local jtacZones = {}
+jtacZones = {}
 local jtacTargetMenu2 = nil
 local droneAM
 Group.getByName('JTAC9lineamColdwar'):destroy()
@@ -2224,32 +2226,40 @@ end
 
   -------------------------- END 9 line jtac FM END ----------------------------------
 local smoketargets = function(tz)
-	if not tz or not tz.built then return end
-	local units = {}
+	if not tz or not tz.built then
+		env.info("smoketargets: no tz/built for zone "..tostring(tz and tz.zone or "nil"))
+		return
+	end
+	local units, statics, dangling = {}, {}, {}
 	for i,v in pairs(tz.built) do
 		local g = Group.getByName(v)
 		if g and g:isExist() then
 			local gUnits = g:getUnits()
 			if gUnits then
 				for i2,v2 in ipairs(gUnits) do
-					table.insert(units,v2)
+					table.insert(units, v2)
 				end
+			end
+		else
+			local st = StaticObject.getByName(v)
+			if st and st:isExist() then
+				table.insert(statics, st)
+			else
+				table.insert(dangling, tostring(v))
 			end
 		end
 	end
-	local tgts = {}
-	for i=1,3,1 do
-		if #units > 0 then
-			local selected = math.random(1,#units)
-			table.insert(tgts,units[selected])
-			table.remove(units,selected)
-		end
+	if #dangling > 0 then
+		trigger.action.outTextForCoalition(2, "(BUG) "..tz.zone.." error has unresolved entries: "..table.concat(dangling,", ")..". Please report to Leka.", 30)
 	end
-	for i,v in ipairs(tgts) do
-		if v and v:isExist() then
-			local pos = v:getPosition().p
-			trigger.action.smoke(pos,1)
-		end
+	local points = {}
+	for _,u in ipairs(units) do if u and u:isExist() then local p=u:getPosition().p; if p then table.insert(points,p) end end end
+	for _,s in ipairs(statics) do local p=s:getPoint(); if p then table.insert(points,p) end end
+	for i=1,3 do
+		if #points == 0 then break end
+		local idx = math.random(1,#points)
+		trigger.action.smoke(points[idx],1)
+		table.remove(points,idx)
 	end
 end
 
@@ -2864,9 +2874,9 @@ bc:addShopItem(2, 'smoke', -1, 11, 1) -- smoke on target
 bc:addShopItem(2, 'intel', -1, 12, 5) -- Intel
 bc:addShopItem(2, 'supplies2', -1, 13, 1) -- upgrade friendly zone
 bc:addShopItem(2, 'supplies', -1, 14, 6) -- fully upgrade friendly zone
-bc:addShopItem(2, 'zinf', -1, 15, 5) -- add infantry to a zone
-bc:addShopItem(2, 'zarm', -1, 16, 7) -- add armour group to a zone
-bc:addShopItem(2, 'zsam', -1, 17, 6) -- add Nasams to a zone
+bc:addShopItem(2, 'zinf', -1, 15, 2) -- add infantry to a zone
+bc:addShopItem(2, 'zarm', -1, 16, 3) -- add armour group to a zone
+bc:addShopItem(2, 'zsam', -1, 17, 7) -- add Nasams to a zone
 bc:addShopItem(2, 'gslot', 1, 18, 9) -- add another slot for upgrade
 if Era == 'Modern' then
     bc:addShopItem(2, 'zpat', -1, 19, 8) -- Patriot system.
@@ -2980,7 +2990,7 @@ AWACS_CFG = {
 }
 
 GlobalSettings.autoSuspendNmBlue = 80   		-- suspend blue zones deeper than this nm
-GlobalSettings.autoSuspendNmRed = 100   		-- suspend red zones deeper than this nm
+GlobalSettings.autoSuspendNmRed = 90   		-- suspend red zones deeper than this nm
 evc = EventCommander:new({ decissionFrequency=30*60, decissionVariance=30*60, skipChance = 15})
 evc:init()
 mc = MissionCommander:new({side = 2, battleCommander = bc, checkFrequency = 60})
@@ -3909,9 +3919,9 @@ Elevation 1304 feet]],
         end
 	end,
 	isActive = function()
-	if CustomFlags["TaftanazWarehouse"] then return false end
-	if ActiveMission['TaftanazWarehouse'] then return true end
-	return false
+		if CustomFlags["SA5Warehouse"] then return false end
+		if ActiveMission['SA5Warehouse'] then return true end
+		return false
 	end
 })
 -------------------------------- Strike the rebels --------------------------------

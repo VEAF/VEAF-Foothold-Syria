@@ -55,71 +55,79 @@ CTLDPrices = {
     ["Platoon 32"]            = 200,
     ["Anti-Air Soldiers"]     = 100,
     ["Mortar Squad"]          = 100,
-    ["Mephisto (2cr)"]       = 250,
-    ["Humvee (2cr)"]         = 250,
-    ["Bradly (2cr)"]         = 250,
-    ["L118 (1cr)"]           = 150,
-    ["Ammo Truck (2cr)"]     = 100,
-    ["Humvee scout (2cr)"]   = 100,
-    ["Linebacker (2cr)"]     = 300,
-    ["Vulcan (2cr)"]         = 300,
-    ["HAWK Site (1cr)"]      = 750,
-    ["Nasam Site (1cr)"]     = 750,
-    ["FARP (1cr)"]           = 500,
-    ["IRIS T SLM STR (1cr)"] = 500,
-    ["IRIS T SLM LN (1cr)"]  = 750,
-    ["IRIS T SLM C2 (1cr)"]  = 500,
+    ["Mephisto"]              = 250,
+    ["Humvee"]                = 250,
+    ["Bradly"]                = 250,
+    ["L118"]                  = 150,
+    ["Ammo Truck"]            = 100,
+    ["Humvee scout"]          = 100,
+    ["Linebacker"]            = 300,
+    ["Vulcan"]                = 300,
+    ["HAWK Site"]             = 750,
+    ["Nasam Site"]            = 750,
+    ["FARP"]                  = 500,
+    ["IRIS T SLM STR"]        = 500,
+    ["IRIS T SLM LN"]         = 750,
+    ["IRIS T SLM C2"]         = 500,
+    ["IRIS T SLM System"]     = 1800,
+    ["C-RAM"]                 = 500,
 }
 CTLD_DEFAULT_PRICE = 0
 
 if CTLDCost==true then -- this portion is if stuff cost money and CTLDCost is true which is defualt.
-    Foothold_ctld:AddTroopsCargo(pricedName("Engineer soldier"), {"CTLD_TROOPS_Engineers"}, CTLD_CARGO.Enum.ENGINEERS, 1, 80, 5)
-    Foothold_ctld:AddCratesCargo(pricedName("Mephisto (2cr)"), {"CTLD_CARGO_Mephisto"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "ANTI TANK")
-    Foothold_ctld:AddCratesCargo(pricedName("Humvee (2cr)"), {"CTLD_CARGO_HMMWV"}, CTLD_CARGO.Enum.VEHICLE, 2, 1000, 5, "ANTI TANK")
-    Foothold_ctld:AddCratesCargo(pricedName("Bradly (2cr)"), {"CTLD_CARGO_Bradly"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "ANTI TANK")
-    Foothold_ctld:AddCratesCargo(pricedName("L118 (1cr)"), {"CTLD_CARGO_L118"}, CTLD_CARGO.Enum.VEHICLE, 1, 700, 5, "Support")
-    Foothold_ctld:AddCratesCargo(pricedName("Ammo Truck (2cr)"), {"CTLD_CARGO_AmmoTruck"}, CTLD_CARGO.Enum.VEHICLE, 2, 800, 5, "Support")
-    Foothold_ctld:AddCratesCargo(pricedName("Humvee scout (2cr)"), {"CTLD_CARGO_Scout"}, CTLD_CARGO.Enum.VEHICLE, 2, 1000, 5, "Support")
-    Foothold_ctld:AddTroopsCargo(pricedName("Squad 8"), {"CTLD_TROOPS_ATS"}, CTLD_CARGO.Enum.TROOPS, 8, 80, 5)
-    Foothold_ctld:AddTroopsCargo(pricedName("Platoon 16"), {"CTLD_TROOPS_Platon16"}, CTLD_CARGO.Enum.TROOPS, 16, 80, 5)
-    Foothold_ctld:AddTroopsCargo(pricedName("Platoon 32"), {"CTLD_TROOPS_Platon1"}, CTLD_CARGO.Enum.TROOPS, 32, 80, 5)
-    --Foothold_ctld:AddTroopsCargo(pricedName("Structure demolition expert"), {"Demolition Expert"}, CTLD_CARGO.Enum.TROOPS, 1, 80, 5)
-    Foothold_ctld:AddTroopsCargo(pricedName("Anti-Air Soldiers"), {"CTLD_TROOPS_AA"}, CTLD_CARGO.Enum.TROOPS, 5, 80, 5)
-    Foothold_ctld:AddTroopsCargo(pricedName("Mortar Squad"), {"CTLD_TROOPS_MRS"}, CTLD_CARGO.Enum.TROOPS, 6, 80, 5)
-    Foothold_ctld:AddCratesCargo(pricedName("Linebacker (2cr)"), {"CTLD_CARGO_Linebacker"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "SAM/AAA")
-    --Foothold_ctld:AddCratesCargo(pricedName("Tank Abrahams (1cr)"), {"CTLD_CARGO_TANK"}, CTLD_CARGO.Enum.VEHICLE, 5, 1600, 1, "ANTI TANK")
-    Foothold_ctld:AddCratesCargo(pricedName("Vulcan (2cr)"), {"CTLD_CARGO_Vulcan"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "SAM/AAA")
-    Foothold_ctld:AddCratesCargo(pricedName("HAWK Site (4cr)"), {"CTLD_CARGO_HAWKSite"}, CTLD_CARGO.Enum.FOB, 4, 1900, 5, "SAM/AAA")
-    Foothold_ctld:AddCratesCargo(pricedName("Nasam Site (4cr)"), {"CTLD_CARGO_NasamsSite"}, CTLD_CARGO.Enum.FOB, 4, 1900, 5, "SAM/AAA")
-    Foothold_ctld:AddCratesCargo(pricedName("IRIS T SLM STR (1cr)"), {"CTLD_CARGO_IRISTSLM_STR"}, CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
-    Foothold_ctld:AddCratesCargo(pricedName("IRIS T SLM LN (1cr)"), {"CTLD_CARGO_IRISTSLM-LN"}, CTLD_CARGO.Enum.FOB, 1, 3500, 5, "SAM/AAA")
-    Foothold_ctld:AddCratesCargo(pricedName("IRIS T SLM C2 (1cr)"), {"CTLD_CARGO_IRISTSLM_C2"}, CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
-    Foothold_ctld:AddCratesCargo(pricedName("FARP (1cr)"), {"CTLD_TROOP_FOB"}, CTLD_CARGO.Enum.FOB, 3, 1500, 9)
+Foothold_ctld:AddTroopsCargo(pricedName("Engineer soldier"), {"CTLD_TROOPS_Engineers"}, CTLD_CARGO.Enum.ENGINEERS, 1, 80, 5)
+Foothold_ctld:AddCratesCargo(pricedName("Mephisto"), {"CTLD_CARGO_Mephisto"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "ANTI TANK")
+Foothold_ctld:AddCratesCargo(pricedName("Humvee"), {"CTLD_CARGO_HMMWV"}, CTLD_CARGO.Enum.VEHICLE, 2, 1000, 5, "ANTI TANK")
+Foothold_ctld:AddCratesCargo(pricedName("Bradly"), {"CTLD_CARGO_Bradly"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "ANTI TANK")
+Foothold_ctld:AddCratesCargoNoMove(pricedName("L118"), {"CTLD_CARGO_L118"}, CTLD_CARGO.Enum.VEHICLE, 1, 700, 5, "Support")
+Foothold_ctld:AddCratesCargoNoMove(pricedName("Ammo Truck"), {"CTLD_CARGO_AmmoTruck"}, CTLD_CARGO.Enum.VEHICLE, 2, 800, 5, "Support")
+Foothold_ctld:AddCratesCargo(pricedName("Humvee scout"), {"CTLD_CARGO_Scout"}, CTLD_CARGO.Enum.VEHICLE, 2, 1000, 5, "Support")
+Foothold_ctld:AddTroopsCargo(pricedName("Squad 8"), {"CTLD_TROOPS_ATS"}, CTLD_CARGO.Enum.TROOPS, 8, 80, 5)
+Foothold_ctld:AddTroopsCargo(pricedName("Platoon 16"), {"CTLD_TROOPS_Platon16"}, CTLD_CARGO.Enum.TROOPS, 16, 80, 5)
+Foothold_ctld:AddTroopsCargo(pricedName("Platoon 32"), {"CTLD_TROOPS_Platon1"}, CTLD_CARGO.Enum.TROOPS, 32, 80, 5)
+--Foothold_ctld:AddTroopsCargo(pricedName("Structure demolition expert"), {"Demolition Expert"}, CTLD_CARGO.Enum.TROOPS, 1, 80, 5)
+Foothold_ctld:AddTroopsCargo(pricedName("Anti-Air Soldiers"), {"CTLD_TROOPS_AA"}, CTLD_CARGO.Enum.TROOPS, 5, 80, 5)
+Foothold_ctld:AddTroopsCargo(pricedName("Mortar Squad"), {"CTLD_TROOPS_MRS"}, CTLD_CARGO.Enum.TROOPS, 6, 80, 5)
+Foothold_ctld:AddCratesCargo(pricedName("Linebacker"), {"CTLD_CARGO_Linebacker"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "SAM/AAA")
+--Foothold_ctld:AddCratesCargo(pricedName("Tank Abrahams (1cr)"), {"CTLD_CARGO_TANK"}, CTLD_CARGO.Enum.VEHICLE, 5, 1600, 1, "ANTI TANK")
+Foothold_ctld:AddCratesCargo(pricedName("Vulcan"), {"CTLD_CARGO_Vulcan"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove(pricedName("HAWK Site"), {"CTLD_CARGO_HAWKSite"}, CTLD_CARGO.Enum.FOB, 4, 1900, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove(pricedName("Nasam Site"), {"CTLD_CARGO_NasamsSite"}, CTLD_CARGO.Enum.FOB, 4, 1900, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM System"), {"CTLD_CARGO_IRISTSLM_System"}, CTLD_CARGO.Enum.FOB, 3, 2800, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM STR"), {"CTLD_CARGO_IRISTSLM_STR"}, CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM LN"), {"CTLD_CARGO_IRISTSLM-LN"}, CTLD_CARGO.Enum.FOB, 1, 3500, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM C2"), {"CTLD_CARGO_IRISTSLM_C2"}, CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove(pricedName("C-RAM"), {"CTLD_CARGO_CRAM"}, CTLD_CARGO.Enum.FOB, 2, 1000, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargo(pricedName("FARP"), {"CTLD_TROOP_FOB"}, CTLD_CARGO.Enum.FOB, 3, 1500, 9)
+
 
 
 else -- here if they don't cost anything and CTLDCost is set to false
+
 Foothold_ctld:AddTroopsCargo("Engineer soldier",{"CTLD_TROOPS_Engineers"},CTLD_CARGO.Enum.ENGINEERS,1,80,5)
-Foothold_ctld:AddCratesCargo("Mephisto (2cr)",{"CTLD_CARGO_Mephisto"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500,5, "ANTI TANK")
-Foothold_ctld:AddCratesCargo("Humvee (2cr)",{"CTLD_CARGO_HMMWV"},CTLD_CARGO.Enum.VEHICLE,2,1000,5, "ANTI TANK")
-Foothold_ctld:AddCratesCargo("Bradly (2cr)",{"CTLD_CARGO_Bradly"},CTLD_CARGO.Enum.VEHICLE,2,1500,5, "ANTI TANK")
-Foothold_ctld:AddCratesCargo("L118 (1cr)",{"CTLD_CARGO_L118"},CTLD_CARGO.Enum.VEHICLE,1,700,5, "Support")
-Foothold_ctld:AddCratesCargo("Ammo Truck (2cr)",{"CTLD_CARGO_AmmoTruck"},CTLD_CARGO.Enum.VEHICLE,2,800,5, "Support")
-Foothold_ctld:AddCratesCargo("Humvee scout (2cr)",{"CTLD_CARGO_Scout"},CTLD_CARGO.Enum.VEHICLE,2,1000,5, "Support")
+Foothold_ctld:AddCratesCargo("Mephisto",{"CTLD_CARGO_Mephisto"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500,5, "ANTI TANK")
+Foothold_ctld:AddCratesCargo("Humvee",{"CTLD_CARGO_HMMWV"},CTLD_CARGO.Enum.VEHICLE,2,1000,5, "ANTI TANK")
+Foothold_ctld:AddCratesCargo("Bradly",{"CTLD_CARGO_Bradly"},CTLD_CARGO.Enum.VEHICLE,2,1500,5, "ANTI TANK")
+Foothold_ctld:AddCratesCargoNoMove("L118",{"CTLD_CARGO_L118"},CTLD_CARGO.Enum.VEHICLE,1,700,5, "Support")
+Foothold_ctld:AddCratesCargoNoMove("Ammo Truck",{"CTLD_CARGO_AmmoTruck"},CTLD_CARGO.Enum.VEHICLE,2,800,5, "Support")
+Foothold_ctld:AddCratesCargo("Humvee scout",{"CTLD_CARGO_Scout"},CTLD_CARGO.Enum.VEHICLE,2,1000,5, "Support")
 Foothold_ctld:AddTroopsCargo("Squad 8",{"CTLD_TROOPS_ATS"},CTLD_CARGO.Enum.TROOPS,8,80,5)
 Foothold_ctld:AddTroopsCargo("Platoon 16",{"CTLD_TROOPS_Platon16"},CTLD_CARGO.Enum.TROOPS,16,80,5)
 Foothold_ctld:AddTroopsCargo("Platoon 32",{"CTLD_TROOPS_Platon1"},CTLD_CARGO.Enum.TROOPS,32,80,5)
 --Foothold_ctld:AddTroopsCargo("Structure demolition expert",{"Demolition Expert"},CTLD_CARGO.Enum.TROOPS,1,80,5)
 Foothold_ctld:AddTroopsCargo("Anti-Air Soldiers",{"CTLD_TROOPS_AA"},CTLD_CARGO.Enum.TROOPS,5,80,5)
 Foothold_ctld:AddTroopsCargo("Mortar Squad",{"CTLD_TROOPS_MRS"},CTLD_CARGO.Enum.TROOPS,6,80,5)
-Foothold_ctld:AddCratesCargo("Linebacker (2cr)",{"CTLD_CARGO_Linebacker"},CTLD_CARGO.Enum.VEHICLE,2,1500,5, "SAM/AAA")
---Foothold_ctld:AddCratesCargo("Tank Abrahams(1cr)",{"CTLD_CARGO_TANK"},CTLD_CARGO.Enum.VEHICLE,5,1600,1, "ANTI TANK")
-Foothold_ctld:AddCratesCargo("Vulcan (2cr)",{"CTLD_CARGO_Vulcan"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500,5, "SAM/AAA")
-Foothold_ctld:AddCratesCargo("HAWK Site (1cr)",{"CTLD_CARGO_HAWKSite"},CTLD_CARGO.Enum.FOB,4,1900,5, "SAM/AAA")
-Foothold_ctld:AddCratesCargo("Nasam Site (1cr)",{"CTLD_CARGO_NasamsSite"},CTLD_CARGO.Enum.FOB,4,1900,5, "SAM/AAA")
-Foothold_ctld:AddCratesCargo("FARP (1cr)",{"CTLD_TROOP_FOB"},CTLD_CARGO.Enum.FOB,3,1500,9)
-Foothold_ctld:AddCratesCargo("IRIS T SLM STR (1cr)", {"CTLD_CARGO_IRISTSLM_STR"}, CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargo("IRIS T SLM LN (1cr)", {"CTLD_CARGO_IRISTSLM-LN"}, CTLD_CARGO.Enum.FOB, 1, 3500, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargo("IRIS T SLM C2 (1cr)", {"CTLD_CARGO_IRISTSLM_C2"}, CTLD_CARGO.Enum.FOB, 1, 1900, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargo("Linebacker",{"CTLD_CARGO_Linebacker"},CTLD_CARGO.Enum.VEHICLE,2,1500,5, "SAM/AAA")
+--Foothold_ctld:AddCratesCargo("Tank Abrahams",{"CTLD_CARGO_TANK"},CTLD_CARGO.Enum.VEHICLE,5,1600,1, "ANTI TANK")
+Foothold_ctld:AddCratesCargo("Vulcan",{"CTLD_CARGO_Vulcan"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500,5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("HAWK Site",{"CTLD_CARGO_HAWKSite"},CTLD_CARGO.Enum.FOB,4,1900,5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("Nasam Site",{"CTLD_CARGO_NasamsSite"},CTLD_CARGO.Enum.FOB,4,1900,5, "SAM/AAA")
+Foothold_ctld:AddCratesCargo("FARP",{"CTLD_TROOP_FOB"},CTLD_CARGO.Enum.FOB,3,1500,9)
+Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM STR", {"CTLD_CARGO_IRISTSLM_STR"},CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM LN", {"CTLD_CARGO_IRISTSLM-LN"},CTLD_CARGO.Enum.FOB, 1, 3500, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM C2", {"CTLD_CARGO_IRISTSLM_C2"},CTLD_CARGO.Enum.FOB, 1, 1900, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM System", {"CTLD_CARGO_IRISTSLM_System"}, CTLD_CARGO.Enum.FOB, 3, 2800, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("C-RAM", {"CTLD_CARGO_CRAM"}, CTLD_CARGO.Enum.FOB, 2, 1000, 5, "SAM/AAA")
 
 end
 
@@ -128,26 +136,28 @@ end
 
 local MAX_AT_SPAWN = {
     ["Engineer soldier"]        = 0,
-    ["Mephisto (2cr)"]          = 2,
-    ["Humvee (2cr)"]            = 2,
-    ["Bradly (2cr)"]            = 2,
-    ["L118 (1cr)"]              = 3,
-    ["Ammo Truck (2cr)"]        = 3,
-    ["Humvee scout (2cr)"]      = 1,
+    ["Mephisto"]                = 2,
+    ["Humvee"]                  = 2,
+    ["Bradly"]                  = 2,
+    ["L118"]                    = 3,
+    ["Ammo Truck"]              = 3,
+    ["Humvee scout"]            = 1,
     ["Squad 8"]                 = 0,
     ["Platoon 16"]              = 0,
     ["Platoon 32"]              = 0,
     ["Anti-Air Soldiers"]       = 2,
     ["Mortar Squad"]            = 2,
-    ["Linebacker (2cr)"]        = 2,
-    ["Vulcan (2cr)"]            = 2,
-    ["HAWK Site (1cr)"]         = 3,
-    ["Nasam Site (1cr)"]        = 3,
-    ["Tank Abrahams (1cr)"]     = 0,
-    ["FARP (1cr)"]              = 3,
-    ["IRIS T SLM STR (1cr)"]    = 2,
-    ["IRIS T SLM LN (1cr)"]     = 2,
-    ["IRIS T SLM C2 (1cr)"]     = 2,
+    ["Linebacker"]              = 2,
+    ["Vulcan"]                  = 2,
+    ["HAWK Site"]               = 3,
+    ["Nasam Site"]              = 3,
+    ["Tank Abrahams"]           = 0,
+    ["FARP"]                    = 3,
+    ["IRIS T SLM STR"]          = 2,
+    ["IRIS T SLM LN"]           = 2,
+    ["IRIS T SLM C2"]           = 2,
+    ["IRIS T SLM System"]       = 2,
+    ["C-RAM"]                   = 2,
 }
 -- How many farps do you want to load? 
 -- Oldest will not be spawned if the number is exceded.
@@ -173,6 +183,8 @@ Group.getByName('CTLD_CARGO_Scout'):destroy()
 Group.getByName('CTLD_CARGO_IRISTSLM_STR'):destroy()
 Group.getByName('CTLD_CARGO_IRISTSLM-LN'):destroy()
 Group.getByName('CTLD_CARGO_IRISTSLM_C2'):destroy()
+Group.getByName('CTLD_CARGO_IRISTSLM_System'):destroy()
+Group.getByName('CTLD_CARGO_CRAM'):destroy()
 
 -- ZONES
 
@@ -251,6 +263,53 @@ deployedTroopsSet = SET_GROUP:New()
 zoneCaptureInfo = {}
 deployedTroops = {}
 
+local function selectOldestUnit(unitTable, cargoName, predicate)
+    local oldestIdx, oldestEntry, oldestTimestamp = nil, nil, math.huge
+    for idx, entry in ipairs(unitTable) do
+        if entry.CargoName == cargoName then
+            if (not predicate or predicate(entry)) and entry.Timestamp < oldestTimestamp then
+                oldestIdx = idx
+                oldestEntry = entry
+                oldestTimestamp = entry.Timestamp
+            end
+        end
+    end
+    return oldestIdx, oldestEntry, oldestTimestamp
+end
+
+local function destroyTrackedGroup(entry)
+    if not entry or not entry.groupName then return end
+    local dcsGroup = GROUP:FindByName(entry.groupName)
+    if dcsGroup and dcsGroup:IsAlive() then
+        dcsGroup:Destroy()
+    end
+end
+
+local function extractCargoItems(Cargo)
+    local items = {}
+    local function push(item)
+        if item and item.GetName then
+            items[#items + 1] = item
+        end
+    end
+    if type(Cargo) ~= "table" then
+        return items
+    end
+    if Cargo.GetName then
+        push(Cargo)
+        return items
+    end
+    for _, value in ipairs(Cargo) do
+        push(value)
+    end
+    if #items == 0 then
+        for _, value in pairs(Cargo) do
+            push(value)
+        end
+    end
+    return items
+end
+
      local FARPFreq = 129
      local FARPName = 1
 
@@ -299,7 +358,7 @@ function BuildAFARP(Coordinate, stamp)
     allZones[#allZones + 1] = FName
   end
 
-  UTILS.SpawnFARPAndFunctionalStatics(FName, coord, ENUMS.FARPType.INVISIBLE, Foothold_ctld.coalition, country.id.USA, FarpNameNumber, FARPFreq, radio.modulation.AM, nil, nil, nil, 6000, 6000,1000,nil, true, true)
+  UTILS.SpawnFARPAndFunctionalStatics(FName, coord, ENUMS.FARPType.INVISIBLE, Foothold_ctld.coalition, country.id.USA, FarpNameNumber, FARPFreq, radio.modulation.AM, nil, nil, nil, 6000, 6000,1000,nil, true, true, 3, 50, 50)
   
   Foothold_ctld:AddCTLDZone(FName, CTLD.CargoZoneType.LOAD, SMOKECOLOR.Blue, true, false)
   MESSAGE:New(string.format("%s in operation!", FName), 15):ToBlue()
@@ -371,22 +430,14 @@ function Foothold_ctld:OnAfterCratesBuildStarted(From, Event, To, Group, Unit, C
         self:I(string.format("[RESERVE] stock already >0 for %s (no action)", CargoName))
         return
     end
-    self:AddStockCrates(CargoName, 1)
-    self:I(string.format("[RESERVE] stock was 0 → +1 refunded for %s", CargoName))
-
-    local oldestIdx, oldestTs = nil, math.huge
-    for idx, g in ipairs(GroundUnits) do
-        if g.CargoName == CargoName and g.Timestamp < oldestTs then
-            oldestIdx, oldestTs = idx, g.Timestamp
-        end
-    end
-    if oldestIdx then
-        local victim = GroundUnits[oldestIdx]
-        self:I(string.format("[RESERVE] DELETE oldest %s ts=%f (group=%s)",
-            CargoName, oldestTs, victim.groupName))
-        local dcsGrp = GROUP:FindByName(victim.groupName)
-        if dcsGrp and dcsGrp:IsAlive() then dcsGrp:Destroy() end
+    local oldestIdx, victim, oldestTs = selectOldestUnit(GroundUnits, CargoName)
+    if oldestIdx and victim then
+        self:I(string.format("[RESERVE] DELETE oldest %s ts=%f (group=%s)", CargoName, oldestTs, victim.groupName))
+        destroyTrackedGroup(victim)
+        if Group then MESSAGE:New(string.format("[CTLD] %s limit reached - removed oldest %s (%s).", CargoName, CargoName, victim.groupName), 12):ToGroup(Group) end
         table.remove(GroundUnits, oldestIdx)
+        self:AddStockCrates(CargoName, 1)
+        self:I(string.format("[RESERVE] stock was 0 → +1 refunded for %s", CargoName))
     else
         self:I(string.format("[RESERVE] no existing %s groups to delete", CargoName))
     end
@@ -461,6 +512,38 @@ function Foothold_ctld:OnAfterCratesBuild(From, Event, To, Group, Unit, Vehicle)
     end
 end 
 
+function Foothold_ctld:OnAfterCratesPickedUp(From, Event, To, Group, Unit, Cargo)
+    local cargoItems = extractCargoItems(Cargo)
+    if #cargoItems == 0 then return end
+
+    local processed = {}
+    for _, cargoItem in ipairs(cargoItems) do
+        local cargoName = cargoItem and cargoItem.GetName and cargoItem:GetName() or nil
+        if cargoName and not processed[cargoName] then
+            processed[cargoName] = true
+            local cargoObject = self:_FindCratesCargoObject(cargoName)
+            if cargoObject and cargoObject:GetStock() <= 0 then
+                local oldestIdx, victim, oldestTs = selectOldestUnit(GroundUnits, cargoName)
+                if oldestIdx and victim then
+                    self:I(string.format("[RESERVE] DELETE oldest %s ts=%f (group=%s) after load", cargoName, oldestTs, victim.groupName))
+                    destroyTrackedGroup(victim)
+                    if Group then MESSAGE:New(string.format("[CTLD] %s limit reached - removed oldest %s (%s).", cargoName, cargoName, victim.groupName), 12):ToGroup(Group) end
+                    table.remove(GroundUnits, oldestIdx)
+                    self:AddStockCrates(cargoName, 1)
+                    self:I(string.format("[RESERVE] stock was 0 → +1 refunded for %s (load)", cargoName))
+                    local newStock = cargoObject:GetStock()
+                    for _, entry in ipairs(GroundUnits) do
+                        if entry.CargoName == cargoName then
+                            entry.Stock = newStock
+                        end
+                    end
+                else
+                    self:I(string.format("[RESERVE] no existing %s groups to delete on load", cargoName))
+                end
+            end
+        end
+    end
+end
 
 if lfs then
 
@@ -757,6 +840,32 @@ end
 
 function Foothold_ctld:OnAfterTroopsPickedUp(From, Event, To, Group, Unit, Cargo)
     if Group and Group:IsAlive() then
+        if Cargo and Cargo.GetName then
+            local cargoName = Cargo:GetName()
+            local cargoObject = self:_FindTroopsCargoObject(cargoName)
+            if cargoObject and cargoObject:GetStock() <= 0 then
+                local predicate = function(entry)
+                    return entry.Stock <= 1
+                end
+                local oldestIdx, victim, oldestTs = selectOldestUnit(TroopUnits, cargoName, predicate)
+                if oldestIdx and victim then
+                    Foothold_ctld:AddStockTroops(cargoName, 1)
+                    self:I(string.format("[RESERVE] DELETE oldest troop %s ts=%f (group=%s) after load",
+                        cargoName, oldestTs, victim.groupName))
+                    destroyTrackedGroup(victim)
+                    if Group then MESSAGE:New(string.format("[CTLD] %s troop limit reached - removed oldest %s (%s).", cargoName, cargoName, victim.groupName), 12):ToGroup(Group) end
+                    table.remove(TroopUnits, oldestIdx)
+                    local newStock = cargoObject:GetStock()
+                    for _, entry in ipairs(TroopUnits) do
+                        if entry.CargoName == cargoName then
+                            entry.Stock = newStock
+                        end
+                    end
+                else
+                    self:I(string.format("[RESERVE] no existing troop %s groups to delete on load", cargoName))
+                end
+            end
+        end
         updateLastPickupZone(Group, Unit)
         playRandomSound(Group, "loading")
     else

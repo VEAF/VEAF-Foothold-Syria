@@ -12,7 +12,7 @@ InvisibleA10 = false-- if the above is true, then A10 wlll be invisble to the en
 UseStatics=true
 
 -- load first batch of scripts
-assert(loadfile(SY_DYNAMIC_SCRIPTS_PATH .. "Moose_2025-09-27.lua")) ()
+assert(loadfile(SY_DYNAMIC_SCRIPTS_PATH .. "Moose.lua")) ()
 assert(loadfile(SY_DYNAMIC_SCRIPTS_PATH .. "Hercules_Cargo.lua")) ()
 assert(loadfile(SY_DYNAMIC_SCRIPTS_PATH .. "zoneCommander_moose.lua")) ()
 assert(loadfile(SY_DYNAMIC_SCRIPTS_PATH .. "footholdSyriaSetupv2.lua")) ()

@@ -7,39 +7,39 @@ radios_collection: # Lists all the radios definitions
         01: 
           title: Guard/UHF
           channel: Guard
-        02: Archer
+        02: 
         03: 
           title: Tactical
           freq: 265
-        04: Arctic
-        05: Ninja
-        06: Pinder
-        07: Bengal
-        08: Blade
+        04: 
+        05: 
+        06: 
+        07: 
+        08: 
         09: 
-        10: 
-        11: 
-        12: 
-        13: 
-        14: 
-        15: 
           title: Tanker MAIN-Airforce
           freq: 266
-        16: 
+        10: 
           title: Tanker SEC-Airforce
           freq: 259
-        17: 
+        11: 
           title: Tanker MAIN-Navy
           freq: 260
-        18: 
+        12: 
           title: Tanker SEC-Navy
           freq: 268
-        19: 
+        13: 
           title: Tanker OVERHEAD-Navy
           freq: 253
-        20: 
+        14: 
           title: AWACS
           freq: 255
+        15: Archer
+        16: Arctic
+        17: Ninja
+        18: Pinder
+        19: Bengal
+        20: Blade
         21: 
         22:
         23:
@@ -69,57 +69,57 @@ radios_collection: # Lists all the radios definitions
         12: Taftanaz
         13: Bassel al-Assad
         14: Abu al-Duhur
-        15: Jirah
-        16: Hama
-        17: Tabqa
-        18: Palmyra
-        19: Tiyas
-        20: Shayrat
-        21: Al Qusayr
-        22: Rene Mouawad
-        23: Wujah Al Hajar
-        24: Beirut
-        25: Rayak
-        26: An Nasiriyah
+        15: Archer
+        16: Arctic
+        17: Ninja
+        18: Pinder
+        19: Bengal
+        20: Blade
+        21: Jirah
+        22: Hama
+        23: Tabqa
+        24: Palmyra
+        25: Tiyas
+        26: Shayrat
         27: Damascus
-        28: 
-        29: 
-        30: 
+        28: Al Qusayr
+        29: Rene Mouawad
+        30: Wujah Al Hajar
 
     radio_fm_30:
       title: FM 
       type: fm
       channels:
-        01: 30
-        02: 31
-        03: 32
-        04: 33
-        05: 34
-        06: 35
-        07: 36
-        08: 37
-        09: 38
-        10: 39
-        11: 40
-        12: 41
-        13: 42
-        14: 43
-        15: 44
-        16: 45
-        17: 46
-        18: 47
-        19: 48
-        20: 49
-        21: 50
-        22: 51
-        23: 52
-        24: 53
-        25: 54
-        26: 55
-        27: 56
-        28: 57
-        29: 58
-        30: 59
+        01: Akrotiri
+        02: Paphos
+        03: Pinarbashi
+        04: Gecitkale
+        05: Ercan
+        06: Larnaca
+        07: Incirlik
+        08: Hatay
+        09: Minakh
+        10: Gaziantep
+        11: Aleppo
+        12: Taftanaz
+        13: Bassel al-Assad
+        14: Abu al-Duhur
+        15: Archer
+        16: Arctic
+        17: Ninja
+        18: Pinder
+        19: Bengal
+        20: Blade
+        21: Jirah
+        22: Hama
+        23: Tabqa
+        24: Palmyra
+        25: Tiyas
+        26: Shayrat
+        27: Damascus
+        28: Al Qusayr
+        29: Rene Mouawad
+        30: Wujah Al Hajar
 
 presets_collection: # Lists all the presets collections
   blue_presets: # one of the presets collections
@@ -153,10 +153,17 @@ presets_assignments: # defines which presets collection to use for each coalitio
     plane: 
       all: modern_blue_uhf_vhf_fm
       A-10C_2: modern_blue_vhf_uhf_fm
+      MiG-15bis: empty
     helicopter:
-      Mi-8MT: none
       all: modern_blue_uhf_vhf_fm
       CH-47Fbl1: modern_blue_fm_uhf
+      Mi-8MT: empty
+      Mi-24P: empty
+      SA342L: empty
+      SA342Mistral: empty
+      SA342M: empty
+      SA342Minigun: empty
+
   red:
     all: 
       all: none
@@ -631,78 +638,94 @@ channels_collection: # Lists all the radio channels available on the map
         freqs: 
           vhf: 120
           uhf: 390
+          fm:  30
       Arctic:
         title: Arctic
         freqs: 
           vhf: 120.1
           uhf: 390.1
+          fm:  30.1
       Astro:
         title: Astro
         freqs: 
           vhf: 120.2
           uhf: 390.2
+          fm:  30.2
       Nickel:
         title: Nickel
         freqs: 
           vhf: 120.3
           uhf: 390.3
+          fm:  30.3
       Nitro:
         title: Nitro
         freqs: 
           vhf: 120.4
           uhf: 390.4
+          fm:  30.4
       Ninja:
         title: Ninja
         freqs: 
           vhf: 120.5
           uhf: 390.5
+          fm:  30.5
       Pinder:
         title: Pinder
         freqs: 
           vhf: 120.6
           uhf: 390.6
+          fm:  30.6
       Bengal:
         title: Bengal
         freqs: 
           vhf: 120.7
           uhf: 390.7
+          fm:  30.7
       Blade:
         title: Blade
         freqs: 
           vhf: 120.8
           uhf: 390.8
+          fm:  30.8
       Gordon:
         title: Gordon
         freqs: 
           vhf: 120.9
           uhf: 390.9
+          fm:  30.9
       Gypsy:
         title: Gypsy
         freqs: 
           vhf: 121.1
           uhf: 391.1
+          fm:  31.1
       Gunstar:
         title: Gunstar
         freqs: 
           vhf: 121.2
           uhf: 391.2
+          fm:  31.2
       Leica:
         title: Leica
         freqs: 
           vhf: 121.3
           uhf: 391.3
+          fm:  31.3
       Lucid:
         title: Lucid
         freqs: 
           vhf: 121.4
           uhf: 391.4
+          fm:  31.4
       Lusty:
         title: Lusty
         freqs: 
           vhf: 121.6
           uhf: 391.6
+          fm:  31.6
       Lion:
         title: Lion
         freqs: 
           vhf: 121.7
           uhf: 391.7
+          fm:  31.7
