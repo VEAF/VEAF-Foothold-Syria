@@ -3403,12 +3403,11 @@ function BattleCommander:debit(coalition, amount, buyerGroupId, buyerGroupObj, r
     elseif buyerGroupId then
         buyerName = "Group " .. tostring(buyerGroupId)
     end
-	local cleanReason = reason or "CTLD action"
-	cleanReason = cleanReason:gsub("%s*%([^%)]*cr[^%)]*%)", "")
-	cleanReason = cleanReason:gsub("%s*%[[^%]]+%]$", "")
+    local label = reason or "CTLD action"
+
     self.accounts[coalition] = tonumber(self.accounts[coalition]) or 0
     if self.accounts[coalition] < amount then
-        local msg = string.format("Not enough credits for %s. Need %d, have %d.", cleanReason or "this action", amount, self.accounts[coalition])
+        local msg = string.format("Not enough credits for %s. Need %d, have %d.", label, amount, self.accounts[coalition])
         if buyerGroupId then
             trigger.action.outTextForGroup(buyerGroupId, msg, 12)
         else
@@ -3416,23 +3415,33 @@ function BattleCommander:debit(coalition, amount, buyerGroupId, buyerGroupObj, r
         end
         return false
     end
+
     self.accounts[coalition] = math.max(0, self.accounts[coalition] - amount)
     self:addStat(buyerName, "Points spent", amount)
-	trigger.action.outTextForCoalition(coalition, string.format("%s spent %d credits on CTLD %s.\n\n%d coalition credits remaining.", buyerName, amount, cleanReason, self.accounts[coalition]), 12)
+    trigger.action.outTextForCoalition(
+        coalition,
+        string.format("%s spent %d credits on CTLD %s.\n\n%d coalition credits remaining.",
+            buyerName, amount, label, self.accounts[coalition]),
+        12
+    )
     return true
 end
+
 function BattleCommander:credit(coalition, amount, buyerGroupId, reason)
     if not amount or amount <= 0 then return true end
     self.accounts[coalition] = tonumber(self.accounts[coalition]) or 0
     self.accounts[coalition] = self.accounts[coalition] + amount
-	local clean = (reason or "refund"):gsub("%s*%([^%)]*cr[^%)]*%)",""):gsub("%s*%[[^%]]+%]$","")
-	if buyerGroupId then
-        trigger.action.outTextForGroup(buyerGroupId, string.format("%s returned to base — %d credits refunded.", clean, amount), 12)
-	else
-		trigger.action.outTextForCoalition(coalition, string.format("%s returned to base — %d credits refunded.", clean, amount), 12)
-	end
+
+    local label = reason or "refund"
+    local msg = string.format("%s — %d credits refunded.", label, amount)
+    if buyerGroupId then
+        trigger.action.outTextForGroup(buyerGroupId, msg, 12)
+    else
+        trigger.action.outTextForCoalition(coalition, msg, 12)
+    end
     return true
 end
+
 function BattleCommander:buyShopItem(coalition,id,alternateParams,buyerGroupId,buyerGroupObj)
 			local item   = self.shops[coalition][id]
 			local shop   = self.shops[coalition]
@@ -6243,7 +6252,7 @@ end
 		end
 	end
 
-	function BattleCommander:_proximityWakeSuspendedZones()
+function BattleCommander:_proximityWakeSuspendedZones()
 		local players = {}
 		local pb = coalition.getPlayers and coalition.getPlayers(coalition.side.BLUE) or {}
 		local pr = coalition.getPlayers and coalition.getPlayers(coalition.side.RED) or {}
@@ -6258,15 +6267,17 @@ end
 					local zp = cz.point
 					for _,u in ipairs(players) do
 						if u:isExist() then
-							local up = u:getPoint()
-							if up then
-								local dx = up.x - zp.x
-								local dz = up.z - zp.z
-								local dnm = math.sqrt(dx*dx + dz*dz) / 1852
-								if dnm <= limit then
-									z:resume()
-									changed = true
-									break
+							if u:getCoalition() ~= z.side then
+								local up = u:getPoint()
+								if up then
+									local dx = up.x - zp.x
+									local dz = up.z - zp.z
+									local dnm = math.sqrt(dx*dx + dz*dz) / 1852
+									if dnm <= limit then
+										z:resume()
+										changed = true
+										break
+									end
 								end
 							end
 						end
@@ -7303,8 +7314,10 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 					if self.context.playerContributions[side][pname]~=nil and self.context.playerContributions[side][pname] 
 					and self.context.playerContributions[side][pname] > 0 then
 						local function scheduleCreditClaim(zoneData, zoneName, waitSeconds, zoneMooseWrapper)
-							trigger.action.outTextForGroup(groupid, '[' .. pname .. '] landed at ' .. zoneName .. '.\nWait ' .. waitSeconds .. ' seconds to claim credits...', 5)
-							local claimfunc = function(context, zone, player, unitname)
+							if not event.skipRewardMsg then
+								trigger.action.outTextForGroup(groupid, '[' .. pname .. '] landed at ' .. zoneName .. '.\nWait ' .. waitSeconds .. ' seconds to claim credits...', 5)
+							end							
+								local claimfunc = function(context, zone, player, unitname)
 								local un = Unit.getByName(unitname)
 								if un then
 									local insideZone = Utils.isInZone(un, zone.zone)
@@ -7388,7 +7401,7 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 								end
 							end
 
-						if not foundZone and unit:getDesc().category == Unit.Category.AIRPLANE then
+							if not foundZone and unit:getDesc().category == Unit.Category.AIRPLANE and unit:isExist() then
 							local carrierHull = GetNearestCarrierName(UNIT:Find(unit):GetCoordinate())
 							if carrierHull then
 								local carrierUnit   = Unit.getByName(carrierHull)
@@ -10048,7 +10061,19 @@ function GroupCommander:_resolveSpawn()
     return nil
 end
 
+AnyPlayers = AnyPlayers or {}
 
+function getAnyPlayersCount()
+    local cnt = 0
+    for _ in pairs(AnyPlayers) do
+        cnt = cnt + 1
+    end
+    return cnt
+end
+
+function serverHasPlayers()
+    return next(AnyPlayers) ~= nil
+end
 
 playerListBlue = playerListBlue or {}
 playerListRed  = playerListRed  or {}
@@ -10071,14 +10096,16 @@ end
 function refreshPlayers()
     local b = coalition.getPlayers(coalition.side.BLUE)
     local currentBlue = {}
+    local currentAll = {}
     for _, unit in ipairs(b) do
         local nm = unit:getPlayerName()
         if nm then
+            currentAll[nm] = true
             local desc = unit:getDesc()
             if desc and desc.category == Unit.Category.AIRPLANE then
-				if unit:getTypeName() ~= "A-10C_2" and unit:getTypeName() ~= "Hercules" and unit:getTypeName() ~= "A-10A" and unit:getTypeName() ~= "AV8BNA" then
-					currentBlue[nm] = true
-				end
+                if unit:getTypeName() ~= "A-10C_2" and unit:getTypeName() ~= "Hercules" and unit:getTypeName() ~= "A-10A" and unit:getTypeName() ~= "AV8BNA" then
+                    currentBlue[nm] = true
+                end
             end
         end
     end
@@ -10096,11 +10123,12 @@ function refreshPlayers()
     for _, unit in ipairs(r) do
         local nm = unit:getPlayerName()
         if nm then
+            currentAll[nm] = true
             local desc = unit:getDesc()
             if desc and desc.category == Unit.Category.AIRPLANE then
-				if unit:getTypeName() ~= "A-10C_2" and unit:getTypeName() ~= "Hercules" and unit:getTypeName() ~= "A-10A" and unit:getTypeName() ~= "AV8BNA" then
-					currentRed[nm] = true
-				end
+                if unit:getTypeName() ~= "A-10C_2" and unit:getTypeName() ~= "Hercules" and unit:getTypeName() ~= "A-10A" and unit:getTypeName() ~= "AV8BNA" then
+                    currentRed[nm] = true
+                end
             end
         end
     end
@@ -10111,6 +10139,15 @@ function refreshPlayers()
     end
     for newName in pairs(currentRed) do
         playerListRed[newName] = true
+    end
+
+    for name in pairs(AnyPlayers) do
+        if not currentAll[name] then
+            AnyPlayers[name] = nil
+        end
+    end
+    for name in pairs(currentAll) do
+        AnyPlayers[name] = true
     end
 end
 
@@ -10700,13 +10737,18 @@ function GroupCommander:shouldSpawn(ignore)
 					local cap = (self.side==2) and (GlobalSettings.maxSupplyPerZoneBlue or 1) or (GlobalSettings.maxSupplyPerZoneRed or 2)
 					local active = self.zoneCommander.battleCommander:getActiveSupplyCount(self.side, self.targetzone)
 					if active >= cap then return false end
-					local zones = bc.blueZoneCount or 0
-					local cost = zones * 10
-					if self.side==2 and (bc.accounts[2] ~= nil and bc.accounts[2] < cost) then
-						env.info(string.format("[SUPPLY-SPAWN] not enough funds for supply in %s (have %d, need %d)", tg.zone, bc.accounts[2] or 0, cost))
-						return false
+					local cost = 0
+					if self.side==2 and getAnyPlayersCount() > 0 then
+						local zones = bc.blueZoneCount or 0
+						cost = math.min(zones * 10, 100)
+						if (bc.accounts[2] ~= nil and bc.accounts[2] < cost) then
+							env.info(string.format("[SUPPLY-SPAWN] not enough funds for supply in %s (have %d, need %d)", tg.zone, bc.accounts[2] or 0, cost))
+							return false
+						end
 					end
-					self._pendingBlueSupplyCost = cost
+					if self.side == 2 then
+						self._pendingBlueSupplyCost = (cost > 0) and cost or nil
+					end
 					return true
 				end
 				return false
@@ -11033,13 +11075,13 @@ end
 											SetUpCAP(gr, { x = st.x, z = st.y }, self.Altitude, dist, self._landUnitID, 30, offsetNm, side)
 
 										elseif self.mission == 'supply' and self.unitCategory == heli then
-											if self.side == 2 and self._pendingBlueSupplyCost then
+											if self.side == 2 and self._pendingBlueSupplyCost and self._pendingBlueSupplyCost > 0 then
 												self.zoneCommander.battleCommander.accounts[2] = math.max((self.zoneCommander.battleCommander.accounts[2] or 0) - self._pendingBlueSupplyCost, 0)
 												self._pendingBlueSupplyCost = nil end
 											self:_assignHeloRoute(g:GetName(), self.targetzone)
 
 										elseif self.mission == 'supply' and self.unitCategory == plane then
-											if self.side == 2 and self._pendingBlueSupplyCost then
+											if self.side == 2 and self._pendingBlueSupplyCost and self._pendingBlueSupplyCost > 0 then
 												self.zoneCommander.battleCommander.accounts[2] = math.max((self.zoneCommander.battleCommander.accounts[2] or 0) - self._pendingBlueSupplyCost, 0)
 												self._pendingBlueSupplyCost = nil end
 											self:_assignPlaneRoute(g:GetName(), self.targetzone, self.Altitude)
@@ -12364,6 +12406,7 @@ end
 									initiatorPilotName = un:getPlayerName(),
 									initiator_unit_type = un:getTypeName(),
 									initiator_coalition = un:getCoalition(),
+									skipRewardMsg = true,
 								}
 								world.onEvent(landingEvent)
 							end
@@ -12566,7 +12609,8 @@ function LogisticCommander:unloadPilot(groupname)
 						initiator=un,
 						initiatorPilotName=playerName,
 						initiator_unit_type=un:getTypeName(),
-						initiator_coalition=un:getCoalition()
+						initiator_coalition=un:getCoalition(),
+						skipRewardMsg=true
 					}
 					world.onEvent(landingEvent)
 				end,{},3,0)

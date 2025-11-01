@@ -5930,6 +5930,16 @@ local function getSA(group) -- built a situational awareness check
             local _now = timer.getTime()
             local sa = {}
             sa.enInContact, sa.targets 	= groupHasTargets(group)
+            if sa.targets and next(sa.targets) ~= nil then
+                for tId,tData in pairs(sa.targets) do
+                    local o = tData.object
+                    if not (o and o:isExist() == true and Object.getCategory(o) == Object.Category.UNIT) then
+                        sa.targets[tId] = nil
+                    end
+                end
+            end
+            if not sa.targets or next(sa.targets) == nil then sa.enInContact = false end
+
             sa.loss 		            = groupHasLosses(group)
             sa.dmg, sa.life, sa.str     = groupStatus(group)
             sa.low_ammo 	            = groupLowAmmo(group)
@@ -6042,19 +6052,22 @@ local function getSA(group) -- built a situational awareness check
                         local tgt   = tgtData.object
                         local check = pcallGetCategory(tgt)
                         if check == 1 and tgt and tgt:isExist() then
-                            local dd = getDist(sa.pos, tgt:getPosition().p)
-                            if not sa.det or dd <= sa.det then
-                                local t_id = tgt:getID()
-                                local velocity = tgt:getVelocity()
-                                local speed = 0
-                                if velocity and velocity.x and velocity.y and velocity.z then
-                                    speed = vecmag(velocity)
+                            local posTbl = tgt:getPosition()
+                            local pos    = posTbl and posTbl.p
+                            if pos then
+                                local dd = getDist(sa.pos, pos)
+                                local coa = tgt:getCoalition()
+                                if (not sa.det or dd <= sa.det) then
+                                    local v = tgt:getVelocity()
+                                    local speed = (v and v.x and v.y and v.z) and vecmag(v) or 0
+                                    local t_id = tgt:getID()
+                                    intelDb[t_id] = {obj = tgt,pos = pos,coa = coa,life = tgt:getLife(),record = _now,speed = speed,type = (tgt.type and tgt:getTypeName() or "unknown"),ucat = (check==1 and tgt:getCategory() or nil),scat = (check==3 and tgt:getCategory() or nil),attr = (tgt:getDesc() and tgt:getDesc().attributes or nil),cls = getUnitClass(tgt),identifier = sa.cls}
                                 end
-                                intelDb[t_id] = {obj = tgt,pos = tgt:getPosition().p,coa = tgt:getCoalition(),life = tgt:getLife(),record = _now,speed = speed,type = (tgt.type and tgt:getTypeName() or "unknown"),ucat = (check==1 and tgt:getCategory() or nil),scat = (check==3 and tgt:getCategory() or nil),attr = (tgt:getDesc() and tgt:getDesc().attributes or nil),cls = getUnitClass(tgt),identifier = sa.cls}
                             end
                         end
                     end
                 end
+
                 local near_e,es,en,dist = nil,0,0,nil
                 for iId,iData in pairs(intelDb) do
                     if iData.obj:isExist() then

@@ -7,15 +7,15 @@ radios_collection: # Lists all the radios definitions
         01: 
           title: Guard/UHF
           channel: Guard
-        02: 
+        02: Abu al-Duhur
         03: 
           title: Tactical
           freq: 265
-        04: 
-        05: 
-        06: 
-        07: 
-        08: 
+        04: Aleppo
+        05: Kuweires
+        06: Jirah
+        07: Tabqa
+        08: Palmyra
         09: 
           title: Tanker MAIN-Airforce
           freq: 266
@@ -34,92 +34,126 @@ radios_collection: # Lists all the radios definitions
         14: 
           title: AWACS
           freq: 255
-        15: Archer
-        16: Arctic
-        17: Ninja
-        18: Pinder
-        19: Bengal
-        20: Blade
+        15: Tiyas
+        16: Shayrat
+        17: Al Qusayr
+        18: Rene Mouawad
+        19: Bassel al-Assad
+        20: Hatay
         21: 
-        22:
-        23:
-        24:
-        25:
-        26:
-        27:
-        28:
-        29:
-        30:
+        22: 
+        23: 
+        24: 
+        25: 
+        26: 
+        27: 
+        28: 
+        29: 
+        30: 
 
     radio_vhf_30:
       title: VHF 
       type: vhf
       channels:
-        01: Larnaca
-        02: Gecitkale
-        03: Bassel al-Assad
-        04: Wujah Al Hajar
-        05: Rene Mouawad
-        06: Al Qusayr
-        07: Shayrat
-        08: Beirut
-        09: Rayak
-        10: An Nasiriyah
-        11: Ramat David
-        12: Ben Gurion
-        13: Damascus
-        14: Thalah
-        15: Archer
-        16: Arctic
-        17: Ninja
-        18: Pinder
-        19: Bengal
-        20: Blade
-        21: 
-        22: 
-        23: 
-        24: 
-        25: 
-        26: 
-        27: 
-        28: 
-        29: 
-        30: 
+        01: Guard
+        02: Archer
+        03: Arctic
+        04: Astro
+        05: Nickel
+        06: Nitro
+        07: Ninja
+        08: Pinder
+        09: Bengal
+        10: Blade
+        11: Gordon
+        12: Gypsy
+        13: Gunstar
+        14: Leica
+        15: Lucid
+        16: Lusty
+        17: Lion
 
     radio_fm_30:
       title: FM 
       type: fm
       channels:
-        01: Larnaca
-        02: Gecitkale
-        03: Bassel al-Assad
-        04: Wujah Al Hajar
-        05: Rene Mouawad
-        06: Al Qusayr
-        07: Shayrat
-        08: Beirut
-        09: Rayak
-        10: An Nasiriyah
-        11: Ramat David
-        12: Ben Gurion
-        13: Damascus
-        14: Thalah
-        15: Archer
-        16: Arctic
-        17: Ninja
-        18: Pinder
-        19: Bengal
-        20: Blade
-        21: 
-        22: 
-        23: 
-        24: 
-        25: 
-        26: 
-        27: 
-        28: 
-        29: 
-        30: 
+        01: 30.000
+        02: 31.000
+        03: 32.000
+        04: 33.000
+        05: Archer
+        06: Arctic
+        07: Astro
+        08: Nickel
+        09: Nitro
+        10: Ninja
+        11: Pinder
+        12: Bengal
+        13: Blade
+        14: Gordon
+        15: Gypsy
+        16: Gunstar
+        17: Leica
+        18: Lucid
+        19: Lusty
+        20: Lion
+        21: 50.000
+        22: 51.000
+        23: 52.000
+        24: 53.000
+        25: 54.000
+        26: 55.000
+        27: 56.000
+        28: 57.000
+        29: 58.000
+        30: 59.000
+
+    radio_uhf_10:
+      title: UHF 10 channels # name of the radio; used in the exported kneeboard PNG
+      type: uhf # will condition the frequency picked up in the channels directory
+      channels: # the list of channels defined on this radio
+        01: Bassel al-Assad
+        02: Abu al-Duhur
+        03: 
+          title: Tactical
+          freq: 265
+        04: Aleppo
+        05: Kuweires
+        06: Jirah
+        07: Tabqa
+        08: Palmyra
+        09: Tiyas
+        10: Shayrat
+
+    radio_fm_01_10:
+      title: FM1 channels 01-10
+      type: fm
+      channels:
+        01: 30.000
+        02: 31.000
+        03: 32.000
+        04: 33.000
+        05: Archer
+        06: Arctic
+        07: Astro
+        08: Nickel
+        09: Nitro
+        10: Ninja
+
+    radio_fm_11_20:
+      title: FM1 channels 11-20 
+      type: fm
+      channels:
+        01: Pinder
+        02: Bengal
+        03: Blade
+        04: Gordon
+        05: Gypsy
+        06: Gunstar
+        07: Leica
+        08: Lucid
+        09: Lusty
+        10: Lion
 
 presets_collection: # Lists all the presets collections
   blue_presets: # one of the presets collections
@@ -148,6 +182,33 @@ presets_collection: # Lists all the presets collections
 
         radio_2: radio_uhf_30
 
+    modern_blue_uhf_vhf_fm1_fm2: 
+      title: Blue coalition - classic UHF/VHF with two FM radios # name of the presets collection; used in the exported kneeboard PNG
+      radios:
+        radio_1: radio_uhf_30
+
+        radio_2: radio_vhf_30
+
+        radio_3: radio_fm_30
+        
+        radio_4: radio_fm_30
+
+    modern_blue_apache:
+      title: Blue coalition - AH-64D # special radio on this special bird
+      radios:
+        radio_1: radio_vhf_30
+
+        radio_2: radio_uhf_10
+
+        radio_3: radio_fm_01_10
+
+        radio_4: radio_fm_11_20
+       
+    modern_blue_gazelle:
+      title: Blue coalition - SA-342s # special radio for Gazelles
+      radios:
+        radio_1: radio_fm_01_10
+
 presets_assignments: # defines which presets collection to use for each coalition
   blue:
     plane: 
@@ -157,12 +218,14 @@ presets_assignments: # defines which presets collection to use for each coalitio
     helicopter:
       all: modern_blue_uhf_vhf_fm
       CH-47Fbl1: modern_blue_fm_uhf
+      AH-64D_BLK_II: modern_blue_apache
+      OH58D: modern_blue_uhf_vhf_fm1_fm2
       Mi-8MT: empty
       Mi-24P: empty
-      SA342L: empty
-      SA342Mistral: empty
-      SA342M: empty
-      SA342Minigun: empty
+      SA342L: modern_blue_gazelle
+      SA342Mistral: modern_blue_gazelle
+      SA342M: modern_blue_gazelle
+      SA342Minigun: modern_blue_gazelle
 
   red:
     all: 

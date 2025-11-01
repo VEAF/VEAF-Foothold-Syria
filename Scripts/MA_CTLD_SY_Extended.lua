@@ -37,16 +37,9 @@ Foothold_ctld.returntroopstobase = false
 Foothold_ctld:__Start(5)
 
 function priceOf(name)
-    local base = name:gsub("%s*%[[^%]]+%]$","")
-    return (CTLDPrices and (CTLDPrices[name] or CTLDPrices[base])) or CTLD_DEFAULT_PRICE or 0
+    return (CTLDPrices and CTLDPrices[name]) or CTLD_DEFAULT_PRICE or 0
 end
 
-local function pricedName(name)
-    if not CTLDCost then return name end
-    local p = CTLDPrices and CTLDPrices[name]
-    if p then return string.format("%s [%d]", name, p) end
-    return name
-end
 
 CTLDPrices = {
     ["Engineer soldier"]      = 50,
@@ -74,36 +67,6 @@ CTLDPrices = {
 }
 CTLD_DEFAULT_PRICE = 0
 
-if CTLDCost==true then -- this portion is if stuff cost money and CTLDCost is true which is defualt.
-Foothold_ctld:AddTroopsCargo(pricedName("Engineer soldier"), {"CTLD_TROOPS_Engineers"}, CTLD_CARGO.Enum.ENGINEERS, 1, 80, 5)
-Foothold_ctld:AddCratesCargo(pricedName("Mephisto"), {"CTLD_CARGO_Mephisto"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "ANTI TANK")
-Foothold_ctld:AddCratesCargo(pricedName("Humvee"), {"CTLD_CARGO_HMMWV"}, CTLD_CARGO.Enum.VEHICLE, 2, 1000, 5, "ANTI TANK")
-Foothold_ctld:AddCratesCargo(pricedName("Bradly"), {"CTLD_CARGO_Bradly"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "ANTI TANK")
-Foothold_ctld:AddCratesCargoNoMove(pricedName("L118"), {"CTLD_CARGO_L118"}, CTLD_CARGO.Enum.VEHICLE, 1, 700, 5, "Support")
-Foothold_ctld:AddCratesCargoNoMove(pricedName("Ammo Truck"), {"CTLD_CARGO_AmmoTruck"}, CTLD_CARGO.Enum.VEHICLE, 2, 800, 5, "Support")
-Foothold_ctld:AddCratesCargo(pricedName("Humvee scout"), {"CTLD_CARGO_Scout"}, CTLD_CARGO.Enum.VEHICLE, 2, 1000, 5, "Support")
-Foothold_ctld:AddTroopsCargo(pricedName("Squad 8"), {"CTLD_TROOPS_ATS"}, CTLD_CARGO.Enum.TROOPS, 8, 80, 5)
-Foothold_ctld:AddTroopsCargo(pricedName("Platoon 16"), {"CTLD_TROOPS_Platon16"}, CTLD_CARGO.Enum.TROOPS, 16, 80, 5)
-Foothold_ctld:AddTroopsCargo(pricedName("Platoon 32"), {"CTLD_TROOPS_Platon1"}, CTLD_CARGO.Enum.TROOPS, 32, 80, 5)
---Foothold_ctld:AddTroopsCargo(pricedName("Structure demolition expert"), {"Demolition Expert"}, CTLD_CARGO.Enum.TROOPS, 1, 80, 5)
-Foothold_ctld:AddTroopsCargo(pricedName("Anti-Air Soldiers"), {"CTLD_TROOPS_AA"}, CTLD_CARGO.Enum.TROOPS, 5, 80, 5)
-Foothold_ctld:AddTroopsCargo(pricedName("Mortar Squad"), {"CTLD_TROOPS_MRS"}, CTLD_CARGO.Enum.TROOPS, 6, 80, 5)
-Foothold_ctld:AddCratesCargo(pricedName("Linebacker"), {"CTLD_CARGO_Linebacker"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "SAM/AAA")
---Foothold_ctld:AddCratesCargo(pricedName("Tank Abrahams (1cr)"), {"CTLD_CARGO_TANK"}, CTLD_CARGO.Enum.VEHICLE, 5, 1600, 1, "ANTI TANK")
-Foothold_ctld:AddCratesCargo(pricedName("Vulcan"), {"CTLD_CARGO_Vulcan"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove(pricedName("HAWK Site"), {"CTLD_CARGO_HAWKSite"}, CTLD_CARGO.Enum.FOB, 4, 1900, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove(pricedName("Nasam Site"), {"CTLD_CARGO_NasamsSite"}, CTLD_CARGO.Enum.FOB, 4, 1900, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM System"), {"CTLD_CARGO_IRISTSLM_System"}, CTLD_CARGO.Enum.FOB, 3, 2800, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM STR"), {"CTLD_CARGO_IRISTSLM_STR"}, CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM LN"), {"CTLD_CARGO_IRISTSLM-LN"}, CTLD_CARGO.Enum.FOB, 1, 3500, 10, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM C2"), {"CTLD_CARGO_IRISTSLM_C2"}, CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove(pricedName("C-RAM"), {"CTLD_CARGO_CRAM"}, CTLD_CARGO.Enum.FOB, 2, 1000, 10, "SAM/AAA")
-Foothold_ctld:AddCratesCargo(pricedName("FARP"), {"CTLD_TROOP_FOB"}, CTLD_CARGO.Enum.FOB, 3, 1500, 9)
-
-
-
-else -- here if they don't cost anything and CTLDCost is set to false
-
 Foothold_ctld:AddTroopsCargo("Engineer soldier",{"CTLD_TROOPS_Engineers"},CTLD_CARGO.Enum.ENGINEERS,1,80,5)
 Foothold_ctld:AddCratesCargo("Mephisto",{"CTLD_CARGO_Mephisto"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500,5, "ANTI TANK")
 Foothold_ctld:AddCratesCargo("Humvee",{"CTLD_CARGO_HMMWV"},CTLD_CARGO.Enum.VEHICLE,2,1000,5, "ANTI TANK")
@@ -129,7 +92,6 @@ Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM C2", {"CTLD_CARGO_IRISTSLM_C2"},C
 Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM System", {"CTLD_CARGO_IRISTSLM_System"}, CTLD_CARGO.Enum.FOB, 3, 2800, 5, "SAM/AAA")
 Foothold_ctld:AddCratesCargoNoMove("C-RAM", {"CTLD_CARGO_CRAM"}, CTLD_CARGO.Enum.FOB, 2, 1000, 6, "SAM/AAA")
 
-end
 
 -- How many of the units loaded from the save file should be spawned next time?
 -- Oldest will be deleted first.
@@ -510,7 +472,9 @@ function Foothold_ctld:OnAfterCratesBuild(From, Event, To, Group, Unit, Vehicle)
             g.Stock = currentStock
         end
     end
-end 
+
+    self:_OnStockChanged()
+end
 
 function Foothold_ctld:OnAfterCratesPickedUp(From, Event, To, Group, Unit, Cargo)
     local cargoItems = extractCargoItems(Cargo)
@@ -543,6 +507,8 @@ function Foothold_ctld:OnAfterCratesPickedUp(From, Event, To, Group, Unit, Cargo
             end
         end
     end
+
+    self:_OnStockChanged()
 end
 
 if lfs then
@@ -772,6 +738,8 @@ function Foothold_ctld:OnAfterLoaded(From, Event, To, LoadedGroups)
       self.Loaded_Cargo[uName]=ld
     end
   end
+
+  self:_OnStockChanged()
 end
 
 zoneSet = SET_ZONE:New()
@@ -870,6 +838,7 @@ function Foothold_ctld:OnAfterTroopsPickedUp(From, Event, To, Group, Unit, Cargo
     else
         return
     end
+
 end
 
 function Foothold_ctld:OnAfterTroopsExtracted(From, Event, To, Group, Unit, Troops, Troopname)
@@ -1121,7 +1090,8 @@ function CaptureZoneIfNeutral()
                                                     initiator = unitCap,
                                                     initiatorPilotName = pnameCap,
                                                     initiator_unit_type = unitCap:getTypeName(),
-                                                    initiator_coalition = 2
+                                                    initiator_coalition = 2,
+                                                    skipRewardMsg = true
                                                 }
                                                 world.onEvent(landingEvent)
                                             end,{},5,0)
@@ -1254,6 +1224,7 @@ function CaptureZoneIfNeutral()
     end
 
     processNextGroup(1)
+
 end
 
 
@@ -1304,6 +1275,7 @@ local function RefillMissingWithCountTable()
       end
     end
   end
+
 end
 
 TIMER:New(RefillMissingWithCountTable):Start(15, 30)
