@@ -21,6 +21,31 @@ assert(loadfile(SY_DYNAMIC_SCRIPTS_PATH .. "footholdSyriaSetupv2.lua")) ()
 GlobalSettings.setDifficultyScaling(1.2,1) -- red respawn factor
 GlobalSettings.setDifficultyScaling(1.1,2) -- blue respawn facto
 
+LogisticCommander.allowedTypes = {}
+LogisticCommander.allowedTypes['Ka-50'] = false
+LogisticCommander.allowedTypes['Ka-50_3'] = false
+LogisticCommander.allowedTypes['Mi-24P'] = true
+LogisticCommander.allowedTypes['SA342Mistral'] = false
+LogisticCommander.allowedTypes['SA342L'] = false
+LogisticCommander.allowedTypes['SA342M'] = false
+LogisticCommander.allowedTypes['SA342Minigun'] = false
+LogisticCommander.allowedTypes['UH-60L'] = true
+LogisticCommander.allowedTypes['UH-60L_DAP'] = true
+LogisticCommander.allowedTypes['AH-64D_BLK_II'] = false
+LogisticCommander.allowedTypes['UH-1H'] = true
+LogisticCommander.allowedTypes['Mi-8MT'] = true
+LogisticCommander.allowedTypes['Hercules'] = true
+LogisticCommander.allowedTypes['OH58D'] = false
+LogisticCommander.allowedTypes['CH-47Fbl1'] = true
+LogisticCommander.allowedTypes['Bronco-OV-10A'] = false
+LogisticCommander.allowedTypes['OH-6A'] = false
+
+LogisticCommander.doubleSupplyTypes = {}
+LogisticCommander.doubleSupplyTypes['CH-47Fbl1'] = true
+LogisticCommander.doubleSupplyTypes['Hercules'] = true
+
+LogisticCommander.maxCarriedPilots = 4
+
 -- load the rest of the scripts
 assert(loadfile(SY_DYNAMIC_SCRIPTS_PATH .. "WelcomeMessage_Syria_EXTENDED.lua")) ()
 assert(loadfile(SY_DYNAMIC_SCRIPTS_PATH .. "Foothold_SY_MANTIS.lua")) ()

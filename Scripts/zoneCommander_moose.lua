@@ -1825,7 +1825,7 @@ do
 	GlobalSettings.proximityWakeNm = 30    			-- wake up zones within this nm of front
 	GlobalSettings.autoSuspendNmBlue = 80   		-- suspend blue zones deeper than this nm
 	GlobalSettings.autoSuspendNmRed = 120   		-- suspend red zones deeper than this nm
-	GlobalSettings.blockedDespawnTime = 10*60 		-- used to despawn aircraft that are stuck taxiing for some reason
+	GlobalSettings.blockedDespawnTime = 12*60 		-- used to despawn aircraft that are stuck taxiing for some reason
 	GlobalSettings.landedDespawnTime = 1*60
 	GlobalSettings.initialDelayVariance = 20 		-- minutes
 	
@@ -3260,7 +3260,7 @@ function BattleCommander:new(savepath, updateFrequency, saveFrequency, difficult
 
 	function BattleCommander:activateNeutralStartZones()
 		for _, z in ipairs(self.zones) do
-			if z.side == 0 and z.NeutralAtStart and not z.firstCaptureByRed and not z.zone:lower():find("hidden") then
+			if z.side == 0 and z.NeutralAtStart and (not z.ForceNeutral and not z.firstCaptureByRed and not z.zone:lower():find("hidden")) then
 				z:MakeZoneRedAndUpgraded()
 			end
 		end
@@ -5156,7 +5156,18 @@ end
 					end
 					trigger.action.removeMark(event.idx)
 					success = true
-				end				
+				end
+				if event.text and event.text:lower():find('^farphere') then
+					local s=(event.text or ''):gsub('^%s*[Ff][Aa][Rr][Pp][Hh][Ee][Rr][Ee]%s*:?', '')
+					s=s:match('^%s*(.-)%s*$')
+					local name=(s~='' and s) or nil
+					local p=event.pos
+					local alt=land.getHeight({x=p.x,y=p.z})
+					local coord=COORDINATE:New(p.x,alt,p.z)
+					FarpHere(coord,name)
+					trigger.action.removeMark(event.idx)
+					success=true
+				end
 				if event.text=='intelstatus' then
 					local z=bc:getZoneOfPoint(event.pos)
 					if z then
@@ -7291,15 +7302,22 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 				if event.id == 4 then -- Landing event
 					if self.context.playerContributions[side][pname]~=nil and self.context.playerContributions[side][pname] 
 					and self.context.playerContributions[side][pname] > 0 then
-						local foundZone = false
-						for i, v in ipairs(self.context:getZones()) do
-							if ((side == v.side) or (v.wasBlue and side == 2)) and Utils.isInZone(unit, v.zone) then
-								foundZone = true
-								trigger.action.outTextForGroup(groupid, '[' .. pname .. '] landed at ' .. v.zone .. '.\nWait 5 seconds to claim credits...', 5)
-
-								local claimfunc = function(context, zone, player, unitname)
-									local un = Unit.getByName(unitname)
-									if un and (Utils.isInZone(un, zone.zone) or zone.wasBlue) and Utils.isLanded(un, true) and un:getPlayerName() == player then
+						local function scheduleCreditClaim(zoneData, zoneName, waitSeconds, zoneMooseWrapper)
+							trigger.action.outTextForGroup(groupid, '[' .. pname .. '] landed at ' .. zoneName .. '.\nWait ' .. waitSeconds .. ' seconds to claim credits...', 5)
+							local claimfunc = function(context, zone, player, unitname)
+								local un = Unit.getByName(unitname)
+								if un then
+									local insideZone = Utils.isInZone(un, zone.zone)
+									if not insideZone then
+										local mooseZone = zoneMooseWrapper or zone.mooseZone or getMooseZone(zone.zone)
+										if mooseZone then
+											local unitWrapper = UNIT:Find(un)
+											if unitWrapper and unitWrapper:IsInZone(mooseZone) then
+												insideZone = true
+											end
+										end
+									end
+									if (insideZone or zone.wasBlue) and Utils.isLanded(un, true) and un:getPlayerName() == player then
 										if un:getLife() > 0 then
 											local coalitionSide = zone.side
 											if zone.wasBlue then
@@ -7330,11 +7348,45 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 										end
 									end
 								end
+							end
+							SCHEDULER:New(nil,claimfunc,{self.context,zoneData,pname,unit:getName()},waitSeconds,0)
+						end
 
-								SCHEDULER:New(nil,claimfunc,{self.context,v,pname,unit:getName()},5,0)
+						local foundZone = false
+						for i, v in ipairs(self.context:getZones()) do
+							if ((side == v.side) or (v.wasBlue and side == 2)) and Utils.isInZone(unit, v.zone) then
+								foundZone = true
+								scheduleCreditClaim(v, v.zone, 5)
 								break
 							end
 						end
+
+							if not foundZone then
+								local group = unit:getGroup()
+								local groupName = group and group:getName()
+								local groupWrapper = groupName and GROUP:FindByName(groupName)
+								if groupWrapper then
+									for _, zName in ipairs(lc.supplyZones) do
+										if string.find(zName, 'CTLD FARP') or string.find(zName, 'Escort Mission FARP') then
+											local zoneWrapper = getMooseZone(zName)
+											if zoneWrapper and groupWrapper:IsInZone(zoneWrapper) then
+												local zoneInfo = self.context:getZoneByName(zName)
+												if zoneInfo then
+													if (zoneInfo.side == side) or (zoneInfo.wasBlue and side == 2) then
+														foundZone = true
+														scheduleCreditClaim(zoneInfo, zoneInfo.zone, 5, zoneWrapper)
+														break
+													end
+												else
+													foundZone = true
+													scheduleCreditClaim({ zone = zName, side = side, wasBlue = false, mooseZone = zoneWrapper }, zName, 5, zoneWrapper)
+													break
+												end
+											end
+										end
+									end
+								end
+							end
 
 						if not foundZone and unit:getDesc().category == Unit.Category.AIRPLANE then
 							local carrierHull = GetNearestCarrierName(UNIT:Find(unit):GetCoordinate())
@@ -7398,6 +7450,8 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 			end
 		end
 	end
+	
+	
 	world.addEventHandler(ev)
 
 	local resetPoints = function(context, side)
@@ -7658,6 +7712,7 @@ function BattleCommander:loadFromDisk()
 		Utils.loadTable(self.saveFile)
 		if zonePersistance then
 			if zonePersistance.zones then
+				self.saveLoaded = true
 				for i, v in pairs(zonePersistance.zones) do
 					local zn = self:getZoneByName(i)
 					if zn then
@@ -8756,13 +8811,13 @@ function ZoneCommander:init()
 			local ab = Airbase.getByName(self.airbaseName)
 			if ab then
 				if ab:autoCaptureIsOn() then ab:autoCapture(false) end
-				if not self.active and not self.wasBlue then
+				if self.side == 0 or (not self.active and not self.wasBlue) then
 					if RespawnStaticsForAirbase then
-						RespawnStaticsForAirbase(self.airbaseName, 1)						
+						RespawnStaticsForAirbase(self.airbaseName, 0)						
 					end
-					ab:setCoalition(0)
+					ab:setCoalition(1)
 				end
-				if self.side == 0 or self.side == 1 then
+				if self.side == 1 then
 					if RespawnStaticsForAirbase then
 						RespawnStaticsForAirbase(self.airbaseName, 1)		
 					end
@@ -9079,12 +9134,12 @@ end
 				local ab = Airbase.getByName(self.airbaseName)
 				if ab then
 					local currentCoalition = ab:getCoalition()
-					if currentCoalition ~= coalition.side.RED then
+					--if currentCoalition ~= coalition.side.RED then
 						if RespawnStaticsForAirbase then
-						RespawnStaticsForAirbase(self.airbaseName, coalition.side.RED)
+						RespawnStaticsForAirbase(self.airbaseName, coalition.side.NEUTRAL)
 						end
-						ab:setCoalition(coalition.side.RED)
-					end
+						ab:setCoalition(1)
+					--end
 				end
 			end	
 			if self.active and GlobalSettings.messages.zonelost and not self.zone:lower():find("hidden") then
@@ -9266,8 +9321,7 @@ function ZoneCommander:capture(newside,silent)
             self.wasBlue = false
 			
             if self.NeutralAtStart and not self.firstCaptureByRed then
-                self.firstCaptureByRed = true
-																			 
+                self.firstCaptureByRed = true														 
             end
 
         elseif self.side == 2 then
@@ -9748,9 +9802,8 @@ function GroupCommander:_resolveParkingWithBelonging()
     return nil
 end
 
-function GroupCommander:_assignPlaneRoute(grName, zoneName)
-    local gr = Group.getByName(grName); if not gr then return end
-    local gmoose = GROUP:FindByName(grName); if not gmoose or not gmoose:IsAlive() then return end
+function GroupCommander:_assignPlaneRoute(grName, zoneName, altitude)
+    local group = GROUP:FindByName(grName); if not group or not group:IsAlive() then return end
     local tz = self.zoneCommander.battleCommander:getZoneByName(zoneName); if not tz then return end
     local ab, abn = nil, tz.airbaseName
     if abn then ab = AIRBASE:FindByName(abn)
@@ -9760,14 +9813,20 @@ function GroupCommander:_assignPlaneRoute(grName, zoneName)
     end
     if not ab then return end
 
-    local sp = gmoose:GetUnit(1):GetVec3()
-    local defwp = { id='Mission', params={ route={ points={} } } }
-    local wp1 = { type=AI.Task.WaypointType.TAKEOFF, x=sp.x, y=sp.z, speed=0, action=AI.Task.TurnMethod.FIN_POINT, alt=0, alt_type=AI.Task.AltitudeType.RADIO }
-    local landwp = ab:GetCoordinate():WaypointAirLanding(UTILS.MpsToKmph(50), ab, {}, "RTB Land (Airbase)")
-    table.insert(defwp.params.route.points, wp1)
-    table.insert(defwp.params.route.points, landwp)
-    gr:getController():setTask(defwp)
+    local wp = {}
+    local sp = group:GetUnit(1):GetVec3()
+    wp[#wp+1] = { type=AI.Task.WaypointType.TAKEOFF, x=sp.x, y=sp.z, speed=0, action=AI.Task.TurnMethod.FIN_POINT, alt=0, alt_type=AI.Task.AltitudeType.RADIO }
+
+    local abC = ab:GetCoordinate()
+    local cruiseAlt = altitude or UTILS.FeetToMeters(10000)
+    local approachHdg = abC:HeadingTo(COORDINATE:NewFromVec3(sp))
+    local apCoord = abC:Translate(20*1852, approachHdg):SetAltitude(cruiseAlt)
+    wp[#wp+1] = apCoord:WaypointAirTurningPoint(UTILS.MpsToKmph(50), cruiseAlt, AI.Task.AltitudeType.BARO, "Approach")
+
+    wp[#wp+1] = abC:WaypointAirLanding(UTILS.MpsToKmph(50), ab, {}, "RTB Land (Airbase)")
+    group:Route(wp, 1)
 end
+
 
 
 
@@ -9778,7 +9837,7 @@ function GroupCommander:_assignHeloRoute(grName, zoneName)
     local pos = un:getPoint()
     local destx, desty
     local useAirbase = false
-
+	
     local prefix = zoneName.."-land"
     local pooledLand = {}
     for name,list in pairs(LandingSpots) do
@@ -10084,13 +10143,13 @@ function getCapLimit(numPlayers)
 	elseif numPlayers == 2 then
         return 3
     elseif numPlayers == 3 then
-        return 3
+        return 4
 	elseif numPlayers == 4 then
         return 4
 	elseif numPlayers == 5 then
-        return 4
+        return 5
     else
-        return 4
+        return 6
     end
 end
 
@@ -10224,7 +10283,7 @@ local cand, capCand = {}, {}
 	do
 		local blueAnchors = {}
 		for _, bz in ipairs(bc.zones) do
-			if bz.side == 2 and bz.active then blueAnchors[#blueAnchors + 1] = bz.zone end
+			if bz.side == 2 and bz.active and not bz.suspended then blueAnchors[#blueAnchors + 1] = bz.zone end
 		end
 		for _, e in ipairs(cand) do
 			local best = math.huge
@@ -10254,10 +10313,10 @@ local cand, capCand = {}, {}
   if #cand==0 then
     local blueAnchors={}
     for _,bz in ipairs(bc.zones) do
-      if bz.side==2 and bz.active then blueAnchors[#blueAnchors+1]=bz.zone end
+      if bz.side==2 and bz.active and not bz.suspended then blueAnchors[#blueAnchors+1]=bz.zone end
     end
     for _,z in ipairs(bc.zones) do
-      if z.side==1 and z.active and z.airbaseName and
+      if z.side==1 and z.active and not z.suspended and z.airbaseName and
 	  (RUNWAY_ZONE_COOLDOWN[z.zone] or 0) < timer.getTime() then
         local hostile=false
         if z.groups then
@@ -10789,7 +10848,7 @@ function GroupCommander:_jtacMessage(txt, instant, z)
     end
 end
 
-function GroupCommander:_spawnFromGroundAt(resolved, originZone, targetZone)
+function GroupCommander:_spawnFromGroundAt(resolved, originZone, targetZone, hot)
 	if self.unitCategory == Unit.Category.AIRPLANE then return nil end
     local tpl = self:_getAirTemplate(resolved); if not tpl then return nil end
     local base = originZone and (originZone.."-land") or nil
@@ -10829,7 +10888,7 @@ function GroupCommander:_spawnFromGroundAt(resolved, originZone, targetZone)
     local ly = land.getHeight({x=lx, y=lz})
     tpl.x = lx; tpl.y = lz
     tpl.route = tpl.route or {}; tpl.route.points = tpl.route.points or {}; tpl.route.points[1] = tpl.route.points[1] or {}
-    tpl.route.points[1].type = "TakeOffGround"; tpl.route.points[1].action = "From Ground Area"; tpl.route.points[1].x = lx; tpl.route.points[1].y = lz; tpl.route.points[1].alt = 0; tpl.route.points[1].alt_type = "RADIO"
+	tpl.route.points[1].type = hot and "TakeOffGroundHot" or "TakeOffGround"; tpl.route.points[1].action = hot and "From Ground Area Hot" or "From Ground Area"; tpl.route.points[1].x = lx; tpl.route.points[1].y = lz; tpl.route.points[1].alt = 0; tpl.route.points[1].alt_type = "RADIO"
 	for i=1,#tpl.units do local u=tpl.units[i]; local dx=(#tpl.units==2) and 0 or (i-1)*4; local dy=(#tpl.units==2) and ((i==1) and -15 or 15) or 0; u.x=lx+dx; u.y=lz+dy; u.alt=ly; u.parking=nil; u.parking_id=nil end
     local sp = SPAWN:NewFromTemplate(tpl, resolved, self.name, true)
     if self.mission=='supply' and self.unitCategory==Unit.Category.HELICOPTER then
@@ -10983,7 +11042,7 @@ end
 											if self.side == 2 and self._pendingBlueSupplyCost then
 												self.zoneCommander.battleCommander.accounts[2] = math.max((self.zoneCommander.battleCommander.accounts[2] or 0) - self._pendingBlueSupplyCost, 0)
 												self._pendingBlueSupplyCost = nil end
-											self:_assignPlaneRoute(g:GetName(), self.targetzone)
+											self:_assignPlaneRoute(g:GetName(), self.targetzone, self.Altitude)
 
 										elseif self.MissionType=='CAS' and self.unitCategory == plane then
 											bc:EngageCasMission(self.targetzone, g:GetName(), nil, nil, self.Altitude, self._landUnitID, self.side)
@@ -11003,18 +11062,24 @@ end
 								end)
 									local tk = (self.mission == 'supply' and self.side == 2) and SPAWN.Takeoff.Hot or SPAWN.Takeoff.Cold
 									local spawned = nil
-								if not self.Airbase then
-									spawned = sp:SpawnAtParkingSpot(SpawnType.airbase, SpawnType.spots, tk)
-									if not spawned then spawned = sp:SpawnAtAirbase(SpawnType.airbase, tk) end
+								if self.ForceFromGround and self.unitCategory == heli then
+									local tk = (self.mission == 'supply' and self.side == 2) and true or false
+									spawned = self:_spawnFromGroundAt(resolved, originZone, self.targetzone, tk)
 								else
-									local ab = AIRBASE:FindByName(self.Airbase)
-									if ab and ab:GetCoalition()==self.side then
-										self._landUnitID = ab:GetID()
-										if ab:IsShip() then if IsGroupActive(ab:GetName()) then
-											self.landsatcarrier = true
-											spawned = sp:SpawnAtAirbase(ab, tk) end
-										else
-											spawned = sp:SpawnAtAirbase(ab, tk)
+									if not self.Airbase then
+										spawned = sp:SpawnAtParkingSpot(SpawnType.airbase, SpawnType.spots, tk)
+										if not spawned then spawned = sp:SpawnAtAirbase(SpawnType.airbase, tk) end
+										if spawned and self.unitCategory == heli then spawned:OptionPreferVerticalLanding() end
+									else
+										local ab = AIRBASE:FindByName(self.Airbase)
+										if ab and ab:GetCoalition()==self.side then
+											self._landUnitID = ab:GetID()
+											if ab:IsShip() then if IsGroupActive(ab:GetName()) then
+												self.landsatcarrier = true
+												spawned = sp:SpawnAtAirbase(ab, tk) end
+											else
+												spawned = sp:SpawnAtAirbase(ab, tk)
+											end
 										end
 									end
 								end
@@ -11105,13 +11170,13 @@ end
 						env.info("Group [" .. self.name .. "] landed in zone [" .. tg.zone .. "], upgrading zone for side " .. self.side)
 						tg:upgrade()
 					end
-					SCHEDULER:New(nil,function() if gr and gr:isExist() then gr:destroy() end end,{},0.5,0)
+					SCHEDULER:New(nil,function() if gr and gr:isExist() then gr:destroy() end end,{},0.5,0) return
 				else
 					local hb = self.zoneCommander.battleCommander:getZoneByName(self.zoneCommander.zone)
 					if hb and gr and Utils.someOfGroupInZone(gr, hb.zone) then
 						self:_enterHangar(false)
 						self._landedAt = nil
-						SCHEDULER:New(nil,function() if gr and gr:isExist() then gr:destroy() end end,{},0.5,0)
+						SCHEDULER:New(nil,function() if gr and gr:isExist() then gr:destroy() end end,{},0.5,0) return
 					end
 				end
 				local landedDespawnTime = (self.unitCategory == plane) and 180 or GlobalSettings.landedDespawnTime
@@ -11125,7 +11190,14 @@ end
 				if hb and gr and Utils.someOfGroupInZone(gr, hb.zone) then
 					self:_enterHangar(false)
 					self._landedAt = nil
-					SCHEDULER:New(nil,function() if gr and gr:isExist() then gr:destroy() end end,{},0.5,0)
+					SCHEDULER:New(nil,function() if gr and gr:isExist() then gr:destroy() end end,{},0.5,0) return
+				else
+					local landedDespawnTime = (self.unitCategory == plane) and 180 or GlobalSettings.landedDespawnTime
+					if timer.getAbsTime() - (self._landedAt or self.lastStateTime) > landedDespawnTime then
+						self:_enterHangar(false)
+						self._landedAt = nil
+						SCHEDULER:New(nil,function() if gr and gr:isExist() then gr:destroy() end end,{},0.5,0)
+					end
 				end
 			end
 		elseif self.state == 'dead' then
@@ -11139,14 +11211,12 @@ end
 
 	
 	function GroupCommander:processSurface()
-		local originZone = self.zoneCommander and self.zoneCommander.zone
 		local gr
 		if self.spawnedName and self.spawnedName ~= "" then gr = Group.getByName(self.spawnedName) end
 		if not gr and self.name and self.name ~= "" then gr = Group.getByName(self.name) end
-		local zside
+
 		if self.template then
-			zside = self.zoneCommander.side
-			if zside and zside ~= 0 and zside ~= self.side then self.side = zside end
+			if self.zoneCommander.side and self.zoneCommander.side ~= 0 and self.zoneCommander.side ~= self.side then self.side = self.zoneCommander.side end
 		end
 		local coalition = self.side
 		local isUrgent = type(self.urgent) == "function" and self.urgent() or self.urgent
@@ -11221,15 +11291,13 @@ end
                 self:_ensureTemplateCache()
                 local set = self:_getTemplateSet(templateName)
                 if set and #set>0 then
-                    local originZoneName = self.zoneCommander and self.zoneCommander.zone
-                    local targetZoneName = self.targetzone
                     local task, startVec2
                     if self.mission == 'supply' then
-                        task, startVec2 = dc.BuildSupplyConvoyRoute(originZoneName, targetZoneName, dc.DEFAULT_SPEED)
+                        task, startVec2 = dc.BuildSupplyConvoyRoute(self.zoneCommander.zone, self.targetzone, dc.DEFAULT_SPEED)
                     else
-                        task, startVec2 = dc.BuildAttackConvoyRoute(originZoneName, targetZoneName, dc.DEFAULT_SPEED)
+                        task, startVec2 = dc.BuildAttackConvoyRoute(self.zoneCommander.zone, self.targetzone, dc.DEFAULT_SPEED)
                     end
-                    if task and startVec2 then
+					if task and startVec2 then
                         local chosenTemplate = self:_resolveTemplateName()
                         if chosenTemplate then
                             local tpl = self:_getAirTemplate(chosenTemplate)
@@ -11263,7 +11331,7 @@ end
                     Respawn.Group(self.name)
                     if isUrgent then env.info("Group [" .. self.name .. "] is spawning urgently!") else env.info("Group [" .. self.name .. "] is spawning normally.") end
                 end
-                self:_jtacMessage('JTAC: We spotted enemy convoy headed outside', nil, originZone)
+                self:_jtacMessage('JTAC: We spotted enemy convoy ', nil, self.zoneCommander.zone)
                 self.state = 'enroute'
 				self.groundconvoyMessaged = false
                 self.lastStateTime = timer.getAbsTime()
@@ -11278,13 +11346,17 @@ end
 			else
 				if not self.groundconvoyMessaged and self.side == 1 then
 					local shouldWeSend = math.random(0,100)
-					if shouldWeSend > 95 then
-						trigger.action.outTextForCoalition(2,"Intel: Enemy convoy is headed toward " .. self.targetzone .. ".",15)
-						self.groundconvoyMessaged = true
+					if shouldWeSend > 98 then
+						if self.mission == 'supply' then
+							trigger.action.outTextForCoalition(2,"Intel: Enemy supply convoy is inbound from " .. self.zoneCommander.zone .. ", headed toward " .. self.targetzone .. ".",15)
+							self.groundconvoyMessaged = true
+						else
+							trigger.action.outTextForCoalition(2,"Intel: Enemy attack convoy is inbound from " .. self.zoneCommander.zone .. ", headed toward " .. self.targetzone .. ".",15)
+							self.groundconvoyMessaged = true
+						end
 					end
 				end
 			end
-
 		elseif self.state == 'atdestination' then
 			if self.mission == 'supply' then
 				if timer.getAbsTime() - self.lastStateTime > GlobalSettings.landedDespawnTime then
@@ -11303,18 +11375,18 @@ end
 						end
 					end
 				end
-		elseif self.mission == 'attack' then
-			if timer.getAbsTime() - self.lastStateTime > GlobalSettings.landedDespawnTime then
-				local tg = self.zoneCommander.battleCommander:getZoneByName(self.targetzone)
-				if tg and gr and Utils.someOfGroupInZone(gr, tg.zone) then
-					if tg.side == 0 then
-						tg:capture(self.side)
-						gr:destroy()
-						self:_enterHangar(false)
+			elseif self.mission == 'attack' then
+				if timer.getAbsTime() - self.lastStateTime > GlobalSettings.landedDespawnTime then
+					local tg = self.zoneCommander.battleCommander:getZoneByName(self.targetzone)
+					if tg and gr and Utils.someOfGroupInZone(gr, tg.zone) then
+						if tg.side == 0 then
+							tg:capture(self.side)
+							gr:destroy()
+							self:_enterHangar(false)
+						end
 					end
 				end
 			end
-		end
 		elseif self.state == 'dead' then
 			if timer.getAbsTime() - self.lastStateTime > (respawnTimers.dead * spawnDelayFactor) then
 				if self:shouldSpawn() then
@@ -12020,23 +12092,23 @@ end
 LogisticCommander = {}
 do
 	LogisticCommander.allowedTypes = {}
-	LogisticCommander.allowedTypes['Ka-50'] = false
-	LogisticCommander.allowedTypes['Ka-50_3'] = false
+	LogisticCommander.allowedTypes['Ka-50'] = true
+	LogisticCommander.allowedTypes['Ka-50_3'] = true
 	LogisticCommander.allowedTypes['Mi-24P'] = true
-	LogisticCommander.allowedTypes['SA342Mistral'] = false
-	LogisticCommander.allowedTypes['SA342L'] = false
-	LogisticCommander.allowedTypes['SA342M'] = false
-	LogisticCommander.allowedTypes['SA342Minigun'] = false
+	LogisticCommander.allowedTypes['SA342Mistral'] = true
+	LogisticCommander.allowedTypes['SA342L'] = true
+	LogisticCommander.allowedTypes['SA342M'] = true
+	LogisticCommander.allowedTypes['SA342Minigun'] = true
 	LogisticCommander.allowedTypes['UH-60L'] = true
 	LogisticCommander.allowedTypes['UH-60L_DAP'] = true
-	LogisticCommander.allowedTypes['AH-64D_BLK_II'] = false
+	LogisticCommander.allowedTypes['AH-64D_BLK_II'] = true
 	LogisticCommander.allowedTypes['UH-1H'] = true
 	LogisticCommander.allowedTypes['Mi-8MT'] = true
 	LogisticCommander.allowedTypes['Hercules'] = true
-	LogisticCommander.allowedTypes['OH58D'] = false
+	LogisticCommander.allowedTypes['OH58D'] = true
 	LogisticCommander.allowedTypes['CH-47Fbl1'] = true
-	LogisticCommander.allowedTypes['Bronco-OV-10A'] = false
-	LogisticCommander.allowedTypes['OH-6A'] = false
+	LogisticCommander.allowedTypes['Bronco-OV-10A'] = true
+	LogisticCommander.allowedTypes['OH-6A'] = true
 
 	LogisticCommander.doubleSupplyTypes = {}
 	LogisticCommander.doubleSupplyTypes['CH-47Fbl1'] = true
@@ -12226,7 +12298,7 @@ end
 							if playerName and bc.playerContributions[2][playerName] ~= nil then
 								bc.playerContributions[2][playerName] = (bc.playerContributions[2][playerName] or 0) + self.battleCommander.rewards.crate
 								self.battleCommander:addTempStat(playerName, 'Zone capture', 1)
-								trigger.action.outTextForCoalition(un:getCoalition(),'['..playerName..'] Capture +'..self.battleCommander.rewards.crate..' credits',10)
+								--trigger.action.outTextForCoalition(un:getCoalition(),'['..playerName..'] Capture +'..self.battleCommander.rewards.crate..' credits',10)
 							else
 								self.battleCommander:addFunds(un:getCoalition(), self.battleCommander.rewards.crate)
 								trigger.action.outTextForCoalition(un:getCoalition(),'Capture +'..self.battleCommander.rewards.crate..' credits',10)
@@ -12240,7 +12312,7 @@ end
 								if playerName and bc.playerContributions[2][playerName] ~= nil then
 									bc.playerContributions[2][playerName] = (bc.playerContributions[2][playerName] or 0) + self.battleCommander.rewards.crate
 									self.battleCommander:addTempStat(playerName, 'Zone upgrade', 1)
-									trigger.action.outTextForCoalition(un:getCoalition(),'['..playerName..'] Resupply +'..self.battleCommander.rewards.crate..' credits',5)
+									--trigger.action.outTextForCoalition(un:getCoalition(),'['..playerName..'] Resupply +'..self.battleCommander.rewards.crate..' credits',5)
 								else
 									self.battleCommander:addFunds(un:getCoalition(), self.battleCommander.rewards.crate)
 									trigger.action.outTextForCoalition(un:getCoalition(),'Resupply +'..self.battleCommander.rewards.crate..' credits',5)
@@ -12276,7 +12348,7 @@ end
 					trigger.action.setUnitInternalCargo(un:getName(), 0)
 					local wasNeutral = zone and zone.side == 0 and zone.active
 					local changed = handleZoneRewards(zone)
-					if wasNeutral and totalDrops > 1 then
+					if zone and totalDrops > 1 and (wasNeutral or zone.side == un:getCoalition()) then
 						SCHEDULER:New(nil,function()
 							local z2 = self.battleCommander:getZoneOfUnit(un:getName()) or zone
 							handleZoneRewards(z2)
@@ -12477,13 +12549,7 @@ function LogisticCommander:unloadPilot(groupname)
 						bc.playerContributions[2][playerName]=(bc.playerContributions[2][playerName] or 0)+totalReward
 						self.battleCommander:addTempStat(playerName,'Pilot Rescue',count)
 					end
-					if isFarpZone then
-						if pname and pname~='' then
-							trigger.action.outTextForCoalition(un:getCoalition(),"["..playerName.."] rescued ["..pname.."] +"..sumRestore.." credits. Reward pending: "..totalReward.." credits.\n(land in non-CTLD zone to redeem).",10)
-						else
-							trigger.action.outTextForCoalition(un:getCoalition(),"["..playerName.."] "..count.." pilots were rescued. reward pending: "..totalReward.." credits.\n(land in non-CTLD zone to redeem).",10)
-						end
-					else
+					if not isFarpZone then
 						if pname and pname~='' then
 							trigger.action.outTextForCoalition(un:getCoalition(),"["..playerName.."] rescued ["..pname.."] +"..sumRestore.." credits.\nTotal Reward: "..totalReward.." credits.",5)
 						else
@@ -13879,6 +13945,51 @@ function getRandomSound(context)
     local selectedSounds = sounds[context] or {"Unknown context provided. Please verify the convoy's status."}
     return selectedSounds[math.random(#selectedSounds)]
 end
+local FARPFreq = 129
+local MapFARPCount=0
+function FarpHere(Coordinate, customName)
+  if bc:getZoneOfPoint(Coordinate:GetVec3()) then return end
+  MapFARPCount=MapFARPCount+1
+  local FName=customName and customName or ("Map FARP "..MapFARPCount)
+  FARPFreq=FARPFreq+1
+  ZONE_RADIUS:New(FName,Coordinate:GetVec2(),120,false)
+  if supplyZones then supplyZones[#supplyZones+1]=FName end
+  if allZones then allZones[#allZones+1]=FName end
+  UTILS.SpawnFARPAndFunctionalStatics(FName,Coordinate,ENUMS.FARPType.INVISIBLE,Foothold_ctld.coalition,country.id.USA,MapFARPCount,FARPFreq,radio.modulation.AM,nil,nil,nil,200,100,20,nil,true,true,3,80,80)
+  Foothold_ctld:AddCTLDZone(FName,CTLD.CargoZoneType.LOAD,SMOKECOLOR.Blue,true,false)
+  MESSAGE:New(string.format("%s in operation!",FName),15):ToBlue()
+  local function CopyWarehouse()
+    local srcStore=nil
+    if zones then
+      for _,zone in pairs(zones) do
+        local n=zone.airbaseName
+        if n then
+          srcStore=STORAGE:FindByName(n)
+          if srcStore then break end
+        end
+      end
+    end
+    if srcStore then
+      local dstStore=STORAGE:FindByName(FName)
+      if dstStore then
+        for item,qty in pairs(srcStore:GetInventory()) do
+          if qty>0 then dstStore:SetItem(item,qty) end
+        end
+      end
+    end
+  end
+  if Era=='Coldwar' then SCHEDULER:New(nil,CopyWarehouse,{},10) else CopyWarehouse() end
+  if not NextMarkupId then NextMarkupId=120000 end
+  local markId=NextMarkupId; NextMarkupId=NextMarkupId+1
+  trigger.action.circleToAll(-1,markId,Coordinate:GetVec3(),120,{0,0,1,1},{0,0,1,0.25},1)
+  trigger.action.setMarkupTypeLine(markId,2)
+  trigger.action.setMarkupColor(markId,{0,1,0,1})
+  local textId=NextMarkupId; NextMarkupId=NextMarkupId+1
+  local textPoint={x=Coordinate.x,y=Coordinate.y,z=Coordinate.z+120}
+  trigger.action.textToAll(-1,textId,textPoint,{0,0,0.7,0.8},{0.7,0.7,0.7,0.8},18,true,FName)
+  trigger.action.setMarkupText(textId,FName)
+end
+
 
 
 local FARPFreq=129
@@ -13892,7 +14003,7 @@ function CustomBuildAFARP(Coordinate,startZone)
   ZONE_RADIUS:New(FName,Coordinate:GetVec2(),120,false)
   if supplyZones then supplyZones[#supplyZones+1]=FName end
   if allZones then allZones[#allZones+1]=FName end
-  UTILS.SpawnFARPAndFunctionalStatics(FName,Coordinate,ENUMS.FARPType.INVISIBLE,Foothold_ctld.coalition,country.id.USA,EscortFARPCount,FARPFreq,radio.modulation.AM,nil,nil,nil,200,100,20,nil,true,true)
+  UTILS.SpawnFARPAndFunctionalStatics(FName,Coordinate,ENUMS.FARPType.INVISIBLE,Foothold_ctld.coalition,country.id.USA,EscortFARPCount,FARPFreq,radio.modulation.AM,nil,nil,nil,200,100,20,nil,true,true, 3, 80, 80)
   Foothold_ctld:AddCTLDZone(FName,CTLD.CargoZoneType.LOAD,SMOKECOLOR.Blue,true,false)
   MESSAGE:New(string.format("%s in operation!",FName),15):ToBlue()
   local function CopyWarehouse()
@@ -13918,6 +14029,13 @@ function CustomBuildAFARP(Coordinate,startZone)
   if Era=='Coldwar' then SCHEDULER:New(nil,CopyWarehouse,nil,10) else CopyWarehouse() end
   local markId = 96000 + EscortFARPCount
   trigger.action.circleToAll(-1,markId,Coordinate:GetVec3(),120,{0,0,1,1},{0,0,1,0.25},1)
+  trigger.action.setMarkupTypeLine(markId, 2)
+  trigger.action.setMarkupColor(markId, {0,1,0,1})
+
+  local textId = 96500 + EscortFARPCount
+  local textPoint = {x = Coordinate.x, y = Coordinate.y, z = Coordinate.z + 120}
+  trigger.action.textToAll(-1, textId, textPoint,{0,0,0.7,0.8},{0.7,0.7,0.7,0.8},18,true,FName)
+  trigger.action.setMarkupText(textId, FName)
 end
 
 function BuildFarpHere(name)
@@ -15625,7 +15743,7 @@ end
 InspectAirbaseParking('H FRG 40', true)
 
  ]]
---[[ 
+
 function checkGroupState(groupName)
     if not groupName or not bc or not bc.zones then return end
     for _, z in ipairs(bc.zones) do
@@ -15640,5 +15758,5 @@ function checkGroupState(groupName)
     end
     env.info("GroupCommander not found: "..tostring(groupName))
 end
-checkGroupState("Sochi-capture-Red-carrier-blue")
- ]]
+
+--checkGroupState("Taftanaz-attack-Duhur-Cas")

@@ -20,7 +20,7 @@ AIEN.config.initiative 		    = true 		-- true/false. If true, the ground groups 
 --AIEN.config.conquer 		    = true 		-- true/false. If true, the ground groups will look for nearby towns or DCS ground markers and will try to move there if intel and terrain allow them (this is limited in space cause it's designed to work appropriately with DSMC 2)
 
 -- User advanced customization 
-AIEN.config.AIEN_xcl_tag		= {"Red SAM Dog Ear","IRISTSLM","SA-2","SA-3","SA-6","SA-10","SA-5","SA-11","Fixed","blue","Hidden","hidden","supply","support","attack","patrol","bluePD1","blueArmor","bSamFinal","bSampa","bSamBig","EscortGroup","Red SAM AAA 3","Red SAM AAA 4"} 	-- string, global, case sensitive. Can be dynamically changed by other script or triggers, since it's a global variable. used as a text format without spaces or special characters. only letters and numbers allowed. Any ground group with this 'tag' in its group name won't get AI enhancement behaviour, regardless of its coalition 
+AIEN.config.AIEN_xcl_tag		= {"Red SAM Dog Ear","IRISTSLM","SA-2","SA-3","SA-6","SA-10","SA-5","SA-11","Fixed","Hidden","hidden","supply","support","attack","patrol","EscortGroup"} 	-- string, global, case sensitive. Can be dynamically changed by other script or triggers, since it's a global variable. used as a text format without spaces or special characters. only letters and numbers allowed. Any ground group with this 'tag' in its group name won't get AI enhancement behaviour, regardless of its coalition 
 AIEN.config.AIEN_zoneFilter     = ""    	-- string, global, case sensitive. Can be dynamically changed by other script or triggers, since it's a global variable. used as a text format without spaces or special characters. only letters and numbers allowed, i.e. "AIEN" will fit. If left nil, or void string like "", won't be used. Only groups inside the named trigger zone will be affected by AIEN script behaviors of reaction, dismount and suppression, and vice versa. If no trigger zone with the specific name is in the mission, then all the groups will use AIEN features.
 AIEN.config.message_feed        = true 		-- true/false. If true, each relevant AI action starting will also create a trigger message feedback for its coalition
 AIEN.config.mark_on_f10_map     = true 	    -- true/false. If true, when an artillery fire mission is ongoing, a markpoint will appear on the map of the allied coalition to show the expected impact point
@@ -47,7 +47,7 @@ AIEN.config.maxSlope                          = 25	              -- degrees, max
 
 -- dismounted troops variables
 AIEN.config.droppedReposition                 = 80                -- if no enemy is identified, this is the distance where dismount group will reposition themselves
-AIEN.config.remountTime                       = 900               -- time after which dismounted troops will try to go back to their original vehicle for remount, if commanded
+AIEN.config.remountTime                       = 600               -- time after which dismounted troops will try to go back to their original vehicle for remount, if commanded
 AIEN.config.infantryExtractDist               = 200               -- max distance from vehicle to troops to allow a group extraction
 AIEN.config.infantrySearchDist                = 1000              -- max distance from vehicle to troops to allow a dismount group to run toward the enemies
 
@@ -8296,7 +8296,7 @@ local reactionsDb = {
 	[2] 	= { -- ac_panic
         ["name"] = "ac_panic",
         ["ac_function"] = ac_panic,
-        ["message"] = "We're trying to escape fire%!",
+        ["message"] = "We're trying to escape fire!!",
         ["resume"] = true,
         ["w_cat"] = { -- weapon category
             [0] = 0.45, -- shell
@@ -10550,7 +10550,7 @@ end
                                             env.info(("AIEN.event_hit, S_EVENT_HIT," .. tostring(aData.name) ..  ", points total: " .. tostring(points)))
                                         end	
     
-                                        bc_ac[#bc_ac+1] = {name = aData.name, action = aData.action, rank = points}
+                                        bc_ac[#bc_ac+1] = {name = aData.name, action = aData.action, ac_function = aData.ac_function, resume = aData.resume, message = aData.message, rank = points}
                                     end
                                     table.sort(bc_ac, function(a,b)
                                         if a.rank and b.rank then

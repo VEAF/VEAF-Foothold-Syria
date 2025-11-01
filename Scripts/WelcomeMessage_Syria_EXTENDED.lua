@@ -122,10 +122,11 @@ function RespawnStaticsForAirbase(airbaseName, coalitionSide)
         countryID = country.id.USA
     elseif coalitionSide == coalition.side.RED then
         countryID = country.id.RUSSIA
+    elseif coalitionSide == coalition.side.NEUTRAL then
+        countryID = country.id.UN_PEACEKEEPERS
     else
         return
     end
-
     for _, staticName in ipairs(statics) do
         local static = STATIC:FindByName(staticName, false)
         if static and static:IsAlive() then
@@ -320,7 +321,7 @@ function getPreferredOrder(groupName)
             elseif prefix == "UH.1H"        then preferredOrder = {"Nitro5"}
             elseif prefix == "CH.47F"       then preferredOrder = {"Greyhound3"}
             elseif prefix == "F.15E.S4"     then preferredOrder = {"Hitman3"}
-            elseif prefix == "F.14.B"       then preferredOrder = {"Elvis5","Mustang4"}
+            elseif prefix == "F.14B"        then preferredOrder = {"Elvis5","Mustang4"}
             elseif prefix == ".OH.58D"      then preferredOrder = {"Blackjack4"}
             elseif prefix == "Ka.50.III"    then preferredOrder = {"Orca6"}
             elseif prefix == "AV.8B"        then preferredOrder = {"Quarterback1"}
@@ -443,7 +444,7 @@ aircraftAssignments = {
             assignments = {}
         },
     },
-    ["F.14.B"] = { 
+    ["F.14B"] = { 
         ["Elvis5"] = { 
             IFFs = {1100, 1101, 1102, 1103}, 
             assignments = {}

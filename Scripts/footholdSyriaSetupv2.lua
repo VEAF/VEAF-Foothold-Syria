@@ -482,8 +482,8 @@ zones = {
 	india = ZoneCommander:new({zone='India', side=1, level=20, upgrades=upgrades.indiaFixed, crates={}, flavorText=flavor.india}),
 	juliett = ZoneCommander:new({zone='Juliett', side=1, level=20, upgrades=upgrades.juliettFixed, crates={}, flavorText=flavor.juliett}),
 	kilo = ZoneCommander:new({zone='Kilo', side=1, level=20, upgrades=upgrades.ewr, crates={}, flavorText=flavor.kilo}),
-	foblima = ZoneCommander:new({zone='FOB Lima', side=0, level=20, upgrades=upgrades.minimal, crates={}, flavorText=flavor.foblima, NeutralAtStart=true}),
-	fobmike = ZoneCommander:new({zone='FOB Mike', side=0, level=20, upgrades=upgrades.minimal, crates={}, flavorText=flavor.fobmike, NeutralAtStart=true}),
+	foblima = ZoneCommander:new({zone='FOB Lima', side=0, level=20, upgrades=upgrades.minimal, crates={}, flavorText=flavor.foblima, ForceNeutral=true}),
+	fobmike = ZoneCommander:new({zone='FOB Mike', side=0, level=20, upgrades=upgrades.minimal, crates={}, flavorText=flavor.fobmike, ForceNeutral=true}),
 	november = ZoneCommander:new({zone='November', side=1, level=20, upgrades=upgrades.generic, crates={}, flavorText=flavor.november}),
 	oscar = ZoneCommander:new({zone='Oscar', side=1, level=20, upgrades=upgrades.insMinimum, crates={}, flavorText=flavor.oscar}),
 	papa = ZoneCommander:new({zone='Papa', side=1, level=20, upgrades=upgrades.PapaFixed, crates={}, flavorText=flavor.papa}),
@@ -3155,7 +3155,7 @@ evc:addEvent({
 						'An Nasiriyah','Al Qusayr','Rayak','Palmyra'}
 			local valid={}
 			for _,v in ipairs(tgts) do
-				if bc:getZoneByName(v).side==2 then valid[#valid+1]=v end
+				if bc:getZoneByName(v).side==2 and not bc:getZoneByName(v).suspended then valid[#valid+1]=v end
 			end
 			if #valid~=0 then
 				local choice=valid[math.random(1,#valid)]
@@ -3540,7 +3540,25 @@ local sceneryList = {
     ["SA11WareHouse"] = {SCENERY:FindByZoneName("SA11WareHouse")},
     ["IncirlikWarehouse"] = {SCENERY:FindByZoneName("IncirlikWarehouse")},
 }
-
+timer.scheduleFunction(function()
+do
+  local missing = {}
+  for name, arr in pairs(sceneryList) do
+    local sc = arr and arr[1]
+    if not sc then
+      sc = SCENERY:FindByZoneName(name)
+      if sc then
+        sceneryList[name][1] = sc
+      else
+        missing[#missing + 1] = name
+      end
+    end
+  end
+  for _, name in ipairs(missing) do
+    trigger.action.outText(name .. ' is missing', 30)
+  end
+end
+end, {}, timer.getTime() + 1)
 ------------------------------------ custom missions --------------------------------
 -------------------------------- Strike the enemy hideout -------------------------
 
@@ -3836,6 +3854,7 @@ evc:addEvent({
 	end,
 })
 
+
 mc:trackMission({
 	title = "Strike on Dam Factories",
 	description =
@@ -3866,8 +3885,8 @@ Elevation 2512 feet]],
 		end
 	end,
 	isActive = function()
-		if CustomFlags['DamFactoriesDown'] then return false end
-		if ActiveMission['DamFactoriesDown'] then return true end
+		if CustomFlags['RefineryFactories'] then return false end
+		if ActiveMission['RefineryFactories'] then return true end
 		return false
 	end
 })
@@ -3901,11 +3920,11 @@ Take it out to halt the repairs going from there.
 
 Reward: 250
 
-MGRS: 37 S DU 36480 24752
+MGRS: 37 S DU 36481 24765
 Lat long: N 34°33'45" E 38°18'27"
-Lat long Precise: N 34°33'45.21" E 38°18'27.29"
-Lat long Decimal Minutes: N 34°33.753' E 38°18.454'
-Elevation 1304 feet]],
+Lat long Precise: N 34°33'45.65" E 38°18'27.31"
+Lat long Decimal Minutes: N 34°33.760' E 38°18.455'
+Elevation 1300 feet]],
 	messageStart = "New strike mission: Strike on Palmyra's SA-5 storage parts",
 	messageEnd = "Strike mission ended: Strike on Palmyra's SA-5 storage parts",
     startAction = function()
@@ -4448,8 +4467,8 @@ function generateCaptureMission()
     local validzones = {}
     for _, v in ipairs(bc.zones) do
 
-        if v.active and v.side == 0 and (not v.NeutralAtStart or v.firstCaptureByRed) and 
-           not string.find(v.zone, "Hidden") and (not v.zone:find("Red Carrier")) then
+        if v.active and v.side == 0 and (not v.NeutralAtStart or v.firstCaptureByRed) and
+           not v.ForceNeutral and not string.find(v.zone, "Hidden") and (not v.zone:find("Red Carrier")) then
             table.insert(validzones, v.zone)
         end
     end
@@ -4914,57 +4933,13 @@ timer.scheduleFunction(function(_,time)
 end,{},timer.getTime()+210)
 mc:init()
 
------------------------ FLAGS --------------------------
---[[ 
-function checkZoneFlags()
 
-    if zones.alduhur.wasBlue and zones.papa.wasBlue and trigger.misc.getUserFlag(2) == 0 and 
-		trigger.misc.getUserFlag(1) == 0 then
-        trigger.action.setUserFlag(1, true)
-		trigger.action.setUserFlag(2, true)
-	end
-    if not zones.redcarrier.wasBlue and zones.larnaca.wasBlue and zones.gecitkale.wasBlue and
-       zones.ercan.wasBlue and trigger.misc.getUserFlag(19) == 0 then
-        trigger.action.setUserFlag(19, true)
-    end
-    if zones.redcarrier.wasBlue and not zones.incirlik.wasBlue and trigger.misc.getUserFlag(20) == 0 then
-        trigger.action.setUserFlag(19, false)
-		trigger.action.setUserFlag(20, true)
-	end
-
-	if zones.incirlik.side == 0 and zones.incirlik.firstCaptureByRed then
-	zones.incirlik.firstCaptureByRed = false
-    end
-	if zones.tiyas.wasBlue and not zones.alqusayr.wasBlue and trigger.misc.getUserFlag(21) == 0 then
-		trigger.action.setUserFlag(21, true)
-	end  
-	if zones.alqusayr.wasBlue and not zones.renemouawad.wasBlue and trigger.misc.getUserFlag(22) == 0 then
-		trigger.action.setUserFlag(21, false)
-		trigger.action.setUserFlag(22, true)		
-	end
-	if zones.renemouawad.wasBlue and not zones.annasiriyah.wasBlue and trigger.misc.getUserFlag(23) == 0 then
-		trigger.action.setUserFlag(22, false)
-		trigger.action.setUserFlag(21, false)
-		trigger.action.setUserFlag(23, true)
-	end	
-	if zones.annasiriyah.wasBlue and zones.damascus.wasBlue and trigger.misc.getUserFlag(25) == 0 then
-		trigger.action.setUserFlag(22, false)
-		trigger.action.setUserFlag(21, false)
-		trigger.action.setUserFlag(23, false)
-        trigger.action.setUserFlag(25, true)
-	end
-end
-timer.scheduleFunction(function()
-    checkZoneFlags()
-    return timer.getTime() + 30
-end, {}, timer.getTime() + 2)
- ]]
 buildingCache = buildingCache or {}
 for _, z in ipairs(bc:getZones()) do
 	local c = CustomZone:getByName(z.zone)
 	if c then c:getZoneBuildings() end
 end
------------------------ END OF FLAGS --------------------------
+
 --configure zone messages 
 
 

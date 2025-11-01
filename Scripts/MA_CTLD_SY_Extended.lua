@@ -66,8 +66,8 @@ CTLDPrices = {
     ["HAWK Site"]             = 750,
     ["Nasam Site"]            = 750,
     ["FARP"]                  = 500,
-    ["IRIS T SLM STR"]        = 500,
-    ["IRIS T SLM LN"]         = 750,
+    ["IRIS T SLM STR"]        = 750,
+    ["IRIS T SLM LN"]         = 500,
     ["IRIS T SLM C2"]         = 500,
     ["IRIS T SLM System"]     = 1800,
     ["C-RAM"]                 = 500,
@@ -95,9 +95,9 @@ Foothold_ctld:AddCratesCargoNoMove(pricedName("HAWK Site"), {"CTLD_CARGO_HAWKSit
 Foothold_ctld:AddCratesCargoNoMove(pricedName("Nasam Site"), {"CTLD_CARGO_NasamsSite"}, CTLD_CARGO.Enum.FOB, 4, 1900, 5, "SAM/AAA")
 Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM System"), {"CTLD_CARGO_IRISTSLM_System"}, CTLD_CARGO.Enum.FOB, 3, 2800, 5, "SAM/AAA")
 Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM STR"), {"CTLD_CARGO_IRISTSLM_STR"}, CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM LN"), {"CTLD_CARGO_IRISTSLM-LN"}, CTLD_CARGO.Enum.FOB, 1, 3500, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM LN"), {"CTLD_CARGO_IRISTSLM-LN"}, CTLD_CARGO.Enum.FOB, 1, 3500, 10, "SAM/AAA")
 Foothold_ctld:AddCratesCargoNoMove(pricedName("IRIS T SLM C2"), {"CTLD_CARGO_IRISTSLM_C2"}, CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove(pricedName("C-RAM"), {"CTLD_CARGO_CRAM"}, CTLD_CARGO.Enum.FOB, 2, 1000, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove(pricedName("C-RAM"), {"CTLD_CARGO_CRAM"}, CTLD_CARGO.Enum.FOB, 2, 1000, 10, "SAM/AAA")
 Foothold_ctld:AddCratesCargo(pricedName("FARP"), {"CTLD_TROOP_FOB"}, CTLD_CARGO.Enum.FOB, 3, 1500, 9)
 
 
@@ -124,10 +124,10 @@ Foothold_ctld:AddCratesCargoNoMove("HAWK Site",{"CTLD_CARGO_HAWKSite"},CTLD_CARG
 Foothold_ctld:AddCratesCargoNoMove("Nasam Site",{"CTLD_CARGO_NasamsSite"},CTLD_CARGO.Enum.FOB,4,1900,5, "SAM/AAA")
 Foothold_ctld:AddCratesCargo("FARP",{"CTLD_TROOP_FOB"},CTLD_CARGO.Enum.FOB,3,1500,9)
 Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM STR", {"CTLD_CARGO_IRISTSLM_STR"},CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM LN", {"CTLD_CARGO_IRISTSLM-LN"},CTLD_CARGO.Enum.FOB, 1, 3500, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM LN", {"CTLD_CARGO_IRISTSLM-LN"},CTLD_CARGO.Enum.FOB, 1, 3500, 10, "SAM/AAA")
 Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM C2", {"CTLD_CARGO_IRISTSLM_C2"},CTLD_CARGO.Enum.FOB, 1, 1900, 5, "SAM/AAA")
 Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM System", {"CTLD_CARGO_IRISTSLM_System"}, CTLD_CARGO.Enum.FOB, 3, 2800, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove("C-RAM", {"CTLD_CARGO_CRAM"}, CTLD_CARGO.Enum.FOB, 2, 1000, 5, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("C-RAM", {"CTLD_CARGO_CRAM"}, CTLD_CARGO.Enum.FOB, 2, 1000, 6, "SAM/AAA")
 
 end
 
@@ -153,11 +153,11 @@ local MAX_AT_SPAWN = {
     ["Nasam Site"]              = 3,
     ["Tank Abrahams"]           = 0,
     ["FARP"]                    = 3,
-    ["IRIS T SLM STR"]          = 2,
-    ["IRIS T SLM LN"]           = 2,
-    ["IRIS T SLM C2"]           = 2,
+    ["IRIS T SLM STR"]          = 3,
+    ["IRIS T SLM LN"]           = 8,
+    ["IRIS T SLM C2"]           = 3,
     ["IRIS T SLM System"]       = 2,
-    ["C-RAM"]                   = 2,
+    ["C-RAM"]                   = 4,
 }
 -- How many farps do you want to load? 
 -- Oldest will not be spawned if the number is exceded.
@@ -358,7 +358,7 @@ function BuildAFARP(Coordinate, stamp)
     allZones[#allZones + 1] = FName
   end
 
-  UTILS.SpawnFARPAndFunctionalStatics(FName, coord, ENUMS.FARPType.INVISIBLE, Foothold_ctld.coalition, country.id.USA, FarpNameNumber, FARPFreq, radio.modulation.AM, nil, nil, nil, 6000, 6000,1000,nil, true, true, 3, 50, 50)
+  UTILS.SpawnFARPAndFunctionalStatics(FName, coord, ENUMS.FARPType.INVISIBLE, Foothold_ctld.coalition, country.id.USA, FarpNameNumber, FARPFreq, radio.modulation.AM, nil, nil, nil, 6000, 6000,1000,nil, true, true, 3, 80, 80)
   
   Foothold_ctld:AddCTLDZone(FName, CTLD.CargoZoneType.LOAD, SMOKECOLOR.Blue, true, false)
   MESSAGE:New(string.format("%s in operation!", FName), 15):ToBlue()
@@ -569,8 +569,8 @@ function SaveFARPS()
   for _,_coord in pairs(BuiltFARPCoordinates) do
     local FName = _coord.name
     local coord = _coord.coord -- Core.Point#COORDINATE
-    local AFB = STATIC:FindByName(FName,false)
-    if AFB and AFB:IsAlive() then
+    local AFB = AIRBASE:FindByName(FName)
+    if AFB then
       counter = counter + 1 -- increase counter
       local vec2 = coord:GetVec2() -- { x = self.x, y = self.z }
       data = data .. string.format("%f;%f;\n",vec2.x,vec2.y)
@@ -583,7 +583,6 @@ function SaveFARPS()
   else
     BASE:E("***** ERROR Saving FARP Positions!")
   end
-  
 end
  
 function LoadFARPS()
@@ -1065,6 +1064,7 @@ function CaptureZoneIfNeutral()
     local zoneEvents   = {}
     local totalReward  = 0
     local retrigger    = false
+    local landedThisRun= {}
 
     local function cleanupDeployment(name)
         deployedTroops[name] = nil
@@ -1081,11 +1081,12 @@ function CaptureZoneIfNeutral()
     end
 
     local function processNextGroup(index)
+        local verb
         if index > #troopGroupNames then
             if next(zoneEvents) then
                 local lines = {}
                 for z,ev in pairs(zoneEvents) do
-                    local verb
+                    
                     if ev.captured and ev.upgraded then
                         verb = 'captured and upgraded'
                     elseif ev.captured then
@@ -1095,37 +1096,50 @@ function CaptureZoneIfNeutral()
                     end
                     lines[#lines + 1] = '['..ev.player..'] '..verb..' '..z
                 end
-                trigger.action.outTextForCoalition(2,table.concat(lines, '\n')..'\n'..totalReward..' credits.',20)
-                
-                for pname, credits in pairs(bc.playerContributions[2]) do
-                    if credits > 0 then
-                        local players = coalition.getPlayers(2)
-                        for _, playerUnit in ipairs(players) do
-                            if playerUnit:getPlayerName() == pname then
-                                if not Utils.isInAir(playerUnit) then
-                                    local zones = bc:getZones()
-                                    for _, zoneData in ipairs(zones) do
-                                        if ((2 == zoneData.side) or (zoneData.wasBlue)) and Utils.isInZone(playerUnit, zoneData.zone) then
+                                
+                local players = coalition.getPlayers(2)
+                local zones = bc:getZones()
+                local anyLanded = false
+                local playersToCheck = {}
+                for _, ev in pairs(zoneEvents) do
+                    if ev.player and bc.playerContributions[2][ev.player] ~= nil then playersToCheck[ev.player] = true end
+                end
+                for pname, _ in pairs(playersToCheck) do
+                    for _, playerUnit in ipairs(players) do
+                        if playerUnit:getPlayerName() == pname then
+                            if not Utils.isInAir(playerUnit) then
+                                local didLand = false
+                                for _, zoneData in ipairs(zones) do
+                                    if ((2 == zoneData.side) or (zoneData.wasBlue)) and Utils.isInZone(playerUnit, zoneData.zone) then
+                                        if not landedThisRun[pname] then
+                                            local pnameCap = pname
+                                            local unitCap = playerUnit
                                             SCHEDULER:New(nil,function()
                                                 local landingEvent = {
                                                     id = world.event.S_EVENT_LAND,
                                                     time = timer.getAbsTime(),
-                                                    initiator = playerUnit,
-                                                    initiatorPilotName = pname,
-                                                    initiator_unit_type = playerUnit:getTypeName(),
+                                                    initiator = unitCap,
+                                                    initiatorPilotName = pnameCap,
+                                                    initiator_unit_type = unitCap:getTypeName(),
                                                     initiator_coalition = 2
                                                 }
                                                 world.onEvent(landingEvent)
                                             end,{},5,0)
-                                            break
+                                            landedThisRun[pname] = true
                                         end
+                                        didLand = true
+                                        anyLanded = true
+                                        break
                                     end
                                 end
-                                break
                             end
+                            break
                         end
                     end
-                end 
+                end
+                if not anyLanded then
+                    trigger.action.outTextForCoalition(2,table.concat(lines, '\n')..'\n'..totalReward..' credits.',20)
+                end
             end
 
             captureRunning = false
@@ -1204,14 +1218,14 @@ function CaptureZoneIfNeutral()
                 scheduleNext(1)
                 return
             else
-                local need = currentZone.canRecieveSupply and currentZone:canRecieveSupply() or false
+                local need = currentZone:canRecieveSupply() or false
                 if need then
                     currentZone:upgrade()
                     troopGroup:Destroy()
                     if pname then
-                        bc.playerContributions[2][pname] = (bc.playerContributions[2][pname] or 0) + 100
+                        bc.playerContributions[2][pname] = (bc.playerContributions[2][pname] or 0) + 200
                         bc:addTempStat(pname, 'Zone upgrade', 1)
-                        noteEvent(zoneName, pname, 'upgraded', 100)
+                        noteEvent(zoneName, pname, 'upgraded', 200)
                     end
                     cleanupDeployment(troopGroupName)
                     scheduleNext(5)

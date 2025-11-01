@@ -55,71 +55,71 @@ radios_collection: # Lists all the radios definitions
       title: VHF 
       type: vhf
       channels:
-        01: Akrotiri
-        02: Paphos
-        03: Pinarbashi
-        04: Gecitkale
-        05: Ercan
-        06: Larnaca
-        07: Incirlik
-        08: Hatay
-        09: Minakh
-        10: Gaziantep
-        11: Aleppo
-        12: Taftanaz
-        13: Bassel al-Assad
-        14: Abu al-Duhur
+        01: Larnaca
+        02: Gecitkale
+        03: Bassel al-Assad
+        04: Wujah Al Hajar
+        05: Rene Mouawad
+        06: Al Qusayr
+        07: Shayrat
+        08: Beirut
+        09: Rayak
+        10: An Nasiriyah
+        11: Ramat David
+        12: Ben Gurion
+        13: Damascus
+        14: Thalah
         15: Archer
         16: Arctic
         17: Ninja
         18: Pinder
         19: Bengal
         20: Blade
-        21: Jirah
-        22: Hama
-        23: Tabqa
-        24: Palmyra
-        25: Tiyas
-        26: Shayrat
-        27: Damascus
-        28: Al Qusayr
-        29: Rene Mouawad
-        30: Wujah Al Hajar
+        21: 
+        22: 
+        23: 
+        24: 
+        25: 
+        26: 
+        27: 
+        28: 
+        29: 
+        30: 
 
     radio_fm_30:
       title: FM 
       type: fm
       channels:
-        01: Akrotiri
-        02: Paphos
-        03: Pinarbashi
-        04: Gecitkale
-        05: Ercan
-        06: Larnaca
-        07: Incirlik
-        08: Hatay
-        09: Minakh
-        10: Gaziantep
-        11: Aleppo
-        12: Taftanaz
-        13: Bassel al-Assad
-        14: Abu al-Duhur
+        01: Larnaca
+        02: Gecitkale
+        03: Bassel al-Assad
+        04: Wujah Al Hajar
+        05: Rene Mouawad
+        06: Al Qusayr
+        07: Shayrat
+        08: Beirut
+        09: Rayak
+        10: An Nasiriyah
+        11: Ramat David
+        12: Ben Gurion
+        13: Damascus
+        14: Thalah
         15: Archer
         16: Arctic
         17: Ninja
         18: Pinder
         19: Bengal
         20: Blade
-        21: Jirah
-        22: Hama
-        23: Tabqa
-        24: Palmyra
-        25: Tiyas
-        26: Shayrat
-        27: Damascus
-        28: Al Qusayr
-        29: Rene Mouawad
-        30: Wujah Al Hajar
+        21: 
+        22: 
+        23: 
+        24: 
+        25: 
+        26: 
+        27: 
+        28: 
+        29: 
+        30: 
 
 presets_collection: # Lists all the presets collections
   blue_presets: # one of the presets collections
@@ -562,7 +562,7 @@ channels_collection: # Lists all the radio channels available on the map
             uhf: 250.65
             vhf: 128.1
             fm:  39.1
-      Tha'lah:
+      Thalah:
           title: Tha'lah
           freqs:
             uhf: 252.8
