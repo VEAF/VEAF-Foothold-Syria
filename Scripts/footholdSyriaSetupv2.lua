@@ -208,6 +208,25 @@ local cwSwap = {
 	['blueHAWK']  = 'blueHAWK_CW',
 	['Red SAM Dog Ear Tor M2']  = 'Red SAM SHORAD SA-8 2',
 	['Red SAM Shorad Pantsir S1']  = 'Red SAM SHORAD SA-8 2',
+	['Red SAM SHORAD Pantsir S1 Fixed delta']             = 'Red SAM SHORAD SA-8 Fixed delta-2',
+	['Red SAM SHORAD Tor M2 Fixed Bravo']                 = 'Red SAM SHORAD SA-19 Fixed Bravo',
+	['Red SAM SHORAD SA-15 Fixed juliett-2']              = 'Red SAM SHORAD SA-8 Fixed juliett-2',
+	['Red SAM SHORAD SA-15 Fixed-juliett-3']              = 'Red SAM SHORAD SA-8 Fixed-juliett',
+	['Red SAM SHORAD SA-15 Fixed india-2']                = 'Red SAM SHORAD SA-8 Fixed india-2',
+	['Red SAM SHORAD Tor M2 Fixed india-3']               = 'Red SAM SHORAD SA-19 Fixed india-3',
+	['Red SAM SHORAD SA-15 Fixed Hotel']                  = 'Red SAM SHORAD SA-8 Fixed Hotel',
+	['Red SAM SHORAD SA-15 SAITE Fixed']                  = 'Red SAM SHORAD SA-8 SAITE Fixed',
+	['Red SAM SHORAD Tor M2 Fixed SAITE']                 = 'Red SAM SHORAD SA-19 Fixed SAITE',
+	['Red SAM SHORAD SA-15 Fixed Charlie']                = 'Red SAM SHORAD SA-8 Fixed Charlie 2',
+	['Red SAM SHORAD SA-15 Fixed Papa-2']                 = 'Red SAM SHORAD SA-8 Fixed Papa-2',
+	['Red SAM SHORAD SA-15 Fixed Papa-3']                 = 'Red SAM SHORAD SA-8 Fixed Papa-3',
+	['Red SAM SHORAD SA-15 Fixed']                        	= 'Red SAM SHORAD SA-8 Fixed',
+	['Red SAM SHORAD SA-15 Fixed ramatdaviddefence']     	= 'Red SAM SHORAD SA-8 Fixed ramatdaviddefence',
+	['Red SAM SHORAD SA-15 jordandefence Fixed']          	= 'Red SAM SHORAD SA-8 jordandefence Fixed',
+	['Red SAM SHORAD SA-15 Fixed HiddenGroup South']      	= 'Red SAM SHORAD SA-8 Fixed HiddenGroup South',
+	['Red SAM SHORAD SA-15 EWR Group Fixed']              	= 'Red SAM SHORAD SA-8 EWR Group Fixed',
+	['Red SAM SHORAD SA-15 Fixed BenGurion']              	= 'Red SAM SHORAD SA-8 Fixed BenGurion',
+
 }
 
 local function deepSwap(t,s)
@@ -244,7 +263,8 @@ local SamSwap = {
 	['Red SAM SHORAD SA-15 Fixed HiddenGroup South']      	= 'Red SAM SHORAD SA-8 Fixed HiddenGroup South',
 	['Red SAM SHORAD SA-15 EWR Group Fixed']              	= 'Red SAM SHORAD SA-8 EWR Group Fixed',
 	['Red SAM SHORAD SA-15 Fixed BenGurion']              	= 'Red SAM SHORAD SA-8 Fixed BenGurion',
-
+	['Red SAM Dog Ear Tor M2']  							= 'Red SAM SHORAD SA-8 2',
+	['Red SAM Shorad Pantsir S1']  							= 'Red SAM SHORAD SA-8 2',
     ['Red SAM SA-11 Fixed Papa']              				= 'Red SAM SA-3 Papa Fixed','Red SAM SA-6 Papa Fixed',
     ['Red SAM SA-11 Fixed ramatdaviddefence'] 				= 'Red SAM SA-6 Fixed ramatdaviddefence',
     ['Red SAM SA-11 Fixed Incirlikdefence']   				= 'Red SAM SA-3 Fixed Incirlikdefence',
@@ -1003,6 +1023,7 @@ zones.beirut:addGroups({
 	GroupCommander:new({name='Beirut-supply-Rayak', mission='supply', template='HeloSupplyTemplate', targetzone='Rayak'}),
 	GroupCommander:new({name='Beirut-supply-Tiyas', mission='supply', template='SupplyPlaneTemplate', targetzone='Tiyas'}),
 	GroupCommander:new({name='Beirut-supply-Shayrat', mission='supply', template='SupplyPlaneTemplate', targetzone='Shayrat'}),
+	GroupCommander:new({name='beirut-attack-Wujah', mission='attack', template='AttackConvoy', targetzone='Wujah', type='surface'}),
 })
 
 zones.renemouawad:addGroups({
@@ -1013,7 +1034,12 @@ zones.renemouawad:addGroups({
 	GroupCommander:new({name='Renemouawad-supply-Wujah', mission='supply', template='HeloSupplyTemplate', targetzone='Wujah'}),
 
 })
+zones.wujah:addGroups({
+	GroupCommander:new({name='wujah-attack-Mouawad', mission='attack', template='AttackConvoy', targetzone='Rene Mouawad', type='surface'}),
+	GroupCommander:new({name='wujah-supply-Mouawad', mission='supply', template='SupplyConvoy', targetzone='Rene Mouawad', type='surface'}),
 
+
+})
 zones.shayrat:addGroups({
 	GroupCommander:new({name='Shayrat-supply-Al-Qusayr', mission='supply', template='HeloSupplyTemplate', targetzone='Al Qusayr'}),
 	GroupCommander:new({name='Shayrat-supply-An-Nasiriyah', mission='supply', template='HeloSupplyTemplate', targetzone='An Nasiriyah'}),
@@ -1056,7 +1082,6 @@ zones.alqusayr:addGroups({
 	GroupCommander:new({name='Qusayr-attack-Shayrat', mission='attack', template='AttackConvoy', targetzone='Shayrat', type='surface'}),
 	GroupCommander:new({name='Qusayr-supply-Shayrat', mission='supply', template='HeloSupplyTemplate', targetzone='Shayrat'}),
 	GroupCommander:new({name='Qusayr-supply-Mouawad', mission='supply', template='HeloSupplyTemplate', targetzone='Rene Mouawad'}),
-	GroupCommander:new({name='Qusayr-supply-Rene Mouawad', mission='supply', template='HeloSupplyTemplate', targetzone='Rene Mouawad'}),
 	GroupCommander:new({name='Qusayr-attack-Palmyra-Cap', mission='attack', template='CapPlaneTemplate', MissionType='CAP', targetzone='Palmyra', spawnDelayFactor = 1.6, Altitude = CapAltitude()}),
 	GroupCommander:new({name='Qusayr-attack-Palmyra-Sead', mission='attack', template='SeadPlaneTemplate', MissionType='SEAD', targetzone='Palmyra', Altitude = SeadAltitude()}),
 	GroupCommander:new({name='Qusayr-attack-Tiyas-Cas', mission='attack', template='CasPlaneTemplate', MissionType='CAS', targetzone='Tiyas', Altitude = CasAltitude()}),
@@ -1065,7 +1090,7 @@ zones.alqusayr:addGroups({
 zones.rayak:addGroups({
 	GroupCommander:new({name='Rayak-supply-Nasiriyah', mission='supply', template='HeloSupplyTemplate', targetzone='An Nasiriyah'}),
 	GroupCommander:new({name='Rayak-supply-Beirut', mission='supply', template='HeloSupplyTemplate', targetzone='Beirut'}),
-	GroupCommander:new({name='Rayak-attack-Beirut', mission='attack', template='AttackConvoy', targetzone='Beirut'}),
+	GroupCommander:new({name='Rayak-attack-Beirut', mission='attack', template='AttackConvoy', targetzone='Beirut', type='surface'}),
 })
 
 zones.annasiriyah:addGroups({
@@ -1073,8 +1098,11 @@ zones.annasiriyah:addGroups({
 	GroupCommander:new({name='Nasiriyah-supply-Shayrat', mission='supply', template='HeloSupplyTemplate', targetzone='Shayrat'}),
 	GroupCommander:new({name='Nasiriyah-attack-Tiyas-Cas', mission='attack', template='CasPlaneTemplate', MissionType='CAS', targetzone='Tiyas', Altitude = CasAltitude()}),
 	GroupCommander:new({name='Nasiriyah-attack-Al Qusayr-Cas', mission='attack', template='CasPlaneTemplate', MissionType='CAS', targetzone='Al Qusayr', Altitude = CasAltitude()}),
+	GroupCommander:new({name='Nasiriyah-attack-Rayak-Cas', mission='attack', template='CasHeloTemplate', MissionType='CAS', targetzone='Rayak'}),
+	GroupCommander:new({name='Nasiriyah-attack-Beirut-Sead', mission='attack', template='SeadPlaneTemplate', MissionType='SEAD', targetzone='Beirut', Altitude = SeadAltitude(), Redcondition = function () return zones.rayak.side == 1 end}),
+	GroupCommander:new({name='Nasiriyah-attack-Wujah-Cas', mission='attack', template='CasPlaneTemplate', MissionType='CAS', targetzone='Wujah', Altitude = CasAltitude()}),
 	GroupCommander:new({name='Nasiriyah-attack-Palmyra-Cap', mission='attack', template='CapPlaneTemplate', MissionType='CAP', targetzone='Palmyra', Altitude = CapAltitude()}),
-	GroupCommander:new({name='Nasiriyah-patrol-Shayrat-Cap', mission='patrol', template='CapPlaneTemplate', MissionType='CAP', targetzone='Shayrat', Altitude = CapAltitude()}),
+	GroupCommander:new({name='Nasiriyah-attack-Beirut', mission='attack', template='AttackConvoy', targetzone='Beirut', type ='surface'}),
 })
 
 zones.damascus:addGroups({
@@ -2040,7 +2068,7 @@ jtacDrones = {JTAC:new({name = 'jtacDroneColdwar1'}),JTAC:new({name = 'jtacDrone
 else
 jtacDrones = {JTAC:new({name = 'jtacDrone1'}),JTAC:new({name = 'jtacDrone2'})}
 end
-bc:registerShopItem('jtac','MQ-9 Reaper JTAC mission',150,function(sender)
+bc:registerShopItem('jtac','MQ-9 Reaper JTAC mission',500,function(sender)
 	if jtacTargetMenu then return 'Choose target zone from F10 menu' end
 	local spawnAndOrbit = function(target)
 		if jtacTargetMenu then
@@ -2230,7 +2258,7 @@ local smoketargets = function(tz)
 		env.info("smoketargets: no tz/built for zone "..tostring(tz and tz.zone or "nil"))
 		return
 	end
-	local units, statics, dangling = {}, {}, {}
+	local units, statics, dangling, toRemove = {}, {}, {}, {}
 	for i,v in pairs(tz.built) do
 		local g = Group.getByName(v)
 		if g and g:isExist() then
@@ -2240,17 +2268,19 @@ local smoketargets = function(tz)
 					table.insert(units, v2)
 				end
 			end
-		else
-			local st = StaticObject.getByName(v)
-			if st and st:isExist() then
-				table.insert(statics, st)
-			else
-				table.insert(dangling, tostring(v))
-			end
-		end
+        else
+            local st = StaticObject.getByName(v)
+            if st and st:isExist() then
+                table.insert(statics, st)
+            else
+                table.insert(dangling, tostring(v))
+                table.insert(toRemove, i)
+            end
+        end
 	end
 	if #dangling > 0 then
 		trigger.action.outTextForCoalition(2, "(BUG) "..tz.zone.." error has unresolved entries: "..table.concat(dangling,", ")..". Please report to Leka.", 30)
+		for _,k in ipairs(toRemove) do tz.built[k] = nil end
 	end
 	local points = {}
 	for _,u in ipairs(units) do if u and u:isExist() then local p=u:getPosition().p; if p then table.insert(points,p) end end end
@@ -2569,12 +2599,10 @@ bc:registerShopItem('intel','Intel on enemy zone',150,function(sender)
 			trigger.action.outTextForCoalition(2, 'Intel available for '..targetZoneName..'. Check Zone status. Valid for 1 hour', 15)
 			timer.scheduleFunction(function(args)
 				local zName = args[1]
+				if intelActiveZones[zName] then intelActiveZones[zName] = false end
 				local zn = bc:getZoneByName(zName)
-				if not zn or zn.side ~= 1 or not zn.suspended then return end
-				if intelActiveZones[zName] then
-					intelActiveZones[zName] = false
-					trigger.action.outTextForCoalition(2, 'Intel on '..zName..' has expired.', 10)
-				end
+				if zn and zn.updateLabel then zn:updateLabel() end
+				trigger.action.outTextForCoalition(2, 'Intel on '..zName..' has expired.', 10)
 			end, {targetZoneName}, timer.getTime()+60*60)
 			intelMenu = nil
 		end
@@ -2588,10 +2616,10 @@ function(sender, params)
 		startZoneIntel(params.zone.zone)
 		trigger.action.outTextForCoalition(2, 'Intel available for '..params.zone.zone..'. Check Zone status. Valid for 1 hour', 15)
 		SCHEDULER:New(nil,function(zName)
-			if intelActiveZones[zName] then
-				intelActiveZones[zName] = false
-				trigger.action.outTextForCoalition(2, 'Intel on '..zName..' has expired.', 10)
-			end
+			if intelActiveZones[zName] then intelActiveZones[zName] = false end
+			local zn = bc:getZoneByName(zName)
+			if zn and zn.updateLabel then zn:updateLabel() end
+			trigger.action.outTextForCoalition(2, 'Intel on '..zName..' has expired.', 10)
 		end,{params.zone.zone},3600)
 	else
 		return 'Must pick an enemy zone'
@@ -2977,7 +3005,7 @@ DynamicConvoy.InitTargetTails(5)
 DynamicConvoy.InitRoadPathCacheFromCommanders(GroupCommanders)
 PrecomputeLandingSpots()
 Frontline.ReindexZoneCalcs()
-local HuntNumber = SplashDamage and math.random(8,15) or math.random(6,15)
+local HuntNumber = SplashDamage and math.random(10,15) or math.random(8,15)
 bc:initHunter(HuntNumber)
 SCHEDULER:New(nil, function() bc:_buildHunterBaseList() end, {}, 1)
 
@@ -2991,7 +3019,7 @@ AWACS_CFG = {
 
 GlobalSettings.autoSuspendNmBlue = 80   		-- suspend blue zones deeper than this nm
 GlobalSettings.autoSuspendNmRed = 90   		-- suspend red zones deeper than this nm
-evc = EventCommander:new({ decissionFrequency=30*60, decissionVariance=30*60, skipChance = 15})
+evc = EventCommander:new({ decissionFrequency=15*60, decissionVariance=10*60, skipChance = 15})
 evc:init()
 mc = MissionCommander:new({side = 2, battleCommander = bc, checkFrequency = 60})
 --------------------------------------- Oscar Scuds ---------------------------------------
@@ -3139,7 +3167,7 @@ mc:trackMission({
     end
 })
 ---------------------------------------- End of Escort me mission ---------------------------------------
--------------------------------------------- CAS and Bombers --------------------------------------------
+-------------------------------------------- CAS 1 --------------------------------------------
 local airstrike_COOLDOWN = 1800
 local lastairstrike_COOLDOWN  = -airstrike_COOLDOWN
 local casGrp = Era=='Coldwar' and 'evt-CAScw' or 'evt-CAS'
@@ -3199,21 +3227,99 @@ mc:trackMission({
 		end
 	end
 })
--------------------------------------------- End of CAS and Bombers -----------------------------------------
+-------------------------------------------- End of CAS 2 -----------------------------------------
+
+-------------------------------------------- CAS 2 --------------------------------------------
+local airstrike2_COOLDOWN = 1800
+local lastairstrike2_COOLDOWN  = -airstrike2_COOLDOWN
+local casGrp = Era=='Coldwar' and 'evt-CAScw2' or 'evt-CAS2'
+Group.getByName('evt-CAS2'):destroy()
+Group.getByName('evt-CAScw2'):destroy()
+evc:addEvent({
+	id='cas',
+	action=function()
+		RespawnGroup(casGrp)
+		RegisterGroupTarget(casGrp,500,'Intercept enemy airstrike')
+		timer.scheduleFunction(function()
+			local tgts = {'Paphos','Ercan','Gecitkale','Pinarbashi','Larnaca','Incirlik'}
+			local valid={}
+			for _,v in ipairs(tgts) do
+				if bc:getZoneByName(v).side==2 and not bc:getZoneByName(v).suspended then valid[#valid+1]=v end
+			end
+			if #valid~=0 then
+				local choice=valid[math.random(1,#valid)]
+				if Group.getByName(casGrp) then bc:engageZone(choice,casGrp) end
+			end
+		end,{},timer.getTime()+3)
+	end,
+	canExecute=function()
+		if timer.getTime()-lastairstrike2_COOLDOWN<airstrike2_COOLDOWN then return false end
+		if Group.getByName(casGrp) then return false end
+		local triggers={'Paphos','Incirlik'}
+		if math.random(1,100)<70 then return false end
+		for _,v in ipairs(triggers) do
+			if bc:getZoneByName(v).side==2 and not bc:getZoneByName(v).suspended then return true end
+		end
+		return false
+	end
+})
+mc:trackMission({
+	title = "Intercept enemy airstrike",
+	description = "Enemy aircraft conducting an airstrike from the North-South\nDestroy them before they get in range.",
+	messageStart = "New mission: Intercept enemy airstrike",
+	messageEnd =function() lastairstrike_COOLDOWN=timer.getTime() return "Mission ended: Intercept enemy airstrike" end,
+	startAction = function()
+         if not missionCompleted and trigger.misc.getUserFlag(180) == 0 then
+            trigger.action.outSoundForCoalition(2, "ding.ogg")
+        end
+    end,
+    endAction = function()
+         if not missionCompleted and trigger.misc.getUserFlag(180) == 0 then
+            trigger.action.outSoundForCoalition(2, "cancel.ogg")
+        end
+    end,
+	isActive = function()
+		local g1 = Group.getByName('evt-CAS2')
+		local g2 = Group.getByName('evt-CAScw2')
+		if g1 or g2 then
+			return true
+		else
+			return false
+		end
+	end
+})
+-------------------------------------------- End of CAS 2 -----------------------------------------
 ------------------------------------------------ Bomber event ---------------------------------------------
 local bomb_COOLDOWN = 1800
 local lastbomb_COOLDOWN  = -bomb_COOLDOWN
 Group.getByName('evt-bomber'):destroy()
 local escGrp = Era=='Coldwar' and 'EscortBomberCW' or 'EscortBomber'
+
 evc:addEvent({
 	id='bomb',
 	action=function()
 		RespawnGroup('evt-bomber')
 		RegisterGroupTarget('evt-bomber',500,'Intercept enemy bombers')
 		timer.scheduleFunction(function()
-			startBomberAttack()
 			RespawnGroup(escGrp)
 			timer.scheduleFunction(function()
+				local tgts = {
+					'Hatay','Abu al-Duhur','Hama','Jirah','Aleppo','Taftanaz','Palmyra',
+					'Bassel Al-Assad','Hotel','Juliett','Factory','India','Military Base','Palmyra'
+				}
+				local validtgts = {}
+				for _,v in ipairs(tgts) do
+					if bc:getZoneByName(v).side == 2 and not bc:getZoneByName(v).suspended then
+						validtgts[#validtgts+1] = v
+					end
+				end
+				if #validtgts > 0 then
+					local choice = validtgts[math.random(1,#validtgts)]
+					if Group.getByName('evt-bomber') then
+						bc:engageZone(choice,'evt-bomber',AI.Task.WeaponExpend.ALL)
+						env.info('Bomber attacking '..choice)
+					end
+				end
 				local bomber=Group.getByName('evt-bomber')
 				local escort=Group.getByName(escGrp)
 				if bomber and escort then
@@ -3231,13 +3337,13 @@ evc:addEvent({
 						}
 					})
 				end
-			end,{},timer.getTime()+5)
+			end,{},timer.getTime()+1)
 		end,{},timer.getTime()+10)
 	end,
 	canExecute=function()
 		if timer.getTime()-lastbomb_COOLDOWN<bomb_COOLDOWN then return false end
 		if Group.getByName('evt-bomber') then return false end
-		if math.random(1,100)<70 then return false end
+		--if math.random(1,100)<70 then return false end
 		local trg={'Abu al-Duhur','Aleppo','Hama','Tabqa','Palmyra'}
 		for _,v in ipairs(trg) do
 			if bc:getZoneByName(v).side==2 and not bc:getZoneByName(v).suspended then return true end
@@ -3246,38 +3352,6 @@ evc:addEvent({
 	end
 })
 
-function startBomberAttack() -- called from bomber groups waypoint actions
-	local tgts = {
-		'Hatay',
-		'Abu al-Duhur',
-		'Hama',
-		'Jirah',
-		'Aleppo',
-		'Taftanaz',
-		'Palmyra',
-		'Bassel Al-Assad',
-		'Hotel',
-		'Juliett',
-		'Factory',
-		'India',
-		'Military Base',
-		'Palmyra',
-	}
-	local validtgts = {}
-	for _,v in ipairs(tgts) do
-		if bc:getZoneByName(v).side == 2 and not bc:getZoneByName(v).suspended then
-			table.insert(validtgts, v)
-		end
-	end
-	if #validtgts ~= 0 then
-		local die = math.random(1,#validtgts)
-		local choice = validtgts[die]
-		
-		if Group.getByName('evt-bomber') then
-			bc:engageZone(choice, 'evt-bomber',  AI.Task.WeaponExpend.HALF)
-		end
-	end
-end
 mc:trackMission({
 	title = "Intercept Bombers",
 	description = "Enemy bombers spotted to the north-east\nDestroy them before they get in range.",
@@ -3300,6 +3374,179 @@ mc:trackMission({
 })
 
 -------------------------------------------- End of Bomber event ------------------------------------------
+
+------------------------------------------------ Bomber 2 event ---------------------------------------------
+local bomb2_COOLDOWN = 1800
+local lastbomb2_COOLDOWN  = -bomb2_COOLDOWN
+Group.getByName('evt-bomber2'):destroy()
+local escGrp = Era=='Coldwar' and 'EscortBomber2CW' or 'EscortBomber2'
+
+evc:addEvent({
+	id='bomb',
+	action=function()
+		RespawnGroup('evt-bomber2')
+		RegisterGroupTarget('evt-bomber2',500,'Intercept enemy bombers')
+		timer.scheduleFunction(function()
+			RespawnGroup(escGrp)
+			timer.scheduleFunction(function()
+				local tgts = {
+					'Paphos','Ercan','Gecitkale','Pinarbashi','Larnaca','Incirlik'
+				}
+				local validtgts = {}
+				for _,v in ipairs(tgts) do
+					if bc:getZoneByName(v).side == 2 and not bc:getZoneByName(v).suspended then
+						validtgts[#validtgts+1] = v
+					end
+				end
+				if #validtgts > 0 then
+					local choice = validtgts[math.random(1,#validtgts)]
+					if Group.getByName('evt-bomber2') then
+						bc:engageZone(choice,'evt-bomber2',AI.Task.WeaponExpend.ALL)
+						env.info('Bomber2 attacking '..choice)
+					end
+				end
+				local bomber=Group.getByName('evt-bomber2')
+				local escort=Group.getByName(escGrp)
+				if bomber and escort then
+					local c=escort:getController()
+					c:popTask()
+					c:pushTask({
+						id='Escort',
+						params={
+						groupId=bomber:getID(),
+						pos={x=-20,y=2000,z=50},
+						lastWptIndexFlag=false,
+						lastWptIndex=-1,
+						engagementDistMax=12000,
+						targetTypes={'Air'}
+						}
+					})
+				end
+			end,{},timer.getTime()+1)
+		end,{},timer.getTime()+10)
+	end,
+	canExecute=function()
+		if timer.getTime()-lastbomb2_COOLDOWN<bomb2_COOLDOWN then return false end
+		if Group.getByName('evt-bomber') then return false end
+		if Group.getByName('evt-bomber2') then return false end
+		--if math.random(1,100)<70 then return false end
+		local trg={'Paphos','Incirlik'}
+		for _,v in ipairs(trg) do
+			if bc:getZoneByName(v).side==2 and not bc:getZoneByName(v).suspended then return true end
+		end
+		return false
+	end
+})
+
+mc:trackMission({
+	title = "Intercept Bombers",
+	description = "Enemy bombers spotted north of Cyprus\nDestroy them before they get in range.",
+	messageStart = "New mission: Intercept Bombers",
+	messageEnd=function() lastbomb2_COOLDOWN=timer.getTime() return "Mission ended: Intercept Bombers" end,
+	startAction = function()
+         if not missionCompleted and trigger.misc.getUserFlag(180) == 0 then
+            trigger.action.outSoundForCoalition(2, "ding.ogg")
+        end
+    end,
+    endAction = function()
+         if not missionCompleted and trigger.misc.getUserFlag(180) == 0 then
+            trigger.action.outSoundForCoalition(2, "cancel.ogg")
+        end
+    end,
+	isActive = function()
+		local gr = Group.getByName('evt-bomber2')
+		if gr then return true else return false end
+	end
+})
+
+-------------------------------------------- End of Bomber 2 event ------------------------------------------
+
+------------------------------------------------ Bomber 2 event ---------------------------------------------
+local bomb3_COOLDOWN = 1800
+local lastbomb3_COOLDOWN  = -bomb3_COOLDOWN
+Group.getByName('evt-bomber3'):destroy()
+local escGrp = Era=='Coldwar' and 'EscortBomber3CW' or 'EscortBomber3'
+
+evc:addEvent({
+	id='bomb',
+	action=function()
+		RespawnGroup('evt-bomber3')
+		RegisterGroupTarget('evt-bomber3',500,'Intercept enemy bombers')
+		timer.scheduleFunction(function()
+			RespawnGroup(escGrp)
+			timer.scheduleFunction(function()
+				local tgts = {
+					'Beirut','An Nasiriyah','Damascus','Thalah','King Hussein Air College','Prince Hassan', 'Ramat David'}
+				local validtgts = {}
+				for _,v in ipairs(tgts) do
+					if bc:getZoneByName(v).side == 2 and not bc:getZoneByName(v).suspended then
+						validtgts[#validtgts+1] = v
+					end
+				end
+				if #validtgts > 0 then
+					local choice = validtgts[math.random(1,#validtgts)]
+					if Group.getByName('evt-bomber3') then
+						bc:engageZone(choice,'evt-bomber3',AI.Task.WeaponExpend.ALL)
+						env.info('Bomber2 attacking '..choice)
+					end
+				end
+				local bomber=Group.getByName('evt-bomber3')
+				local escort=Group.getByName(escGrp)
+				if bomber and escort then
+					local c=escort:getController()
+					c:popTask()
+					c:pushTask({
+						id='Escort',
+						params={
+						groupId=bomber:getID(),
+						pos={x=-20,y=2000,z=50},
+						lastWptIndexFlag=false,
+						lastWptIndex=-1,
+						engagementDistMax=12000,
+						targetTypes={'Air'}
+						}
+					})
+				end
+			end,{},timer.getTime()+1)
+		end,{},timer.getTime()+10)
+	end,
+	canExecute=function()
+		if timer.getTime()-lastbomb3_COOLDOWN<bomb3_COOLDOWN then return false end
+		if Group.getByName('evt-bomber') then return false end
+		if Group.getByName('evt-bomber2') then return false end
+		if Group.getByName('evt-bomber3') then return false end
+		--if math.random(1,100)<70 then return false end
+		local trg={'An Nasiriyah','Beirut'}
+		for _,v in ipairs(trg) do
+			if bc:getZoneByName(v).side==2 and not bc:getZoneByName(v).suspended then return true end
+		end
+		return false
+	end
+})
+
+mc:trackMission({
+	title = "Intercept Bombers",
+	description = "Enemy bombers spotted north of Cyprus\nDestroy them before they get in range.",
+	messageStart = "New mission: Intercept Bombers",
+	messageEnd=function() lastbomb2_COOLDOWN=timer.getTime() return "Mission ended: Intercept Bombers" end,
+	startAction = function()
+         if not missionCompleted and trigger.misc.getUserFlag(180) == 0 then
+            trigger.action.outSoundForCoalition(2, "ding.ogg")
+        end
+    end,
+    endAction = function()
+         if not missionCompleted and trigger.misc.getUserFlag(180) == 0 then
+            trigger.action.outSoundForCoalition(2, "cancel.ogg")
+        end
+    end,
+	isActive = function()
+		local gr = Group.getByName('evt-bomber3')
+		if gr then return true else return false end
+	end
+})
+
+-------------------------------------------- End of Bomber 3 event ------------------------------------------
+
 ------------------------------------------------- Ship event ----------------------------------------------
 local Ship_COOLDOWN = 1800
 local lastShip_COOLDOWN   = -Ship_COOLDOWN
@@ -3572,6 +3819,11 @@ evc:addEvent({
 		end
 		RegisterScoreTarget('EnemyHideout',tgt,500,'Enemy hideout')
 		ActiveMission['EnemyHideout'] = true
+	local p = tgt:GetDCSObject() and tgt:GetDCSObject():getPoint()
+		if p then
+			missionMarkId = missionMarkId + 1
+			trigger.action.markToCoalition(missionMarkId,"Strike on enemy hideout",p,2,false,false)
+		end
 	end,
 	canExecute = function()
 	if ActiveMission['EnemyHideout'] then return false end
@@ -3628,6 +3880,11 @@ evc:addEvent({
 		end
 		RegisterScoreTarget('TaftanazWarehouse',tgt,500,'Taftanaz Warehouse')
 		ActiveMission['TaftanazWarehouse'] = true
+	local p = tgt:GetDCSObject() and tgt:GetDCSObject():getPoint()
+		if p then
+			missionMarkId = missionMarkId + 1
+			trigger.action.markToCoalition(missionMarkId,'Strike on Taftanaz supply warehouse',p,2,false,false)
+		end
 	end,
 	canExecute = function()
 	if ActiveMission['TaftanazWarehouse'] then return false end
@@ -3681,6 +3938,11 @@ evc:addEvent({
 		end
 		RegisterScoreTarget('SA11WareHouse',tgt,500,'SA11 WareHouse')
 		ActiveMission['SA11WareHouse'] = true
+	local p = tgt:GetDCSObject() and tgt:GetDCSObject():getPoint()
+		if p then
+			missionMarkId = missionMarkId + 1
+			trigger.action.markToCoalition(missionMarkId,'Strike on Abu al-Duhur SA-11 supply warehouse',p,2,false,false)
+		end
 	end,
 	canExecute = function()
 	if ActiveMission['SA11WareHouse'] then return false end
@@ -3692,7 +3954,7 @@ evc:addEvent({
 })
 
 mc:trackMission({
-	title = "Strike on Abu al-Duhur supply warehouse",
+	title = "Strike on Abu al-Duhur SA-11 supply warehouse",
 	description =
 [[Abu al-Duhur supply for the SA-11 at papa has been found,
 Take it out to halt the supplies going there.
@@ -3733,6 +3995,11 @@ evc:addEvent({
 		end
 		RegisterScoreTarget('IncirlikWarehouse',tgt,500,'Incirlik Warehouse')
 		ActiveMission['IncirlikWarehouse'] = true
+	local p = tgt:GetDCSObject() and tgt:GetDCSObject():getPoint()
+		if p then
+			missionMarkId = missionMarkId + 1
+			trigger.action.markToCoalition(missionMarkId,'Strike on Incirlik Defence supply warehouse',p,2,false,false)
+		end
 	end,
 	canExecute = function()
 	if ActiveMission['IncirlikWarehouse'] then return false end
@@ -3901,6 +4168,11 @@ evc:addEvent({
 		end
 		RegisterScoreTarget('SA5Warehouse',tgt,500,'SA5 Warehouse')
 		ActiveMission['SA5Warehouse'] = true
+	local p = tgt:GetDCSObject() and tgt:GetDCSObject():getPoint()
+		if p then
+			missionMarkId = missionMarkId + 1
+			trigger.action.markToCoalition(missionMarkId,"Strike on Palmyra's SA-5 storage parts",p,2,false,false)
+		end
 	end,
 	canExecute = function()
 	if ActiveMission['SA5Warehouse'] then return false end
@@ -4050,6 +4322,7 @@ evc:addEvent({
 	end,
 	canExecute = function()
 		if bc:getZoneByName('Abu al-Duhur').side ~= 2 then return false end
+		if bc:getZoneByName('Shayrat').side ~= 1 then return false end
 		if Group.getByName('StrikeTargetGroup2') then return false end
 		if CustomFlags["StrikeTarget2"] then return false end
 		return true
@@ -4060,13 +4333,13 @@ mc:trackMission({
 	title = "Strike the general",
 description = 
 [[We have the location on one of the generals. 
-West of Paregaan, Take him out!
+South of Hama, Take him out!
 
 Coordinates:
-MGRS: 40 R CS 89440 02522
-Lat Long: N 28°02'36" E 55°52'30"
-Lat long Decimal Minutes: N 28°02.605' E 55°52.507'
-Elevation: 2272 feet
+MGRS: 37 S BU 92159 66783
+Lat Long: N 34°55'20" E 36°43'28"
+Lat long Decimal Minutes: N 34°55.334' E 36°43.481'
+Elevation: 1333 feet
 
 Reward: 750
 
@@ -4080,6 +4353,7 @@ Destroy the house and whoever is nearby.]],
         end
     end,
     endAction = function()
+		RespawnGroup('Red SAM SA-3 Fixed Event')
 	end,
 	isActive = function()
 		if CustomFlags["StrikeTarget2"] then return false end
@@ -4087,6 +4361,105 @@ Destroy the house and whoever is nearby.]],
 		return false
 	end
 })
+
+-------------------------------- Destroy EWR --------------------------------
+evc:addEvent({
+	id='EWRSouth',
+	action = function()
+		ActiveMission['EWRSouth'] = true
+		RegisterGroupTarget('Red EWR-south Fixed',1000,'Destroy enemy EWR','EWRSouth')
+	end,
+	canExecute = function()
+		if not Group.getByName('Red EWR-south Fixed') then return false end 
+		if bc:getZoneByName('Beirut').side ~= 2 then return false end
+		if bc:getZoneByName('Ben Gurion').side ~= 1 then return false end
+		if CustomFlags["EWRSouth"] then return false end
+		if ActiveMission['EWRSouth'] then return false end
+		return true
+	end
+})
+
+mc:trackMission({
+	title = "Deep strike mission on enemy EWR",
+description = 
+[[We have the location of the enemy EWR, it's important that
+we destroy it before we continue our advance. 
+
+Location is south of Ben Gurion airport.
+
+Coordinates:
+MGRS: 36 R XA 77724 23705
+Lat Long: N 31°50'06" E 34°52'41"
+Lat long Decimal Minutes: N 31°50.111' E 34°52.684'
+Elevation: 321 feet
+
+Reward: 1000]],
+
+	messageStart = "New strike mission: Behind enemy lines.",
+	messageEnd = "Strike mission ended: Behind enemy lines.",
+    startAction = function()
+         if not missionCompleted and trigger.misc.getUserFlag(180) == 0 then
+            trigger.action.outSoundForCoalition(2, "ding.ogg")
+        end
+    end,
+    endAction = function()
+	end,
+	isActive = function()
+		if CustomFlags["EWRSouth"] then return false end
+		if ActiveMission['EWRSouth'] then return true end
+		return false
+	end
+})
+
+-------------------------------- Destroy EWR 2 --------------------------------
+evc:addEvent({
+	id='EWRSA5',
+	action = function()
+		ActiveMission['EWRSA5'] = true
+		RegisterGroupTarget('Red EWR-southeast Fixed',1000,'Destroy enemy EWR','EWRSA5')
+	end,
+	canExecute = function()
+		if not Group.getByName('Red EWR-southeast Fixed') then return false end 
+		if bc:getZoneByName('Abu al-Duhur').side ~= 2 and bc:getZoneByName('Hama').side ~= 2 then return false end
+		if bc:getZoneByName('SA-5').side ~= 1 then return false end
+		if CustomFlags["EWRSA5"] then return false end
+		if ActiveMission['EWRSA5'] then return false end
+		return true
+	end
+})
+
+mc:trackMission({
+	title = "Deep strike mission on enemy EWR",
+description = 
+[[We have the location of the enemy EWR, it's important that
+we destroy it before we continue our advance. 
+
+Location is 30NM south east of the SA-5.
+
+Coordinates:
+MGRS: 37 S EU 31088 22294
+Lat Long: N 34°32'30" E 39°20'19"
+Lat long Decimal Minutes: N 34°32.513' E 39°20.328'
+Elevation: 1251 feet
+
+Reward: 1000]],
+
+	messageStart = "New strike mission: Behind enemy lines.",
+	messageEnd = "Strike mission ended: Behind enemy lines.",
+    startAction = function()
+         if not missionCompleted and trigger.misc.getUserFlag(180) == 0 then
+            trigger.action.outSoundForCoalition(2, "ding.ogg")
+        end
+    end,
+    endAction = function()
+	end,
+	isActive = function()
+		if CustomFlags["EWRSA5"] then return false end
+		if ActiveMission['EWRSA5'] then return true end
+		return false
+	end
+})
+-------------------------------- Destroy artillery --------------------------------
 
 mc:trackMission({
     title = "Destroy artillery",
@@ -4516,8 +4889,16 @@ mc:trackMission({
             local reward = capTargetPlanes * 100
             local pname  = capWinner
             bc.playerContributions[2][pname] = (bc.playerContributions[2][pname] or 0) + reward
-            bc:addTempStat(pname,'CAP mission',1)
-            trigger.action.outTextForCoalition(2,"["..pname.."] completed the CAP mission!\nReward pending: "..reward.." credits (land to redeem).",20)
+            local jp = bc.jointPairs and bc.jointPairs[pname]
+            if jp and bc:_jointPartnerAlive(pname) and bc:_jointPartnerAlive(jp) and bc.playerContributions[2][jp] ~= nil then
+                bc.playerContributions[2][jp] = (bc.playerContributions[2][jp] or 0) + reward
+                bc:addTempStat(jp,'CAP mission (Joint mission)',1)
+                bc:addTempStat(pname,'CAP mission (Joint mission)',1)
+                trigger.action.outTextForCoalition(2,"["..pname.."] and ["..jp.."] completed the CAP mission!\nReward pending: "..reward.." credits each (land to redeem).",20)
+            else
+                bc:addTempStat(pname,'CAP mission',1)
+                trigger.action.outTextForCoalition(2,"["..pname.."] completed the CAP mission!\nReward pending: "..reward.." credits (land to redeem).",20)
+            end
             capMissionCooldownUntil = timer.getTime() + 900
         end
         capMissionTarget = nil
@@ -4569,12 +4950,20 @@ mc:trackMission({
 	end,
     endAction = function()
         if casWinner then
-            local reward = casTargetKills*50
+            local reward = casTargetKills*30
             local pname  = casWinner
             bc.playerContributions[2][pname] = (bc.playerContributions[2][pname] or 0) + reward
-            bc:addTempStat(pname,'CAS mission',1)
-
-            trigger.action.outTextForCoalition(2,'['..pname..'] completed the CAS mission!\nReward pending: '..reward..' credits (land to redeem).',20)
+            local jp = bc.jointPairs and bc.jointPairs[pname]
+            if jp and bc:_jointPartnerAlive(pname) and bc:_jointPartnerAlive(jp) and bc.playerContributions[2][jp] ~= nil then
+                bc.playerContributions[2][jp] = (bc.playerContributions[2][jp] or 0) + reward
+            	bc:addTempStat(jp,'CAS mission (Joint mission)',1)
+				bc:addTempStat(pname,'CAS mission (Joint mission)',1)
+				trigger.action.outTextForCoalition(2,'['..pname..'] and ['..jp..'] completed the CAS mission!\nReward pending: '..reward..' credits each (land to redeem).',20)
+			else
+            	bc:addTempStat(pname,'CAS mission',1)
+				trigger.action.outTextForCoalition(2,'['..pname..'] completed the CAS mission!\nReward pending: '..reward..' credits (land to redeem).',20)
+			end
+            
             casMissionCooldownUntil = timer.getTime()+900
         end
         casMissionTarget  = nil

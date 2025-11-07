@@ -67,30 +67,30 @@ CTLDPrices = {
 }
 CTLD_DEFAULT_PRICE = 0
 
-Foothold_ctld:AddTroopsCargo("Engineer soldier",{"CTLD_TROOPS_Engineers"},CTLD_CARGO.Enum.ENGINEERS,1,80,5)
-Foothold_ctld:AddCratesCargo("Mephisto",{"CTLD_CARGO_Mephisto"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500,5, "ANTI TANK")
-Foothold_ctld:AddCratesCargo("Humvee",{"CTLD_CARGO_HMMWV"},CTLD_CARGO.Enum.VEHICLE,2,1000,5, "ANTI TANK")
-Foothold_ctld:AddCratesCargo("Bradly",{"CTLD_CARGO_Bradly"},CTLD_CARGO.Enum.VEHICLE,2,1500,5, "ANTI TANK")
-Foothold_ctld:AddCratesCargoNoMove("L118",{"CTLD_CARGO_L118"},CTLD_CARGO.Enum.VEHICLE,1,700,5, "Support")
-Foothold_ctld:AddCratesCargoNoMove("Ammo Truck",{"CTLD_CARGO_AmmoTruck"},CTLD_CARGO.Enum.VEHICLE,2,800,5, "Support")
-Foothold_ctld:AddCratesCargo("Humvee scout",{"CTLD_CARGO_Scout"},CTLD_CARGO.Enum.VEHICLE,2,1000,5, "Support")
-Foothold_ctld:AddTroopsCargo("Squad 8",{"CTLD_TROOPS_ATS"},CTLD_CARGO.Enum.TROOPS,8,80,5)
-Foothold_ctld:AddTroopsCargo("Platoon 16",{"CTLD_TROOPS_Platon16"},CTLD_CARGO.Enum.TROOPS,16,80,5)
-Foothold_ctld:AddTroopsCargo("Platoon 32",{"CTLD_TROOPS_Platon1"},CTLD_CARGO.Enum.TROOPS,32,80,5)
---Foothold_ctld:AddTroopsCargo("Structure demolition expert",{"Demolition Expert"},CTLD_CARGO.Enum.TROOPS,1,80,5)
-Foothold_ctld:AddTroopsCargo("Anti-Air Soldiers",{"CTLD_TROOPS_AA"},CTLD_CARGO.Enum.TROOPS,5,80,5)
-Foothold_ctld:AddTroopsCargo("Mortar Squad",{"CTLD_TROOPS_MRS"},CTLD_CARGO.Enum.TROOPS,6,80,5)
-Foothold_ctld:AddCratesCargo("Linebacker",{"CTLD_CARGO_Linebacker"},CTLD_CARGO.Enum.VEHICLE,2,1500,5, "SAM/AAA")
+Foothold_ctld:AddTroopsCargo("Engineer soldier",{"CTLD_TROOPS_Engineers"},CTLD_CARGO.Enum.ENGINEERS,1,80,10)
+Foothold_ctld:AddCratesCargo("Mephisto",{"CTLD_CARGO_Mephisto"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500,10, "ANTI TANK")
+Foothold_ctld:AddCratesCargo("Humvee",{"CTLD_CARGO_HMMWV"},CTLD_CARGO.Enum.VEHICLE,2,1000,10, "ANTI TANK")
+Foothold_ctld:AddCratesCargo("Bradly",{"CTLD_CARGO_Bradly"},CTLD_CARGO.Enum.VEHICLE,2,1500,10, "ANTI TANK")
+Foothold_ctld:AddCratesCargoNoMove("L118",{"CTLD_CARGO_L118"},CTLD_CARGO.Enum.VEHICLE,1,700,12, "Support")
+Foothold_ctld:AddCratesCargoNoMove("Ammo Truck",{"CTLD_CARGO_AmmoTruck"},CTLD_CARGO.Enum.VEHICLE,2,800,10, "Support")
+Foothold_ctld:AddCratesCargo("Humvee scout",{"CTLD_CARGO_Scout"},CTLD_CARGO.Enum.VEHICLE,2,1000,10, "Support")
+Foothold_ctld:AddTroopsCargo("Squad 8",{"CTLD_TROOPS_ATS"},CTLD_CARGO.Enum.TROOPS,8,80,10)
+Foothold_ctld:AddTroopsCargo("Platoon 16",{"CTLD_TROOPS_Platon16"},CTLD_CARGO.Enum.TROOPS,16,80,10)
+Foothold_ctld:AddTroopsCargo("Platoon 32",{"CTLD_TROOPS_Platon1"},CTLD_CARGO.Enum.TROOPS,32,80,10)
+--Foothold_ctld:AddTroopsCargo("Structure demolition expert",{"Demolition Expert"},CTLD_CARGO.Enum.TROOPS,1,80,10)
+Foothold_ctld:AddTroopsCargo("Anti-Air Soldiers",{"CTLD_TROOPS_AA"},CTLD_CARGO.Enum.TROOPS,5,80,10)
+Foothold_ctld:AddTroopsCargo("Mortar Squad",{"CTLD_TROOPS_MRS"},CTLD_CARGO.Enum.TROOPS,6,80,10)
+Foothold_ctld:AddCratesCargo("Linebacker",{"CTLD_CARGO_Linebacker"},CTLD_CARGO.Enum.VEHICLE,2,1500,10, "SAM/AAA")
 --Foothold_ctld:AddCratesCargo("Tank Abrahams",{"CTLD_CARGO_TANK"},CTLD_CARGO.Enum.VEHICLE,5,1600,1, "ANTI TANK")
-Foothold_ctld:AddCratesCargo("Vulcan",{"CTLD_CARGO_Vulcan"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500,5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove("HAWK Site",{"CTLD_CARGO_HAWKSite"},CTLD_CARGO.Enum.FOB,4,1900,5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove("Nasam Site",{"CTLD_CARGO_NasamsSite"},CTLD_CARGO.Enum.FOB,4,1900,5, "SAM/AAA")
-Foothold_ctld:AddCratesCargo("FARP",{"CTLD_TROOP_FOB"},CTLD_CARGO.Enum.FOB,3,1500,9)
-Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM STR", {"CTLD_CARGO_IRISTSLM_STR"},CTLD_CARGO.Enum.FOB, 1, 2500, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM LN", {"CTLD_CARGO_IRISTSLM-LN"},CTLD_CARGO.Enum.FOB, 1, 3500, 10, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM C2", {"CTLD_CARGO_IRISTSLM_C2"},CTLD_CARGO.Enum.FOB, 1, 1900, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM System", {"CTLD_CARGO_IRISTSLM_System"}, CTLD_CARGO.Enum.FOB, 3, 2800, 5, "SAM/AAA")
-Foothold_ctld:AddCratesCargoNoMove("C-RAM", {"CTLD_CARGO_CRAM"}, CTLD_CARGO.Enum.FOB, 2, 1000, 6, "SAM/AAA")
+Foothold_ctld:AddCratesCargo("Vulcan",{"CTLD_CARGO_Vulcan"}, CTLD_CARGO.Enum.VEHICLE, 2, 1500,10, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("HAWK Site",{"CTLD_CARGO_HAWKSite"},CTLD_CARGO.Enum.FOB,4,1900,10, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("Nasam Site",{"CTLD_CARGO_NasamsSite"},CTLD_CARGO.Enum.FOB,4,1900,10, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM STR", {"CTLD_CARGO_IRISTSLM_STR"},CTLD_CARGO.Enum.FOB, 1, 2500, 10, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM LN", {"CTLD_CARGO_IRISTSLM-LN"},CTLD_CARGO.Enum.FOB, 1, 3500, 15, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM C2", {"CTLD_CARGO_IRISTSLM_C2"},CTLD_CARGO.Enum.FOB, 1, 1900, 10, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("IRIS T SLM System", {"CTLD_CARGO_IRISTSLM_System"}, CTLD_CARGO.Enum.FOB, 3, 2800, 10, "SAM/AAA")
+Foothold_ctld:AddCratesCargoNoMove("C-RAM", {"CTLD_CARGO_CRAM"}, CTLD_CARGO.Enum.FOB, 2, 1000, 10, "SAM/AAA")
+Foothold_ctld:AddCratesCargo("FARP",{"CTLD_TROOP_FOB"},CTLD_CARGO.Enum.FOB,3,1500,10, "FARP")
 
 
 -- How many of the units loaded from the save file should be spawned next time?
@@ -123,7 +123,7 @@ local MAX_AT_SPAWN = {
 }
 -- How many farps do you want to load? 
 -- Oldest will not be spawned if the number is exceded.
-local MAX_SAVED_FARPS      = 2
+local MAX_SAVED_FARPS      = 3
 
 Group.getByName('CTLD_TROOPS_Engineers'):destroy()
 Group.getByName('CTLD_CARGO_Mephisto'):destroy()
@@ -388,8 +388,8 @@ function Foothold_ctld:OnAfterCratesBuildStarted(From, Event, To, Group, Unit, C
     local obj          = self:_FindCratesCargoObject(CargoName)
     if not obj then return end
 
-    if obj:GetStock() > 0 then
-        self:I(string.format("[RESERVE] stock already >0 for %s (no action)", CargoName))
+    if obj:GetStock() >= 5 then
+        self:I(string.format("[RESERVE] stock already >=5 for %s (no action)", CargoName))
         return
     end
     local oldestIdx, victim, oldestTs = selectOldestUnit(GroundUnits, CargoName)
@@ -472,8 +472,6 @@ function Foothold_ctld:OnAfterCratesBuild(From, Event, To, Group, Unit, Vehicle)
             g.Stock = currentStock
         end
     end
-
-    self:_OnStockChanged()
 end
 
 function Foothold_ctld:OnAfterCratesPickedUp(From, Event, To, Group, Unit, Cargo)
@@ -486,7 +484,7 @@ function Foothold_ctld:OnAfterCratesPickedUp(From, Event, To, Group, Unit, Cargo
         if cargoName and not processed[cargoName] then
             processed[cargoName] = true
             local cargoObject = self:_FindCratesCargoObject(cargoName)
-            if cargoObject and cargoObject:GetStock() <= 0 then
+            if cargoObject and cargoObject:GetStock() < 5 then
                 local oldestIdx, victim, oldestTs = selectOldestUnit(GroundUnits, cargoName)
                 if oldestIdx and victim then
                     self:I(string.format("[RESERVE] DELETE oldest %s ts=%f (group=%s) after load", cargoName, oldestTs, victim.groupName))
@@ -507,8 +505,6 @@ function Foothold_ctld:OnAfterCratesPickedUp(From, Event, To, Group, Unit, Cargo
             end
         end
     end
-
-    self:_OnStockChanged()
 end
 
 if lfs then
@@ -623,57 +619,44 @@ Foothold_ctld:__Load(10)
 
 function Foothold_ctld:OnAfterLoaded(From, Event, To, LoadedGroups)
   self:I("***** Groups Loaded! *****")
-  local function normalizeName(name)
-    if type(name) ~= "string" then
-      name = tostring(name)
-    end
-    if self._NormalizeCargoName then
-      local ok, normalized = pcall(self._NormalizeCargoName, self, name)
-      if ok and normalized then
-        return normalized
-      end
-    end
-    return name:gsub("%s*%[[^%]]+%]$", "")
-  end
 
-  local maxAtSpawnByNormalized = {}
+  local MaxAtSpawn = {}
   for rawName, limit in pairs(MAX_AT_SPAWN) do
-    local normalized = normalizeName(rawName)
-    if normalized ~= "" then
-      if maxAtSpawnByNormalized[normalized] then
-        if limit > maxAtSpawnByNormalized[normalized] then
-          maxAtSpawnByNormalized[normalized] = limit
+    local k=tostring(rawName)
+    if k~="" then
+      if MaxAtSpawn[k] then
+        if limit>MaxAtSpawn[k] then
+          MaxAtSpawn[k]=limit
         end
       else
-        maxAtSpawnByNormalized[normalized] = limit
+        MaxAtSpawn[k]=limit
       end
     end
   end
 
-  for i,_t in ipairs(LoadedGroups) do
-    local gName=_t.Group:GetName() or "unknown"
-    local ts=_t.TimeStamp or timer.getTime()
-    local cName=tostring(_t.CargoName)
-    local normalizedName=normalizeName(cName)
-    local cr=self:_FindCratesCargoObject(cName)
-    if cr then
-      table.insert(GroundUnits,{groupName=gName,Timestamp=ts,Group=_t.Group,CargoName=cName,NormalizedName=normalizedName,Stock=cr:GetStock() or 0})
-    end
-    local tr=self:_FindTroopsCargoObject(cName)
-    if tr then
-      table.insert(TroopUnits,{groupName=gName,Timestamp=ts,Group=_t.Group,CargoName=cName,NormalizedName=normalizedName,Stock=tr:GetStock() or 0})
-    end
+for i,_t in ipairs(LoadedGroups) do
+  local gName=_t.Group:GetName() or "unknown"
+  local ts=_t.TimeStamp or timer.getTime()
+  local cName=tostring(_t.CargoName)
+  local cr=self:_FindCratesCargoObject(cName)
+  if cr then
+    table.insert(GroundUnits,{groupName=gName,Timestamp=ts,Group=_t.Group,CargoName=cName,Stock=cr:GetStock() or 0})
   end
+  local tr=self:_FindTroopsCargoObject(cName)
+  if tr then
+    table.insert(TroopUnits,{groupName=gName,Timestamp=ts,Group=_t.Group,CargoName=cName,Stock=tr:GetStock() or 0})
+  end
+end
 
   local cratesByName={}
   for _,d in ipairs(GroundUnits) do
-    local k=d.NormalizedName or normalizeName(d.CargoName)
+    local k=d.CargoName
     cratesByName[k]=cratesByName[k] or {}
     table.insert(cratesByName[k],d)
   end
   for normName,list in pairs(cratesByName) do
     table.sort(list,function(a,b)return a.Timestamp>b.Timestamp end)
-    local maxAllowed=maxAtSpawnByNormalized[normName] or MAX_AT_SPAWN[normName] or 0
+    local maxAllowed=MaxAtSpawn[normName] or MAX_AT_SPAWN[normName] or 0
     local total=#list
     local excess=total-maxAllowed
     for idx,entry in ipairs(list) do
@@ -692,13 +675,13 @@ function Foothold_ctld:OnAfterLoaded(From, Event, To, LoadedGroups)
 
   local troopsByName={}
   for _,d in ipairs(TroopUnits) do
-    local k=d.NormalizedName or normalizeName(d.CargoName)
+    local k=d.CargoName
     troopsByName[k]=troopsByName[k] or {}
     table.insert(troopsByName[k],d)
   end
   for normName,list in pairs(troopsByName) do
     table.sort(list,function(a,b)return a.Timestamp>b.Timestamp end)
-    local maxAllowed=maxAtSpawnByNormalized[normName] or MAX_AT_SPAWN[normName] or 0
+    local maxAllowed=MaxAtSpawn[normName] or MAX_AT_SPAWN[normName] or 0
     local total=#list
     local excess=total-maxAllowed
     for idx,entry in ipairs(list) do
@@ -738,8 +721,6 @@ function Foothold_ctld:OnAfterLoaded(From, Event, To, LoadedGroups)
       self.Loaded_Cargo[uName]=ld
     end
   end
-
-  self:_OnStockChanged()
 end
 
 zoneSet = SET_ZONE:New()
@@ -810,9 +791,9 @@ function Foothold_ctld:OnAfterTroopsPickedUp(From, Event, To, Group, Unit, Cargo
         if Cargo and Cargo.GetName then
             local cargoName = Cargo:GetName()
             local cargoObject = self:_FindTroopsCargoObject(cargoName)
-            if cargoObject and cargoObject:GetStock() <= 0 then
+            if cargoObject and cargoObject:GetStock() < 5 then
                 local predicate = function(entry)
-                    return entry.Stock <= 1
+                    return entry.Stock < 5
                 end
                 local oldestIdx, victim, oldestTs = selectOldestUnit(TroopUnits, cargoName, predicate)
                 if oldestIdx and victim then
@@ -838,7 +819,6 @@ function Foothold_ctld:OnAfterTroopsPickedUp(From, Event, To, Group, Unit, Cargo
     else
         return
     end
-
 end
 
 function Foothold_ctld:OnAfterTroopsExtracted(From, Event, To, Group, Unit, Troops, Troopname)
@@ -921,7 +901,7 @@ function Foothold_ctld:OnAfterTroopsDeployed(From, Event, To, Group, Unit, Troop
         for _, group in ipairs(TroopUnits) do
             if group.CargoName == cargoName
                and group.Timestamp < newTimestamp
-               and group.Stock <= 1
+               and group.Stock < 5
             then
                 if group.Timestamp < oldestTimestamp then
                     oldestTimestamp = group.Timestamp
@@ -1102,6 +1082,7 @@ function CaptureZoneIfNeutral()
                                         break
                                     end
                                 end
+									 
                             end
                             break
                         end
@@ -1267,8 +1248,8 @@ local function RefillMissingWithCountTable()
         if oldStock > 0 then
           local difference = sum - stock0
           local newStock   = oldStock - difference
-          if newStock < 1 then
-            newStock = 0
+          if newStock < 5 then
+            newStock = 5
           end
           cargoObj.Stock = newStock
         end

@@ -9007,7 +9007,7 @@ local reactionsDb = {
 }
 
 -- the functions that handles the reactions, using priorities
-local function executeReactions(gr, ownPos, tgtPos, actTbl, saTbl, skill)
+local function executeReactions(gr, ownPos, tgtPos, actTbl, saTbl, skill, eventCat, eventCls)
     if gr and gr:isExist() and ownPos and tgtPos and actTbl and skill then
         if actTbl and #actTbl>0 then
             for _, aData in ipairs(actTbl) do
@@ -9017,19 +9017,40 @@ local function executeReactions(gr, ownPos, tgtPos, actTbl, saTbl, skill)
                     if AIEN.config.AIEN_debugProcessDetail == true then
                         env.info(("AIEN.executeReactions, action success = " .. tostring(success)))
                     end
-                    if success and success == true then
+                     if success and success == true then
                         if aData.resume == true then trigger.action.groupContinueMoving(gr) end
                         if AIEN.config.message_feed == true then
                             local threatTxt = nil
-                            for _, s in pairs((saTbl and saTbl.targets) or {}) do
-                                local cat = s.category or s.cat or s.objCat
-                                if type(cat) == "number" then
-                                    if cat == 0 then threatTxt = "enemy plane!" break end
-                                    if cat == 1 then threatTxt = "enemy helicopter!" break end
-                                    if cat == 2 then threatTxt = "enemy ground units!" break end
-                                    if cat == 3 then threatTxt = "enemy ship!" break end
-                                    if cat == 4 then threatTxt = "enemy structure!" break end
+                            local function mapCat(c)
+                                if c==0 then return "enemy plane!" end
+                                if c==1 then return "enemy helicopter!" end
+                                if c==2 then return "enemy ground units!" end
+                                if c==3 then return "enemy ship!" end
+                                if c==4 then return "enemy structure!" end
+                            end
+                            if type(eventCat)=="number" then threatTxt = mapCat(eventCat) end
+                                for _, s in pairs((saTbl and saTbl.targets) or {}) do
+                                local cat = s.category or s.cat or s.objCat or s.ucat
+                                if type(cat) ~= "number" then
+                                    local o = s.object or s.obj
+                                    if o and o.isExist and o:isExist() then
+                                        local d = o.getDesc and o:getDesc()
+                                        cat = (d and d.category) or (o.getCategory and o:getCategory())
+                                    end
                                 end
+                                threatTxt = mapCat(cat)
+                                if threatTxt then break end
+                            end
+                            if (not threatTxt) or (threatTxt == "enemy ground units!") then
+                                local cls = eventCls or (saTbl and saTbl.lastHitCls)
+                                if not cls then
+                                    for _, s in pairs((saTbl and saTbl.targets) or {}) do
+                                        cls = s.cls or s.class
+                                        if cls then break end
+                                    end
+                                end
+                                local m = {MBT="enemy tanks!",IFV="enemy IFVs!",APC="enemy APCs!",AAA="enemy AAA!",MANPADS="enemy MANPADS!",SAM="enemy SAM!",ARTY="enemy artillery!",MLRS="enemy MLRS!",LOGI="enemy logistics!",INF="enemy infantry!",RECCE="enemy recon!",ATGM="enemy ATGM!",UNKN="enemy contacts!"}
+                                if cls and m[cls] then threatTxt = m[cls] end
                             end
                             local z = bc:getZoneOfPoint(ownPos)
                             if z and z.zone then
@@ -9049,7 +9070,11 @@ local function executeReactions(gr, ownPos, tgtPos, actTbl, saTbl, skill)
                                     local LL_string = tostringLL(lat, lon, 0, true)
                                     local MGRS_string = tostringMGRS(MGRS ,4)
                                     local txt = ""
-                                    txt = txt .. "C2, " .. tostring(gr:getName()) .. ", report under attack. Coordinates: " .. tostring(LL_string) .. ", " .. tostring(MGRS_string) .. "." .. tostring(aData.message or "")
+                                    if threatTxt then
+                                        txt = txt .. "C2, " .. tostring(gr:getName()) .. ", report under attack by " .. tostring(threatTxt) .. " Coordinates: " .. tostring(LL_string) .. ", " .. tostring(MGRS_string) .. ". " .. tostring(aData.message or "")
+                                    else
+                                        txt = txt .. "C2, " .. tostring(gr:getName()) .. ", report under attack. Coordinates: " .. tostring(LL_string) .. ", " .. tostring(MGRS_string) .. ". " .. tostring(aData.message or "")
+                                    end
                                     local vars = {"text", txt, 30, nil, nil, nil, gr:getCoalition()}
                                     multyTypeMessage(vars)
                                 end
@@ -10574,7 +10599,7 @@ end
                                     -- record the attack, for preventing phases to act for 10 mins
                                     underAttack[group:getID()] = timer.getTime()
     
-                                    choosenAct = executeReactions(group, o_pos, a_pos, bc_ac, db_group.sa, db_group.skill)
+                                    choosenAct = executeReactions(group, o_pos, a_pos, bc_ac, db_group.sa, db_group.skill, s_cat, s_cls)
     
                                 end
     

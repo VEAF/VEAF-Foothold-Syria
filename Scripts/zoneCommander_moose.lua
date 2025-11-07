@@ -1,3 +1,5 @@
+local map = env.mission.theatre
+missionMarkId = missionMarkId or 900000000
 if Era == 'Gulfwar' then Era = 'Coldwar' end
 PATH_CACHE=PATH_CACHE or{}
 Respawn = {}
@@ -371,18 +373,24 @@ do
 		end
 	end
 
-function GetValidCords(zoneName, allowed, attempts)
-	local zone = getMooseZone(zoneName); if not zone then return nil end
-	attempts = attempts or 100
-	for _=1,attempts do
-		local coord = zone:GetRandomCoordinate()
-		if coord then
-			local st = coord:GetSurfaceType()
-			if st ~= land.SurfaceType.RUNWAY and (not allowed or allowed[st]) then return coord end
+	function GetValidCords(zoneName, allowed, attempts)
+		local zone = getMooseZone(zoneName); if not zone then return nil end
+		attempts = attempts or 100
+		for _=1,attempts do
+			local coord = zone:GetRandomCoordinate()
+			if coord then
+				local st = coord:GetSurfaceType()
+				if st ~= land.SurfaceType.RUNWAY and (not allowed or allowed[st]) then return coord end
+			end
 		end
+		if env.mission.theatre=="GermanyCW" then
+			for _=1,attempts do
+				local coord = zone:GetRandomCoordinate()
+				if coord then return coord end
+			end
+		end
+		return nil
 	end
-	return nil
-end
 
 	function CustomZone:getRandomSpawnZone()
 		local spawnZones = collectSubZones(self.name)
@@ -473,7 +481,7 @@ end
 		local tpl = grp and grp:GetTemplate() or UTILS.DeepCopy(_DATABASE.Templates.Groups[grname].Template)
 		if grp and grp:IsAlive() then grp:Destroy() end
 		local g   = SPAWN:NewFromTemplate(tpl,grname,nil,true):InitHiddenOnMFD():Spawn()
-		return g and { name = g:GetName() } or trigger.action.outText("Failed to spawn group: "..grname,10)
+		return g and { name = g:GetName() } or trigger.action.outText("Failed to spawn group: "..grname.." in zone "..self.name,10)
 	end
 
 	local all    = collectSubZones(self.name)
@@ -498,8 +506,8 @@ end
 		end
 	end
 
-	trigger.action.outText("Failed to spawn group: "..grname,5)
-	env.info("Failed to spawn group: "..grname)
+	trigger.action.outText("Failed to spawn group: "..grname.." in zone "..self.name,5)
+	env.info("Failed to spawn group: "..grname.." in zone "..self.name)
 	return nil
 	end
 
@@ -710,10 +718,12 @@ do
 				for _, c in pairs(i.Contacts) do if c.marker then c.marker:Remove() end end
 				i:Stop()
 				zoneIntels[n] = nil
-				intelExpireTimes[n] = nil
-				bc:buildZoneStatusMenuForGroup()
-				local z = bc:getZoneByName(n) if z and z.updateLabel then z:updateLabel() end
 			end
+			intelExpireTimes[n] = nil
+			if intelActiveZones then intelActiveZones[n] = false end
+			bc:buildZoneStatusMenuForGroup()
+			local z = bc:getZoneByName(n)
+			if z and z.updateLabel then z:updateLabel() end
 		end, { zoneName }, intelExpireTimes[zoneName])
 	end
 	
@@ -1953,7 +1963,19 @@ function RegisterStaticGroup(groupKey,source,reward,stat,flagName)
 	MissionGroups[groupKey] = tab
 	if flagName then flag = flagName end
 	if flagName then ActiveMission[flagName] = true end
+	local cnt = #alive
+	for i=1,cnt do
+		local n = alive[i]
+		local obj = StaticObject.getByName(n)
+		local p = obj and obj:getPoint()
+		if p then
+			missionMarkId = missionMarkId + 1
+			local label = stat and ((cnt>1) and (stat.." "..i) or stat) or groupKey
+			trigger.action.markToCoalition(missionMarkId,label,p,2,false,false)
+		end
+	end
 end
+
 
 
 
@@ -1972,6 +1994,18 @@ function RegisterGroupTarget(groupName,reward,stat,flagName)
     end
     MissionGroups[groupName] = tab
     if flagName then flag = flagName end
+    local units = g:getUnits()
+    local cnt = #units
+    local s = getGroupSpeed(g)
+	if g:isExist() and g:getSize()>0 and s < 1 then
+		local u = units[1]
+		if u and u:isExist() then
+			local p = u:getPoint()
+			missionMarkId = missionMarkId + 1
+			local label = stat or groupName
+			trigger.action.markToCoalition(missionMarkId,label,p,2,false,false)
+		end
+	end
 end
 
 function RegisterScoreTarget(flag,obj,reward,stat)
@@ -3236,6 +3270,107 @@ function BattleCommander:new(savepath, updateFrequency, saveFrequency, difficult
 		return obj
 	end
 	
+	function BattleCommander:_jointIsSharing(p)
+		return self.jointPairs and self.jointPairs[p] ~= nil
+	end
+
+	function BattleCommander:_jointPartner(p)
+		return self.jointPairs and self.jointPairs[p] or nil
+	end
+
+	function BattleCommander:_jointEnd(p)
+		local q = self.jointPairs and self.jointPairs[p]
+		if q then
+			self.jointPairs[q] = nil
+			self.jointPairs[p] = nil
+		end
+	end
+
+	function BattleCommander:_jointPartnerAlive(p)
+		local pls = coalition.getPlayers(1)
+		for _, u in pairs(pls) do
+			if u and u:isExist() and u:getLife() > 0 and u:getPlayerName() == p then
+				return true
+			end
+		end
+		pls = coalition.getPlayers(2)
+		for _, u in pairs(pls) do
+			if u and u:isExist() and u:getLife() > 0 and u:getPlayerName() == p then
+				return true
+			end
+		end
+	end
+
+	function BattleCommander:_jointLeave(groupid)
+		self.playerNames = self.playerNames or {}
+		local a = self.playerNames[groupid]
+		if not a then
+			trigger.action.outTextForGroup(groupid, 'No player found for this group', 10)
+			return
+		end
+		local b = self.jointPairs and self.jointPairs[a]
+		if b then
+			self.jointPairs[b] = nil
+			self.jointPairs[a] = nil
+			trigger.action.outTextForGroup(groupid, 'Left joint mission', 15)
+			local gid2 = self.groupByPlayer and self.groupByPlayer[b]
+			if gid2 then
+				trigger.action.outTextForGroup(gid2, '['..a..'] left the joint mission', 15)
+			end
+		else
+			trigger.action.outTextForGroup(groupid, "You're already alone", 10)
+		end
+	end
+
+	function BattleCommander:_jointGenCode(groupid, side)
+		self.jointCodes = self.jointCodes or {}
+		for code, data in pairs(self.jointCodes) do
+			if data.gid == groupid and data.side == side then
+				trigger.action.outTextForGroup(groupid, 'Joint code: ' .. code, 30)
+				return
+			end
+		end
+		local c
+		repeat
+			c = tostring(math.random(1000, 9999))
+		until not self.jointCodes[c]
+		self.jointCodes[c] = { gid = groupid, side = side }
+		trigger.action.outTextForGroup(groupid, 'Joint code: ' .. c, 30)
+	end
+
+	function BattleCommander:_jointAcceptCode(groupid, code, side)
+		self.jointPairs = self.jointPairs or {}
+		self.playerNames = self.playerNames or {}
+		local host = self.jointCodes and self.jointCodes[tostring(code)]
+		if not host then
+			trigger.action.outTextForGroup(groupid, 'Invalid code', 15)
+			return
+		end
+		if host.side ~= side then
+			trigger.action.outTextForGroup(groupid, 'Must be same coalition', 10)
+			return
+		end
+		local a = self.playerNames[host.gid]
+		local b = self.playerNames[groupid]
+		if not a or not b then
+			return
+		end
+		if a == b then
+			trigger.action.outTextForGroup(groupid, "You can't join your own code you silly, get friends!", 15)
+			return
+		end
+		if self.jointPairs[a] or self.jointPairs[b] then
+			trigger.action.outTextForGroup(groupid, 'Already sharing', 15)
+			return
+		end
+		self.jointPairs[a] = b
+		self.jointPairs[b] = a
+		self.jointCodes[tostring(code)] = nil
+		trigger.action.outTextForGroup(groupid, 'Joined ' .. a, 20)
+		if host.gid then
+			trigger.action.outTextForGroup(host.gid, '['..b..'] joined your joint mission', 20)
+		end
+	end
 	
 	function BattleCommander:restoreDisabledFriendlyZones()
 		local list = {}
@@ -3949,10 +4084,7 @@ end
 	function BattleCommander:engageZone(tgtzone, groupname, expendAmmount, weapon)
 		local zn = self:getZoneByName(tgtzone)
 		local group = Group.getByName(groupname)
-		if zn.suspended then
-			if group and group:isExist() then group:destroy() end
-			return
-		end
+		
 		if group and zn.side == group:getCoalition() then
 			return 'Can not engage friendly zone'
 		end
@@ -3961,7 +4093,7 @@ end
 			return 'Not available'
 		end
 		
-		local cnt = group:getController()
+		local cnt=group:getController()
 		cnt:popTask()
 		
 		local expCount = AI.Task.WeaponExpend.ONE
@@ -3974,43 +4106,36 @@ end
 			wepType = weapon
 		end
 		
-		-- Build up a table of tasks we want to perform.
-		local tasks = {}
-		for _, v in pairs(zn.built) do
+		for i,v in pairs(zn.built) do
 			local g = Group.getByName(v)
 			if g then
-				table.insert(tasks, {
-					id = 'AttackGroup',
-					params = {
-						groupId     = g:getID(),
-						expend      = expCount,
-						weaponType  = wepType,
-						groupAttack = false
-					}
-				})
-			end
-			
-			local s = StaticObject.getByName(v)
-			if s then
-				table.insert(tasks, {
-					id = 'AttackUnit',
-					params = {
-						unitId      = s:getID(),
-						expend      = expCount,
-						weaponType  = wepType,
-						groupAttack = false
-					}
-				})
-			end
-		end
-		if #tasks > 0 then
-			local comboTask = {
-				id = 'ComboTask',
-				params = {
-					tasks = tasks
+				local task = { 
+				  id = 'AttackGroup', 
+				  params = { 
+					groupId = g:getID(),
+					expend = expCount,
+					weaponType = wepType,
+					groupAttack = true
+				  } 
 				}
-			}
-			cnt:pushTask(comboTask)
+				
+				cnt:pushTask(task)
+			else
+				local s = StaticObject.getByName(v)
+				if s then
+					local task = { 
+					  id = 'AttackUnit', 
+					  params = { 
+						groupId = s:getID(),
+						expend = expCount,
+						weaponType = wepType,
+						groupAttack = true
+					  } 
+					}
+					
+					cnt:pushTask(task)
+				end
+			end
 		end
 	end
 
@@ -7089,6 +7214,8 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 	ev.context = self
 	ev.rewards = rewards
 	ev.default = defaultReward
+	self.playerJointBonus = self.playerJointBonus or { [1]={}, [2]={} }
+	self.jointPairs = self.jointPairs or {}
 
 
 	function ev:onEvent(event)
@@ -7097,6 +7224,7 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 			local side = unit:getCoalition()
 			local groupid = unit:getGroup():getID()
 			local pname = unit:getPlayerName()
+			local jp = self.context.jointPairs[pname] or nil
 							
 			if event.id == 6 then -- Pilot ejected
 				if pname then
@@ -7130,10 +7258,18 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 						end
 						if Hunt then
 							bc.huntDone[pname] = nil
-						end	
+						end
+						local jp = self.context.jointPairs and self.context.jointPairs[pname]
+						if jp then
+							local gid2 = self.context.groupByPlayer and self.context.groupByPlayer[jp]
+							self.context:_jointEnd(pname)
+							trigger.action.outTextForGroup(groupid,'You have left the joint mission',15)
+							if gid2 then trigger.action.outTextForGroup(gid2,'['..pname..'] left the joint mission',15) end
+						end
 					end
 				end
 			end
+
 			if pname then
 				local gObj=unit:getGroup()
 				-- Pilot death (NEW)
@@ -7164,6 +7300,12 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
                             escortGroups[gName]=nil
                         end
                     end
+					local jp = self.context.jointPairs and self.context.jointPairs[pname]
+					if jp then
+						local gid2 = self.context.groupByPlayer and self.context.groupByPlayer[jp]
+						self.context:_jointEnd(pname)
+						if gid2 then trigger.action.outTextForGroup(gid2,'['..pname..'] have died and left the joint mission',15) end
+					end
                 end
 
 				if event.id == 15 then
@@ -7172,6 +7314,13 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 					self.context:resetTempStats(pname)
 					if Hunt then
 					bc.huntDone[pname] = nil
+					end
+					if self.context.jointPairs and self.context.jointPairs[pname] then
+						local jp = self.context.jointPairs[pname]
+						local gid2 = self.context.groupByPlayer and self.context.groupByPlayer[jp]
+						trigger.action.outTextForGroup(groupid,'Left joint mission due to respawn',15)
+						if gid2 then trigger.action.outTextForGroup(gid2,'['..pname..'] left the joint mission due to respawn',15) end
+						self.context:_jointEnd(pname)
 					end
 				end
 				if (event.id==28) then --killed unit
@@ -7195,21 +7344,51 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 											end
 											local kc=#names
 											if #names == 0 then return end
-											local share=math.floor(gtab.reward/kc)
+															local share=math.floor(gtab.reward/kc)
 											for _,kn in ipairs(names) do
 												bc.playerContributions[side][kn]=(bc.playerContributions[side][kn] or 0)+share
-												if gtab.stat then self.context:addTempStat(kn,gtab.stat,1) end
+											end
+											local processed={}
+											local jointed={}
+											for _,kn in ipairs(names) do
+												local jp = self.context.jointPairs[kn]
+												if jp and not processed[kn] and not processed[jp] and self.context:_jointPartnerAlive(kn) and self.context:_jointPartnerAlive(jp) then
+													bc.playerContributions[side][kn]=(bc.playerContributions[side][kn] or 0)+(gtab.reward-share)
+													if self.context.playerContributions[side][jp] ~= nil then
+														if gtab.killers[jp] then
+															bc.playerContributions[side][jp]=(bc.playerContributions[side][jp] or 0)+(gtab.reward-share)
+														else
+															bc.playerContributions[side][jp]=(bc.playerContributions[side][jp] or 0)+gtab.reward
+														end
+														jointed[jp]=true
+													end
+													jointed[kn]=true
+													processed[kn]=true
+													processed[jp]=true
+												end
+											end
+											for _,kn in ipairs(names) do
+												if gtab.stat then
+													if jointed[kn] then self.context:addTempStat(kn,gtab.stat..' (Joint mission)',1) else self.context:addTempStat(kn,gtab.stat,1) end
+												end
 											end
 											table.sort(names)
 											local plist=table.concat(names,', ')
 											if kc==1 then
 												local lone=names[1]
-												trigger.action.outTextForCoalition(2,gtab.stat..' mission completed by '..lone..'. +'..gtab.reward..' credits - land to redeem.',15)
+												local jp = self.context.jointPairs[lone]
+												local jointOK = jp and self.context:_jointPartnerAlive(lone) and self.context:_jointPartnerAlive(jp) and self.context.playerContributions[side][jp] ~= nil
+												if jointOK then
+													trigger.action.outTextForCoalition(2,gtab.stat..' mission completed by '..lone..' and '..jp..'. +'..gtab.reward..' credits each - land to redeem.',15)
+												else
+													trigger.action.outTextForCoalition(2,gtab.stat..' mission completed by '..lone..'. +'..gtab.reward..' credits - land to redeem.',15)
+												end
 												trigger.action.outSoundForCoalition(2,"cancel.ogg")
 											else
 												trigger.action.outTextForCoalition(2,gtab.stat..' mission completed by '..plist..'. +'..share..' credits each - land to redeem.',15)
 												trigger.action.outSoundForCoalition(2,"cancel.ogg")
 											end
+
 											if gtab.flag then
 											if ActiveMission[gtab.flag] then ActiveMission[gtab.flag] = nil end
 											CustomFlags[gtab.flag] = true
@@ -7221,8 +7400,17 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 									if self.context.playerContributions[side][pname] ~= nil then
 										MissionTargets[tgtName]=nil
 										bc.playerContributions[side][pname]=(bc.playerContributions[side][pname] or 0)+mt.reward
-										if mt.stat then self.context:addTempStat(pname,mt.stat,1) end
-										trigger.action.outTextForCoalition(2,mt.stat..' mission completed by '..pname..'. +'..mt.reward..' credits - land to redeem.',15)
+										if jp and self.context:_jointPartnerAlive(pname) and self.context:_jointPartnerAlive(jp) then
+											if self.context.playerContributions[side][jp] ~= nil then
+												bc.playerContributions[side][jp]=(bc.playerContributions[side][jp] or 0)+mt.reward
+												if mt.stat then self.context:addTempStat(jp,mt.stat..' (Joint mission)',1) end
+											end
+											if mt.stat then self.context:addTempStat(pname,mt.stat..' (Joint mission)',1) end
+											trigger.action.outTextForCoalition(2,mt.stat..' mission completed by '..pname..' and '..jp..'. +'..mt.reward..' credits each - land to redeem.',15)
+										else
+											if mt.stat then self.context:addTempStat(pname,mt.stat,1) end
+											trigger.action.outTextForCoalition(2,mt.stat..' mission completed by '..pname..'. +'..mt.reward..' credits - land to redeem.',15)
+										end
 										trigger.action.outSoundForCoalition(2,"cancel.ogg")
 										if mt.flag then CustomFlags[mt.flag]=true end
 										 if ActiveMission[mt.flag] then ActiveMission[mt.flag] = nil end
@@ -7300,8 +7488,17 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 							end
 							if st.remaining==0 then
 								bc.playerContributions[side][pname]=(bc.playerContributions[side][pname] or 0)+st.reward
-								bc:addTempStat(pname,st.stat,1)
-								trigger.action.outTextForCoalition(2,st.stat..' destroyed by '..pname..'. +'..st.reward..' credits - land to redeem.',15)
+								if jp and self.context:_jointPartnerAlive(pname) and self.context:_jointPartnerAlive(jp) then
+									if self.context.playerContributions[side][jp] ~= nil then
+										bc.playerContributions[side][jp]=(bc.playerContributions[side][jp] or 0)+st.reward
+										bc:addTempStat(jp,st.stat..' (Joint mission)',1)
+									end
+									bc:addTempStat(pname,st.stat..' (Joint mission)',1)
+									trigger.action.outTextForCoalition(2,st.stat..' destroyed by '..pname..' and '..jp..'. +'..st.reward..' credits each - land to redeem.',15)
+								else
+									bc:addTempStat(pname,st.stat,1)
+									trigger.action.outTextForCoalition(2,st.stat..' destroyed by '..pname..'. +'..st.reward..' credits - land to redeem.',15)
+								end
 								trigger.action.outSoundForCoalition(2,'cancel.ogg')
 								CustomFlags[flag]=true
 								ScoreTargets[flag]=nil
@@ -7351,6 +7548,7 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 												if after > before then
 													local name = context:getRankName(after)
 													trigger.action.outTextForCoalition(coalitionSide, player..' has been promoted to '..name..'!', 12)
+													trigger.action.outSoundForCoalition(coalitionSide,"Rank.ogg")
 													local g = un:getGroup()
 													if g and g:isExist() then context:refreshShopMenuForGroup(g:getID(), g) end
 												end
@@ -7488,6 +7686,7 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 	SCHEDULER:New(nil,resetPoints,{self,1},1,60)
 	SCHEDULER:New(nil,resetPoints,{self,2},1,60)
 end
+
 
 
 	function BattleCommander:objectToRewardPoints(object) -- returns points,message
@@ -7943,6 +8142,7 @@ function ZoneCommander:suspend()
 		if self._resuming and not internal then return end
 		self._resuming = true
 		local cz = CustomZone:getByName(self.zone)
+		if cz then cz:clearUsedSpawnZones(self.zone) end
 		local pending = {}
 		for gName,_ in pairs(self._hibernated or {}) do
 			if Group.getByName(gName) then
@@ -7956,7 +8156,7 @@ function ZoneCommander:suspend()
 						if Group.getByName(r.name) then ok = true end
 					end
 				end
-				if not ok then pending[gName] = true end
+				if not ok then env.info("Spawn failed: "..gName.." in zone "..self.zone); pending[gName] = true end
 			end
 		end
 		self._hibernated = pending
@@ -8552,7 +8752,7 @@ function upgradeRedZones()
     local redZones = {}
     local zones = bc:getZones()
     for i, v in ipairs(zones) do
-        if not v.zone:lower():find("hidden") and v.side == 1 then
+        if not v.zone:lower():find("hidden") and v.side == 1 and not v.suspended then
             local z = bc:getZoneByName(v.zone)
             if z and z.side == 1 then
                 local function needsRepair()
@@ -9072,6 +9272,14 @@ end
 			for i,v in pairs(self.built) do
 				local gr = Group.getByName(v)
 				local st = StaticObject.getByName(v)
+
+				if gr and not gr:isExist() then
+					gr = nil
+				end
+
+				if st and st:isExist() == false then
+					st = nil
+				end
 
 				if gr and gr:getSize() == 0 then
 					gr:destroy()
@@ -9884,18 +10092,18 @@ function GroupCommander:_assignHeloRoute(grName, zoneName)
 		local abn = tz and tz.airbaseName
 		if abn then
 			local ab = AIRBASE:FindByName(abn)
-			if ab and (not ab.GetCoalition or ab:GetCoalition()==gr:getCoalition()) then
-				useAirbase = true
+			if ab and ab:GetCoalition()==gr:getCoalition() then
+			useAirbase = true
 			end
 		end
 	end
 
-    if not destx then
+    if not destx and not useAirbase then
         local lz = self:_findFlatLZ(zoneName.."-", 200, math.tan(math.rad(15)))
         if not lz then lz = self:_findFlatLZ(zoneName, 200, math.tan(math.rad(15))) end
         if lz then destx, desty = lz.x, lz.z end
     end
-    if not destx then return end
+    if not destx and not useAirbase then return end
 
     local spd = 180
     if useAirbase then
@@ -10455,9 +10663,21 @@ local cand, capCand = {}, {}
 			bomberName = pilot
 			runwayCompleted = true
 			if bc.playerContributions[2][bomberName]~=nil then
-			bc.playerContributions[2][bomberName] = (bc.playerContributions[2][bomberName] or 0) + 100
-            bc:addTempStat(bomberName,'Bomb runway',1)
+			local reward = (need>1 and 200 or 100)
+			bc.playerContributions[2][bomberName] = (bc.playerContributions[2][bomberName] or 0) + reward
+           
+			local jp = bc.jointPairs and bc.jointPairs[bomberName]
+			if jp and bc:_jointPartnerAlive(bomberName) and bc:_jointPartnerAlive(jp) and bc.playerContributions[2][jp] ~= nil then
+				bc.playerContributions[2][jp] = (bc.playerContributions[2][jp] or 0) + reward
+				bc:addTempStat(jp,'Bomb runway (Joint mission)',1)
+				bc:addTempStat(bomberName,'Bomb runway (Joint mission)',1)
+				env.info('RUNWAY-DBG: '..bomberName..' and '..jp..' completed runway strike mission at '..runwayTargetZone)
+			else
+				 bc:addTempStat(bomberName,'Bomb runway',1)
+				env.info('RUNWAY-DBG: '..bomberName..' completed runway strike mission at '..runwayTargetZone)
 			end
+			end
+
             env.info('RUNWAY-DBG: '..bomberName..' completed runway strike mission at '..runwayTargetZone)
 			if 	RunwayHandler then
 				RunwayHandler:UnHandleEvent(EVENTS.Shot)
@@ -10740,7 +10960,7 @@ function GroupCommander:shouldSpawn(ignore)
 					local cost = 0
 					if self.side==2 and getAnyPlayersCount() > 0 then
 						local zones = bc.blueZoneCount or 0
-						cost = math.min(zones * 10, 100)
+						cost = math.min(zones * 10, 200)
 						if (bc.accounts[2] ~= nil and bc.accounts[2] < cost) then
 							env.info(string.format("[SUPPLY-SPAWN] not enough funds for supply in %s (have %d, need %d)", tg.zone, bc.accounts[2] or 0, cost))
 							return false
@@ -12123,7 +12343,11 @@ function SelfJtac:printTarget(makeitlast)
         ['OH-6A']  =        { minDist = 8,  maxDeviation = 45,  laserOffset = { x = 1.35, y = 0.1, z = 0 }   },
 		['Bronco-OV-10A'] = { minDist = 30,  maxDeviation = 160,  laserOffset = { x = 1.01, y = 0.1, z = 0 }   },		
 		['F-4E-45MC'] =     { minDist = 30,  maxDeviation = 160,  laserOffset = { x = 1.01, y = 0.1, z = 0 }   },
+		--['F-14B'] =     	{ minDist = 40,  maxDeviation = 160,  laserOffset = { x = 1.01, y = 0.1, z = 0 }   },
+		--['F-14A-135-GR'] =  { minDist = 40,  maxDeviation = 160,  laserOffset = { x = 1.01, y = 0.1, z = 0 }   },
+		--['F-14A-135-GR-Early'] =  { minDist = 40,  maxDeviation = 160,  laserOffset = { x = 1.01, y = 0.1, z = 0 }   },
 		['F-15ESE'] =       { minDist = 40,  maxDeviation = 160,  laserOffset = { x = 1.01, y = 0.1, z = 0 }   },
+
     }
 
     SelfJtac.jtacs = {}
@@ -12791,6 +13015,9 @@ function LogisticCommander:init()
                 self.context.battleCommander.playerNames[groupid] = player
 				self.context.battleCommander:refreshShopMenuForGroup(groupid, groupObj)
 
+				self.context.battleCommander.groupByPlayer = self.context.battleCommander.groupByPlayer or {}
+				self.context.battleCommander.groupByPlayer[player] = groupid
+
 
                 if self.context.statsMenus[groupid] then
                     missionCommands.removeItemForGroup(groupid, self.context.statsMenus[groupid])
@@ -12806,6 +13033,40 @@ function LogisticCommander:init()
 				missionCommands.addCommandForGroup(groupid, 'Budget Overview', statsMenu, self.context.battleCommander.printShopStatus, self.context.battleCommander, groupid, event.initiator:getCoalition())
 
                 self.context.statsMenus[groupid] = statsMenu
+
+				local missionsRoot = missionCommands.addSubMenuForGroup(groupid, 'Missions')
+				MissionsRootMenus = MissionsRootMenus or {}
+				MissionsRootMenus[groupid] = missionsRoot
+				printMissionMenus = printMissionMenus or {}
+				printMissionMenus[groupid] = missionCommands.addCommandForGroup(groupid, 'Missions', missionsRoot, mc.printMissions, mc, groupid)
+
+				local jm = missionCommands.addSubMenuForGroup(groupid, 'Joint missions', missionsRoot)
+				missionCommands.addCommandForGroup(groupid, 'Invite to joint mission', jm, self.context.battleCommander._jointGenCode, self.context.battleCommander, groupid, event.initiator:getCoalition())
+				local dial = missionCommands.addSubMenuForGroup(groupid, 'Join another player', jm)
+				for d1=1,9,1 do
+					local m1 = missionCommands.addSubMenuForGroup(groupid, tostring(d1)..'___', dial)
+					for d2=0,9,1 do
+						local m2 = missionCommands.addSubMenuForGroup(groupid, tostring(d1)..tostring(d2)..'__', m1)
+						for d3=0,9,1 do
+							local m3 = missionCommands.addSubMenuForGroup(groupid, tostring(d1)..tostring(d2)..tostring(d3)..'_', m2)
+							for d4=0,9,1 do
+								local code = tonumber(tostring(d1)..tostring(d2)..tostring(d3)..tostring(d4))
+								missionCommands.addCommandForGroup(groupid, 'code '..tostring(code), m3, self.context.battleCommander._jointAcceptCode, self.context.battleCommander, groupid, code, event.initiator:getCoalition())
+							end
+						end
+					end
+				end
+				missionCommands.addCommandForGroup(groupid, 'Leave Joint mission', jm, self.context.battleCommander._jointLeave, self.context.battleCommander, groupid)
+				missionCommands.addCommandForGroup(groupid, 'Help', jm, function()
+					local txt = 'Joint missions lets two players get up to double the rewards of the mission credits.\n\n'
+						.. 'How it works:\n'
+						.. '• Host selects "Invite to joint mission" to receive a 4-digit code.\n'
+						.. '• Teammate opens "Join another player" and enters the code.\n'
+						.. '• Credits will be rewarded to both for missions. For regular kills, 20% extra bonus of the total reward.\n'
+						.. '• If your partner is dead/despawned, you will still keep your earnings plus the extra reward.\n'
+						.. '• Same-coalition only.'
+					trigger.action.outTextForGroup(groupid, txt, 30)
+				end)
 
                 if self.context.allowedTypes[unitType] then
                     self.context.carriedCargo[groupid] = 0
@@ -13192,14 +13453,21 @@ do
 		timer.scheduleFunction(self.checkMissions, self, timer.getTime() + 15)
 	end
 	printMissionMenus = printMissionMenus or {}
+
 	function MissionCommander:createMissionsMenuForGroup(groupId)
 		env.info("DEBUG: Creating menu for groupId="..tostring(groupId))
 		
 		if printMissionMenus[groupId] then
-			missionCommands.removeItemForGroup(groupId, printMissionMenus[groupId])
+			return
 		end
 		
-		printMissionMenus[groupId] = missionCommands.addCommandForGroup(groupId, "Missions", nil, function() self:printMissions(groupId) end)
+		MissionsRootMenus = MissionsRootMenus or {}
+		local parent = MissionsRootMenus[groupId]
+		if parent then
+			printMissionMenus[groupId] = missionCommands.addCommandForGroup(groupId, "Available missions", parent, function() self:printMissions(groupId) end)
+		else
+			return
+		end
 	end
 
 	function MissionCommander:decodeMessage(param)
@@ -14929,8 +15197,7 @@ function spawnArcoAt(zoneName, heading, leg)
 	timer.scheduleFunction(function(group, time)
 		local spawnedGroup = GROUP:FindByName(group:getName())
         ArcoGroup = FLIGHTGROUP:New(spawnedGroup)
-		--:CommandSetUnlimitedFuel(true)
-		ArcoGroup:GetGroup():CommandSetInvisible(true):CommandSetImmortal(true)
+		ArcoGroup:SwitchInvisible(true):SwitchImmortal(true):GetGroup():CommandSetUnlimitedFuel(true)
 		ArcoGroup:SetDefaultTACAN("101", "ARC", "Arco", "Y")
 		local homebase, distance = SpawnCords:GetClosestAirbase(0, 2)
 		if homebase then
@@ -15047,7 +15314,8 @@ function spawnTexacoAt(zoneName, heading, leg)
 		local spawnedGroup = GROUP:FindByName(group:getName())
         TexacoGroup = FLIGHTGROUP:New(spawnedGroup)
 		--:CommandSetUnlimitedFuel(true)
-		TexacoGroup:GetGroup():CommandSetImmortal(true):CommandSetInvisible(true)
+		TexacoGroup:SwitchInvisible(true):SwitchImmortal(true):GetGroup():CommandSetUnlimitedFuel(true)
+		--TexacoGroup:GetGroup():CommandSetImmortal(true):CommandSetInvisible(true)
 		TexacoGroup:SetDefaultTACAN("102", "TEX", "Texaco", "Y")
 		local homebase, distance = SpawnCords:GetClosestAirbase(0, 2)
 		if homebase then

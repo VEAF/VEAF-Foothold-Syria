@@ -844,9 +844,13 @@ if event.id == EVENTS.BaseCaptured and event.Place then
 			local clientSet = SET_CLIENT:New():FilterCategories("plane"):FilterCoalitions("blue"):FilterAlive():FilterOnce()
 			clientSet:ForEachClient(function(client)
 				SetupATISMenu(client)  
-				
-				local messageText = string.format("ATIS for %s is now available.", capturedBaseName)
-				MESSAGE:New(messageText, 25, ""):ToClient(client)
+				SCHEDULER:New(nil, function()
+                local group=client:GetGroup()
+                local zname=atisZones[capturedBaseName] and capturedBaseName or atisZoneNames[capturedBaseName]
+                if zname then
+                sendATISInformation(client,group,zname)
+                end
+                end, {}, 10)
 			end)
 		end
 	end  
@@ -1053,7 +1057,7 @@ if event.id == EVENTS.PlayerEnterAircraft and event.IniUnit and event.IniPlayerN
         end
     end
 end
---[[ 
+
 function WeaponImpact(Weapon)
     local impactPos = Weapon:GetImpactVec3()
     if impactPos then
@@ -1089,8 +1093,6 @@ function static:OnEventShot(EventData)
         end
     end
 end
-
- ]]
 
 function AddEscortRequestMenu(group)
     if not group then

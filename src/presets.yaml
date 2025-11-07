@@ -11,9 +11,9 @@ radios_collection: # Lists all the radios definitions
         03: 
           title: Tactical
           freq: 265
-        04: Aleppo
+        04: Jirah
         05: Kuweires
-        06: Jirah
+        06: Hama
         07: Tabqa
         08: Palmyra
         09: 
@@ -39,7 +39,7 @@ radios_collection: # Lists all the radios definitions
         17: Al Qusayr
         18: Rene Mouawad
         19: Bassel al-Assad
-        20: Hatay
+        20: Tabqa
         21: 
         22: 
         23: 
