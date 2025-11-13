@@ -4462,7 +4462,8 @@ function BattleCommander:getStateTable()
             wasBlue           = v.wasBlue or false,
             firstCaptureByRed = v.firstCaptureByRed or false,
             upgradesUsed      = v.upgradesUsed,
-			extraUpgrade      = {}
+			extraUpgrade      = {},
+			lat_long 		  = v.lat_long
         }
         if v.extraUpgrade then
             for _,grp in ipairs(v.extraUpgrade) do
@@ -8225,6 +8226,17 @@ do
 		if obj.side ~= 0 then
 			obj.firstCaptureByRed = true
 
+		end
+		
+		-- compute the zone coordinates in Lat-Long
+		dcs_zone = trigger.misc.getZone(obj.zone)
+		if dcs_zone and dcs_zone.point then
+			latitude, longitude, altitude = coord.LOtoLL(dcs_zone.point)
+			obj.lat_long = {
+				latitude = latitude,
+				longitude = longitude,
+				altitude = altitude
+			}
 		end
 
 		setmetatable(obj, self)
