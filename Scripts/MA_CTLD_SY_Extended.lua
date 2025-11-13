@@ -64,6 +64,7 @@ CTLDPrices = {
     ["IRIS T SLM C2"]         = 500,
     ["IRIS T SLM System"]     = 1800,
     ["C-RAM"]                 = 500,
+    ["HIMARS GMLRRS HE GUIDED"]= 1000,
 }
 CTLD_DEFAULT_PRICE = 0
 
@@ -72,6 +73,7 @@ Foothold_ctld:AddCratesCargo("Mephisto",{"CTLD_CARGO_Mephisto"}, CTLD_CARGO.Enum
 Foothold_ctld:AddCratesCargo("Humvee",{"CTLD_CARGO_HMMWV"},CTLD_CARGO.Enum.VEHICLE,2,1000,10, "ANTI TANK")
 Foothold_ctld:AddCratesCargo("Bradly",{"CTLD_CARGO_Bradly"},CTLD_CARGO.Enum.VEHICLE,2,1500,10, "ANTI TANK")
 Foothold_ctld:AddCratesCargoNoMove("L118",{"CTLD_CARGO_L118"},CTLD_CARGO.Enum.VEHICLE,1,700,12, "Support")
+Foothold_ctld:AddCratesCargoNoMove("HIMARS GMLRRS HE GUIDED",{"CTLD_CARGO_GMLRS_HE"},CTLD_CARGO.Enum.VEHICLE,2,3500,12, "Support")
 Foothold_ctld:AddCratesCargoNoMove("Ammo Truck",{"CTLD_CARGO_AmmoTruck"},CTLD_CARGO.Enum.VEHICLE,2,800,10, "Support")
 Foothold_ctld:AddCratesCargo("Humvee scout",{"CTLD_CARGO_Scout"},CTLD_CARGO.Enum.VEHICLE,2,1000,10, "Support")
 Foothold_ctld:AddTroopsCargo("Squad 8",{"CTLD_TROOPS_ATS"},CTLD_CARGO.Enum.TROOPS,8,80,10)
@@ -120,6 +122,7 @@ local MAX_AT_SPAWN = {
     ["IRIS T SLM C2"]           = 3,
     ["IRIS T SLM System"]       = 2,
     ["C-RAM"]                   = 4,
+    ["HIMARS GMLRRS HE GUIDED"] = 4,
 }
 -- How many farps do you want to load? 
 -- Oldest will not be spawned if the number is exceded.
@@ -147,6 +150,7 @@ Group.getByName('CTLD_CARGO_IRISTSLM-LN'):destroy()
 Group.getByName('CTLD_CARGO_IRISTSLM_C2'):destroy()
 Group.getByName('CTLD_CARGO_IRISTSLM_System'):destroy()
 Group.getByName('CTLD_CARGO_CRAM'):destroy()
+Group.getByName('CTLD_CARGO_GMLRS_HE'):destroy()
 
 -- ZONES
 

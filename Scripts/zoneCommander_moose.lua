@@ -23,7 +23,7 @@ local function getTriggerZone(name)
     return z
 end
 
-local function getMooseZone(name)
+function getMooseZone(name)
     local z = mooseZoneCache[name]
     if z == nil then
         z = ZONE:FindByName(name) or false
@@ -258,7 +258,7 @@ local function collectSubZones(baseName)
 end
 
 local zoneCenterCache = {}
-	local function getZoneCenter(name)
+	function getZoneCenter(name)
 		if zoneCenterCache[name] then return zoneCenterCache[name] end
 		local z = getTriggerZone(name)
 		if not z or not z.point then return nil end
@@ -266,6 +266,93 @@ local zoneCenterCache = {}
 		zoneCenterCache[name] = c
 		return c
 	end
+
+function StartBomberAuftrag(tag, grpName, tgtList, escortGroup)
+	local bomber = FLIGHTGROUP:New(grpName)
+	local coords = bomber:GetCoordinate()
+	local homebase, distance = coords:GetClosestAirbase(0, 1)
+	if homebase then
+		bomber:SetHomebase(homebase)
+		env.info(string.format("[BomberAuftrag] Bomber %s homebase set to %s (%.1f km)", grpName, homebase:GetName(), distance/1000))
+	end
+	local choice = nil
+	do
+		local valid = {}
+		for _, v in ipairs(tgtList) do
+			local z = bc:getZoneByName(v)
+			if z and z.side == 2 and not z.suspended then valid[#valid+1] = v end
+		end
+		local best = math.huge
+		for _, v in ipairs(valid) do
+			local z = bc:getZoneByName(v)
+			local zcoord = nil
+			local mz = getMooseZone(z.zone or v)
+			if mz then
+				zcoord = mz:GetCoordinate()
+			else
+				local c = getZoneCenter(z.zone or v)
+				if c then zcoord = COORDINATE:New(c.x,0,c.y) end
+			end
+			if zcoord then
+				local d = coords:Get2DDistance(zcoord)
+				if d < best then best = d ; choice = v end
+			end
+		end
+		if not choice and #valid > 0 then choice = valid[math.random(1,#valid)] end
+	end
+	local setGroup = SET_GROUP:New()
+	local zn = choice and bc:getZoneByName(choice) or nil
+	if zn and zn.built then
+		for _, v in pairs(zn.built) do
+			local grp = GROUP:FindByName(v)
+			if grp then
+				setGroup:AddGroup(grp)
+			end
+		end
+	end
+	local auftrag = AUFTRAG:NewBAI(setGroup, 25000)
+	auftrag:SetMissionAltitude(25000)
+	auftrag.missionWaypointOffsetNM = 25
+	auftrag:AddConditionSuccess(function() return bomber:IsOutOfBombs() end)
+	auftrag:SetWeaponExpend(AI.Task.WeaponExpend.ALL)
+	auftrag:SetEngageAsGroup(true)
+	auftrag:SetMissionSpeed(700)
+	bomber:AddMission(auftrag)
+	bomber:MissionStart(auftrag)
+	function bomber:OnAfterLanded(From, Event, To)
+		self:ScheduleOnce(5, function() self:Destroy() end)
+	end
+	function bomber:OnAfterDead(From, Event, To)
+		local landed = (From=="Landed") or (From=="Arrived")
+		self:__Stop(1)
+	end
+	timer.scheduleFunction(function()
+		local bgr = Group.getByName(grpName)
+		local egr = Group.getByName(escortGroup)
+		if bgr and egr then
+			local c = egr:getController()
+			c:setTask({
+				id = 'ComboTask',
+				params = { tasks = {
+					{
+						id = 'Escort',
+						params = {
+							groupId = bgr:getID(),
+							pos = { x = -20, y = 2000, z = 50 },
+							lastWptIndexFlag = false,
+							engagementDistMax = 30*NM,
+							targetTypes = { 'plane' }
+						}
+					}
+				}}
+			})
+		end
+	end,{},timer.getTime()+5)
+	_G[tag..'Bomber'] = bomber
+	_G[tag..'Mission'] = auftrag
+	return bomber, auftrag, choice
+end
+
 
 CustomZone = {}
 do
@@ -1926,6 +2013,7 @@ MissionTargets        = {}
 MissionGroups         = {}
 ScoreTargets          = {}
 ActiveMission         = {}
+MissionMarks          = {}
 
 function RegisterUnitTarget(uname,reward,stat,flagName)
     if flagName then
@@ -1969,9 +2057,12 @@ function RegisterStaticGroup(groupKey,source,reward,stat,flagName)
 		local obj = StaticObject.getByName(n)
 		local p = obj and obj:getPoint()
 		if p then
-			missionMarkId = missionMarkId + 1
-			local label = stat and ((cnt>1) and (stat.." "..i) or stat) or groupKey
-			trigger.action.markToCoalition(missionMarkId,label,p,2,false,false)
+			if i==1 then
+				missionMarkId = missionMarkId + 1
+				local label = stat and ((cnt>1) and (stat.." "..i) or stat) or groupKey
+				trigger.action.markToCoalition(missionMarkId,label,p,2,false,false)
+				MissionMarks[groupKey] = missionMarkId
+			end
 		end
 	end
 end
@@ -2004,6 +2095,7 @@ function RegisterGroupTarget(groupName,reward,stat,flagName)
 			missionMarkId = missionMarkId + 1
 			local label = stat or groupName
 			trigger.action.markToCoalition(missionMarkId,label,p,2,false,false)
+			MissionMarks[groupName] = missionMarkId
 		end
 	end
 end
@@ -2024,7 +2116,7 @@ function SetUpCAP_DefaultAA(group)
 	group:getController():setOption(AI.Option.Air.id.JETT_TANKS_IF_EMPTY, true)
 	group:getController():setOption(AI.Option.Air.id.PROHIBIT_JETT, true)
 	group:getController():setOption(AI.Option.Air.id.REACTION_ON_THREAT, AI.Option.Air.val.REACTION_ON_THREAT.EVADE_FIRE)
-	group:getController():setOption(AI.Option.Air.id.ROE, AI.Option.Air.val.ROE.OPEN_FIRE)
+	--group:getController():setOption(AI.Option.Air.id.ROE, AI.Option.Air.val.ROE.OPEN_FIRE)
 	group:getController():setOption(AI.Option.Air.id.MISSILE_ATTACK, AI.Option.Air.val.MISSILE_ATTACK.MAX_RANGE)
 	group:getController():setOption(AI.Option.Air.id.RTB_ON_OUT_OF_AMMO, 268402688) -- AnyMissile
 end
@@ -4084,7 +4176,7 @@ end
 	function BattleCommander:engageZone(tgtzone, groupname, expendAmmount, weapon)
 		local zn = self:getZoneByName(tgtzone)
 		local group = Group.getByName(groupname)
-		
+		env.info('Engage zone '..tgtzone..' by group '..groupname)
 		if group and zn.side == group:getCoalition() then
 			return 'Can not engage friendly zone'
 		end
@@ -7388,7 +7480,32 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 												trigger.action.outTextForCoalition(2,gtab.stat..' mission completed by '..plist..'. +'..share..' credits each - land to redeem.',15)
 												trigger.action.outSoundForCoalition(2,"cancel.ogg")
 											end
+											do
+												local done={}
+												for _,kn in ipairs(names) do
+													if jointed[kn] then
+														local jp = self.context.jointPairs[kn]
+														if not done[jp] then
+															local jgn = self.context.battleCommander.groupNameByPlayer[jp]
+															local jgr = Group.getByName(jgn)
+															if jgr then
+																local ju = jgr:getUnit(1)
+																if ju and not Utils.isInAir(ju) then
+																	SCHEDULER:New(nil,function()
+																		if ju and ju:isExist() then
+																			world.onEvent({id=world.event.S_EVENT_LAND,time=timer.getAbsTime(),initiator=ju,initiatorPilotName=jp,initiator_unit_type=ju:getTypeName(),initiator_coalition=ju:getCoalition(),skipRewardMsg=true})
+																		end
+																	end,{},5,0)
+																end
+															end
+															done[jp]=true
+														end
+													end
+												end
+											end
 
+											local mk = MissionMarks[mt.group]; if mk then trigger.action.removeMark(mk) MissionMarks[mt.group]=nil end
+											if gtab.flag and MissionMarks[gtab.flag] then trigger.action.removeMark(MissionMarks[gtab.flag]) MissionMarks[gtab.flag]=nil end
 											if gtab.flag then
 											if ActiveMission[gtab.flag] then ActiveMission[gtab.flag] = nil end
 											CustomFlags[gtab.flag] = true
@@ -7407,6 +7524,18 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 											end
 											if mt.stat then self.context:addTempStat(pname,mt.stat..' (Joint mission)',1) end
 											trigger.action.outTextForCoalition(2,mt.stat..' mission completed by '..pname..' and '..jp..'. +'..mt.reward..' credits each - land to redeem.',15)
+											local jgn = self.context.battleCommander.groupNameByPlayer[jp]
+											local jgr = Group.getByName(jgn)
+											if jgr then
+												local ju = jgr:getUnit(1)
+												if ju and not Utils.isInAir(ju) then
+													SCHEDULER:New(nil,function()
+														if ju and ju:isExist() then
+															world.onEvent({id=world.event.S_EVENT_LAND,time=timer.getAbsTime(),initiator=ju,initiatorPilotName=jp,initiator_unit_type=ju:getTypeName(),initiator_coalition=ju:getCoalition(),skipRewardMsg=true})
+														end
+													end,{},5,0)
+												end
+											end
 										else
 											if mt.stat then self.context:addTempStat(pname,mt.stat,1) end
 											trigger.action.outTextForCoalition(2,mt.stat..' mission completed by '..pname..'. +'..mt.reward..' credits - land to redeem.',15)
@@ -7416,6 +7545,7 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 										 if ActiveMission[mt.flag] then ActiveMission[mt.flag] = nil end
 									end
 								end
+
 									if capMissionTarget ~= nil then
 										if (event.target:hasAttribute('Planes') or 
 											event.target:hasAttribute('Helicopters')) then
@@ -7495,11 +7625,26 @@ function BattleCommander:startRewardPlayerContribution(defaultReward, rewards)
 									end
 									bc:addTempStat(pname,st.stat..' (Joint mission)',1)
 									trigger.action.outTextForCoalition(2,st.stat..' destroyed by '..pname..' and '..jp..'. +'..st.reward..' credits each - land to redeem.',15)
+									local jgn = self.context.battleCommander.groupNameByPlayer[jp]
+									if jgn then
+										local jgr = Group.getByName(jgn)
+										if jgr then
+											local ju = jgr:getUnit(1)
+											if ju and not Utils.isInAir(ju) then
+												SCHEDULER:New(nil,function()
+													if ju and ju:isExist() then
+														world.onEvent({id=world.event.S_EVENT_LAND,time=timer.getAbsTime(),initiator=ju,initiatorPilotName=jp,initiator_unit_type=ju:getTypeName(),initiator_coalition=ju:getCoalition(),skipRewardMsg=true})
+													end
+												end,{},5,0)
+											end
+										end
+									end
 								else
 									bc:addTempStat(pname,st.stat,1)
 									trigger.action.outTextForCoalition(2,st.stat..' destroyed by '..pname..'. +'..st.reward..' credits - land to redeem.',15)
 								end
 								trigger.action.outSoundForCoalition(2,'cancel.ogg')
+								if MissionMarks[flag] then trigger.action.removeMark(MissionMarks[flag]) MissionMarks[flag]=nil end
 								CustomFlags[flag]=true
 								ScoreTargets[flag]=nil
 							end
@@ -8081,7 +8226,7 @@ do
 			obj.firstCaptureByRed = true
 
 		end
-		
+
 		setmetatable(obj, self)
 		self.__index = self
 		return obj
@@ -10300,7 +10445,7 @@ function getRedPlayersCount()
     return cnt
 end
 
-
+--AJS37
 function refreshPlayers()
     local b = coalition.getPlayers(coalition.side.BLUE)
     local currentBlue = {}
@@ -10311,7 +10456,8 @@ function refreshPlayers()
             currentAll[nm] = true
             local desc = unit:getDesc()
             if desc and desc.category == Unit.Category.AIRPLANE then
-                if unit:getTypeName() ~= "A-10C_2" and unit:getTypeName() ~= "Hercules" and unit:getTypeName() ~= "A-10A" and unit:getTypeName() ~= "AV8BNA" then
+                if unit:getTypeName() ~= "A-10C_2" and unit:getTypeName() ~= "Hercules" and unit:getTypeName() ~= "A-10A" and unit:getTypeName() ~= "AV8BNA"
+				and unit:getTypeName() ~= "AJS37" then
                     currentBlue[nm] = true
                 end
             end
@@ -10671,14 +10817,14 @@ local cand, capCand = {}, {}
 				bc.playerContributions[2][jp] = (bc.playerContributions[2][jp] or 0) + reward
 				bc:addTempStat(jp,'Bomb runway (Joint mission)',1)
 				bc:addTempStat(bomberName,'Bomb runway (Joint mission)',1)
+				runwayPartnerName = jp
 				env.info('RUNWAY-DBG: '..bomberName..' and '..jp..' completed runway strike mission at '..runwayTargetZone)
 			else
 				 bc:addTempStat(bomberName,'Bomb runway',1)
+				runwayPartnerName = nil
 				env.info('RUNWAY-DBG: '..bomberName..' completed runway strike mission at '..runwayTargetZone)
 			end
 			end
-
-            env.info('RUNWAY-DBG: '..bomberName..' completed runway strike mission at '..runwayTargetZone)
 			if 	RunwayHandler then
 				RunwayHandler:UnHandleEvent(EVENTS.Shot)
 				RunwayHandler=nil
@@ -11271,7 +11417,7 @@ end
 							local tpl = self:_getAirTemplate(resolved)
 							if tpl then
 								local sp = SPAWN:NewFromTemplate(tpl, resolved, self.name, true)
-								sp = sp:OnSpawnGroup(function(g)
+								sp = sp:InitSkill("Excellent"):OnSpawnGroup(function(g)
 
 										if self.MissionType == 'CAP' and self.mission== 'patrol' then
 											local gr = Group.getByName(g:GetName()); if not gr then return end
@@ -11291,8 +11437,8 @@ end
 											local offsetNm = (side == 1) and 35 or 25
 											local st = Frontline.PickCapStationFromOrigin(originZone, self.targetzone, side, 100, offsetNm)
 											if not st then return end
-											local dist = (side == 1) and math.random(30, 35) or math.random(30, 40)
-											SetUpCAP(gr, { x = st.x, z = st.y }, self.Altitude, dist, self._landUnitID, 30, offsetNm, side)
+											local dist = (side == 1) and math.random(33, 35) or math.random(35, 40)
+											SetUpCAP(gr, { x = st.x, z = st.y }, self.Altitude, dist, self._landUnitID, offsetNm, side)
 
 										elseif self.mission == 'supply' and self.unitCategory == heli then
 											if self.side == 2 and self._pendingBlueSupplyCost and self._pendingBlueSupplyCost > 0 then
@@ -13016,7 +13162,9 @@ function LogisticCommander:init()
 				self.context.battleCommander:refreshShopMenuForGroup(groupid, groupObj)
 
 				self.context.battleCommander.groupByPlayer = self.context.battleCommander.groupByPlayer or {}
+				self.context.battleCommander.groupNameByPlayer = self.context.battleCommander.groupNameByPlayer or {}
 				self.context.battleCommander.groupByPlayer[player] = groupid
+				self.context.battleCommander.groupNameByPlayer[player] = groupname
 
 
                 if self.context.statsMenus[groupid] then
@@ -13056,7 +13204,18 @@ function LogisticCommander:init()
 						end
 					end
 				end
+
 				missionCommands.addCommandForGroup(groupid, 'Leave Joint mission', jm, self.context.battleCommander._jointLeave, self.context.battleCommander, groupid)
+				missionCommands.addCommandForGroup(groupid, 'Joint mission status', jm, function()
+					local bcx = self.context.battleCommander
+					local pname = bcx.playerNames and bcx.playerNames[groupid]
+					local jp = pname and bcx.jointPairs and bcx.jointPairs[pname]
+					if jp and bcx:_jointPartnerAlive(pname) and bcx:_jointPartnerAlive(jp) then
+						trigger.action.outTextForGroup(groupid, 'In Joint mission with '..jp, 15)
+					else
+						trigger.action.outTextForGroup(groupid, "You're alone", 15)
+					end
+				end)
 				missionCommands.addCommandForGroup(groupid, 'Help', jm, function()
 					local txt = 'Joint missions lets two players get up to double the rewards of the mission credits.\n\n'
 						.. 'How it works:\n'
@@ -14506,10 +14665,10 @@ end
 TexacoZone = nil
 ArcoZone = nil
 BlueClients = SET_CLIENT:New():FilterCoalitions("blue"):FilterCategories("plane"):FilterActive():FilterStart()
-ARCO_PROX_RADIUS_M = UTILS.FeetToMeters(1000)
+ARCO_PROX_RADIUS_M = UTILS.FeetToMeters(2000)
 ARCO_PROX_ALT_M = UTILS.FeetToMeters(500)
 
-TEXACO_PROX_RADIUS_M = UTILS.FeetToMeters(1000)
+TEXACO_PROX_RADIUS_M = UTILS.FeetToMeters(2000)
 TEXACO_PROX_ALT_M = UTILS.FeetToMeters(500)
 
 function stopArcoProximityWatch()

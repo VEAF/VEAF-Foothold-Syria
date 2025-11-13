@@ -129,7 +129,7 @@ function ewrs.getAspect(bearing, heading)
 end
 
 function ewrs.buildThreatTable(activePlayer,bogeyDope)
-  local function sortRanges(v1,v2)return v1.range<v2.range end
+  local function sortRanges(v1,v2) if v1.isFriendly and not v2.isFriendly then return false end if v2.isFriendly and not v1.isFriendly then return true end return v1.range<v2.range end
   local targets={}
   if activePlayer.side==2 then targets=ewrs.currentlyDetectedRedUnits else targets=ewrs.currentlyDetectedBlueUnits end
   local bogeyDope=bogeyDope or false
@@ -211,7 +211,9 @@ function ewrs.buildThreatTable(activePlayer,bogeyDope)
         end
         local j=#threatTable+1
         threatTable[j]={}
-        threatTable[j].unitType="Friendly "..name.." ("..label..")"
+        --threatTable[j].unitType="Friendly "..name.." ("..label..")"
+        threatTable[j].unitType=name
+        threatTable[j].isFriendly=true
         threatTable[j].bearing=bearing
         threatTable[j].range=range
         threatTable[j].altitude=altitude
@@ -269,26 +271,59 @@ function ewrs.outText(activePlayer, threatTable, bogeyDope, greeting)
       
       table.insert(message,messageGreeting)
       table.insert(message,"\n")
+      local friendlyHeader=false
       
 
-      for k=1,maxThreats do
-        if threatTable[k]==nil then break end
-        if threatTable[k].range==ewrs.notAvailable then
-          table.insert(message,string.format("%s Position: Unknown",(threatTable[k].unitType or "Unknown")))
-        else
-          local asp = string.upper(threatTable[k].aspect)
-          table.insert(message,string.format("\n%s\t\tBRA\t\t%03d for %s\t\t%s\t\t%s",
-          (ewrs.showType and threatTable[k].unitType or "Unknown"),
-          threatTable[k].bearing,
-          threatTable[k].range..rangeUnits,
-          threatTable[k].altitude..altUnits,
-          asp))
+      if greeting==nil and not bogeyDope then
+        local shown=0
+        for k=1,#threatTable do
+          local t=threatTable[k]
+          if t==nil then break end
+          if not t.isFriendly and shown<maxThreats then
+            if t.range==ewrs.notAvailable then
+              table.insert(message,string.format("%s Position: Unknown",(t.unitType or "Unknown")))
+            else
+              local asp = string.upper(t.aspect)
+              table.insert(message,string.format("\n%s\t\tBRA\t\t%03d for %s\t\t%s\t\t%s",(ewrs.showType and t.unitType or "Unknown"),t.bearing,t.range..rangeUnits,t.altitude..altUnits,asp))
+            end
+            shown=shown+1
+            if shown<maxThreats then table.insert(message,"\n") end
+          end
         end
-        if threatTable[k+1]~=nil then
+        for k=1,#threatTable do
+          local t=threatTable[k]
+          if t and t.isFriendly then
+            if not friendlyHeader then if message[#message] ~= "\n" then table.insert(message,"\n") end table.insert(message,"\n"); table.insert(message,"-------------------------------->  Friendly  <---------------------------------"); table.insert(message,"\n"); friendlyHeader=true end
+            if t.range==ewrs.notAvailable then
+              table.insert(message,string.format("%s Position: Unknown",(t.unitType or "Unknown")))
+            else
+              local asp = string.upper(t.aspect)
+              table.insert(message,string.format("\n%s\t\tBRA\t\t%03d for %s\t\t%s\t\t%s",(ewrs.showType and t.unitType or "Unknown"),t.bearing,t.range..rangeUnits,t.altitude..altUnits,asp))
+            end
+            if k<#threatTable then table.insert(message,"\n") end
+          end
+        end
+      else
+        for k=1,maxThreats do
+          if threatTable[k]==nil then break end
+          if greeting==nil and not friendlyHeader and threatTable[k].isFriendly then table.insert(message,"\n"); table.insert(message,"-------------------------------->  Friendly  <---------------------------------"); table.insert(message,"\n"); friendlyHeader=true end
+          if threatTable[k].range==ewrs.notAvailable then
+            table.insert(message,string.format("%s Position: Unknown",(threatTable[k].unitType or "Unknown")))
+          else
+            local asp = string.upper(threatTable[k].aspect)
+            table.insert(message,string.format("\n%s\t\tBRA\t\t%03d for %s\t\t%s\t\t%s",
+            (ewrs.showType and threatTable[k].unitType or "Unknown"),
+            threatTable[k].bearing,
+            threatTable[k].range..rangeUnits,
+            threatTable[k].altitude..altUnits,
+            asp))
+          end
+          if threatTable[k+1]~=nil then
           table.insert(message,"\n")
+          end
         end
       end
-      trigger.action.outTextForGroup(activePlayer.groupID,table.concat(message),ewrs.messageDisplayTime)
+       trigger.action.outTextForGroup(activePlayer.groupID,table.concat(message),ewrs.messageDisplayTime)
     else
       if bogeyDope then
         trigger.action.outTextForGroup(activePlayer.groupID, "EWRS Bogey Dope for: " .. activePlayer.player .. "\nNo targets detected", ewrs.messageDisplayTime)

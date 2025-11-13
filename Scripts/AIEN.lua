@@ -20,7 +20,7 @@ AIEN.config.initiative 		    = true 		-- true/false. If true, the ground groups 
 --AIEN.config.conquer 		    = true 		-- true/false. If true, the ground groups will look for nearby towns or DCS ground markers and will try to move there if intel and terrain allow them (this is limited in space cause it's designed to work appropriately with DSMC 2)
 
 -- User advanced customization 
-AIEN.config.AIEN_xcl_tag		= {"Red SAM Dog Ear","IRISTSLM","SA-2","SA-3","SA-6","SA-10","SA-5","SA-11","Fixed","Hidden","hidden","supply","support","attack","patrol","EscortGroup"} 	-- string, global, case sensitive. Can be dynamically changed by other script or triggers, since it's a global variable. used as a text format without spaces or special characters. only letters and numbers allowed. Any ground group with this 'tag' in its group name won't get AI enhancement behaviour, regardless of its coalition 
+AIEN.config.AIEN_xcl_tag		= {"Red SAM Dog Ear","IRISTSLM","SA-2","SA-3","SA-6","SA-10","SA-5","SA-11","Fixed","Hidden","hidden","supply","support","EscortGroup"} 	-- string, global, case sensitive. Can be dynamically changed by other script or triggers, since it's a global variable. used as a text format without spaces or special characters. only letters and numbers allowed. Any ground group with this 'tag' in its group name won't get AI enhancement behaviour, regardless of its coalition 
 AIEN.config.AIEN_zoneFilter     = ""    	-- string, global, case sensitive. Can be dynamically changed by other script or triggers, since it's a global variable. used as a text format without spaces or special characters. only letters and numbers allowed, i.e. "AIEN" will fit. If left nil, or void string like "", won't be used. Only groups inside the named trigger zone will be affected by AIEN script behaviors of reaction, dismount and suppression, and vice versa. If no trigger zone with the specific name is in the mission, then all the groups will use AIEN features.
 AIEN.config.message_feed        = true 		-- true/false. If true, each relevant AI action starting will also create a trigger message feedback for its coalition
 AIEN.config.mark_on_f10_map     = true 	    -- true/false. If true, when an artillery fire mission is ongoing, a markpoint will appear on the map of the allied coalition to show the expected impact point
@@ -311,3257 +311,7078 @@ if EMBD then -- just for compatibility enhancement
     end
 end
 
-
 if not tblThreatsRange then
 	tblThreatsRange = {
         ["S-60_Type59_Artillery"] = 
         {
-            ["detection"] = 5000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 259,
+                [5] = "AA_flak",
+                [6] = "Static AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 6000,
+            ["detection"] = 5000,
         }, -- end of ["S-60_Type59_Artillery"]
-        ["flak30"] = 
+        ["SD10 Loadout"] = 
         {
-            ["irsignature"] = 0.01,
-            ["detection"] = 0,
-            ["threat"] = 2500,
-        }, -- end of ["flak30"]
-        ["Daimler_AC"] = 
-        {
-            ["irsignature"] = 0.07,
-            ["detection"] = 0,
-            ["threat"] = 2000,
-        }, -- end of ["Daimler_AC"]
-        ["MTLB"] = 
-        {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
-            ["threat"] = 1000,
-        }, -- end of ["MTLB"]
-        ["L-39ZA"] = 
-        {
-            ["irsignature"] = 0.2,
-        }, -- end of ["L-39ZA"]
-        ["Czech hedgehogs 2"] = 
-        {
-        }, -- end of ["Czech hedgehogs 2"]
-        ["Horch_901_typ_40_kfz_21"] = 
-        {
-            ["irsignature"] = 0.065,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Missile",
+                [6] = "NonArmoredUnits",
+                [7] = "NonAndLightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["Horch_901_typ_40_kfz_21"]
-        ["uh1h_cargo"] = 
+            ["detection"] = 0,
+            ["irsignature"] = 0,
+        }, -- end of ["SD10 Loadout"]
+        ["CHAP_T64BV"] = 
         {
-        }, -- end of ["uh1h_cargo"]
-        ["pipes_small_cargo"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 357,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Datalink",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 4000,
+            ["irsignature"] = 0.11,
+            ["detection"] = 5000,
+            ["threatmin"] = 100,
+        }, -- end of ["CHAP_T64BV"]
+        ["Silkworm_SR"] = 
         {
-        }, -- end of ["pipes_small_cargo"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 263,
+                [5] = "DetectionByAWACS",
+                [6] = "Artillery",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "Indirect fire",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 200000,
+            ["irsignature"] = 0.05,
+        }, -- end of ["Silkworm_SR"]
+        ["SKP-11"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["SKP-11"]
+        ["Type_96_25mm_AA"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 376,
+                [5] = "AA_flak",
+                [6] = "Static AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 3500,
+            ["detection"] = 10000,
+            ["irsignature"] = 0.01,
+        }, -- end of ["Type_96_25mm_AA"]
+        ["CHAP_TorM2"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 102,
+                [4] = 363,
+                [5] = "AA_missile",
+                [6] = "SR SAM",
+                [7] = "SAM SR",
+                [8] = "SAM TR",
+                [9] = "RADAR_BAND1_FOR_ARM",
+                [10] = "Datalink",
+                [11] = "All",
+                [12] = "Ground Units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "NonArmoredUnits",
+                [17] = "Air Defence",
+                [18] = "SAM related",
+                [19] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 16000,
+            ["irsignature"] = 0.09,
+            ["detection"] = 32000,
+            ["threatmin"] = 1500,
+        }, -- end of ["CHAP_TorM2"]
+        ["BMP-1"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 104,
+                [4] = 7,
+                [5] = "IFV",
+                [6] = "ATGM",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.085,
+        }, -- end of ["BMP-1"]
+        ["M-113"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Datalink",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1200,
+            ["detection"] = 0,
+            ["irsignature"] = 0.09,
+        }, -- end of ["M-113"]
         ["Gepard"] = 
         {
-            ["irsignature"] = 0.1,
-            ["detection"] = 15000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 105,
+                [4] = 38,
+                [5] = "AA_flak",
+                [6] = "Mobile AAA",
+                [7] = "SAM SR",
+                [8] = "SAM TR",
+                [9] = "RADAR_BAND1_FOR_ARM",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Air Defence",
+                [13] = "Armed Air Defence",
+                [14] = "Rocket Attack Valid AirDefence",
+                [15] = "AAA",
+                [16] = "All",
+                [17] = "Ground Units",
+                [18] = "Vehicles",
+                [19] = "Ground vehicles",
+                [20] = "SAM related",
+                [21] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 4000,
+            ["detection"] = 15000,
+            ["irsignature"] = 0.1,
         }, -- end of ["Gepard"]
         ["M 818"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "Datalink",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
         }, -- end of ["M 818"]
         ["Soldier RPG"] = 
         {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.004,
         }, -- end of ["Soldier RPG"]
-        ["Container_watchtower_lights"] = 
+        ["rapier_fsa_launcher"] = 
         {
-        }, -- end of ["Container_watchtower_lights"]
-        ["FarpHide_Med"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 260,
+                [5] = "AA_missile",
+                [6] = "SR SAM",
+                [7] = "SAM SR",
+                [8] = "SAM TR",
+                [9] = "SAM LL",
+                [10] = "RADAR_BAND1_FOR_ARM",
+                [11] = "RADAR_BAND2_FOR_ARM",
+                [12] = "All",
+                [13] = "Ground Units",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "NonArmoredUnits",
+                [18] = "Air Defence",
+                [19] = "SAM related",
+                [20] = "SAM elements",
+                [21] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 6800,
+            ["detection"] = 30000,
+            ["irsignature"] = 0.03,
+        }, -- end of ["rapier_fsa_launcher"]
+        ["Type_94_Truck"] = 
         {
-        }, -- end of ["FarpHide_Med"]
-        ["CV_59_MD3"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.075,
+        }, -- end of ["Type_94_Truck"]
+        ["CHAP_M142_ATACMS_M48"] = 
         {
-        }, -- end of ["CV_59_MD3"]
-        ["CastleClass_01"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 367,
+                [5] = "MLRS",
+                [6] = "Datalink",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "Indirect fire",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "LightArmoredUnits",
+                [17] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 300000,
+            ["irsignature"] = 0.075,
+            ["detection"] = 0,
+            ["threatmin"] = 50000,
+        }, -- end of ["CHAP_M142_ATACMS_M48"]
+        ["L118_Unit"] = 
         {
-            ["detection"] = 25000,
-            ["threat"] = 3000,
-        }, -- end of ["CastleClass_01"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 26,
+                [4] = 349,
+                [5] = "Artillery",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 17200,
+            ["detection"] = 17500,
+        }, -- end of ["L118_Unit"]
+        ["S-300PS 5P85C ln"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 8,
+                [5] = "AA_missile",
+                [6] = "SAM LL",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Air Defence",
+                [14] = "SAM related",
+                [15] = "SAM elements",
+                [16] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 120000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["S-300PS 5P85C ln"]
         ["Merkava_Mk4"] = 
         {
-            ["irsignature"] = 0.12,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Datalink",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 3500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.12,
         }, -- end of ["Merkava_Mk4"]
         ["Patriot cp"] = 
         {
-            ["irsignature"] = 0.05,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 36,
+                [5] = "Trucks",
+                [6] = "SAM CC",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
         }, -- end of ["Patriot cp"]
+        ["ATMZ-5"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 4,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["ATMZ-5"]
         ["5p73 s-125 ln"] = 
         {
-            ["irsignature"] = 0.02,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 74,
+                [5] = "AA_missile",
+                [6] = "MR SAM",
+                [7] = "SAM LL",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+                [17] = "Armed Air Defence",
+            }, -- end of ["attr"]
             ["threat"] = 18000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.02,
         }, -- end of ["5p73 s-125 ln"]
         ["house2arm"] = 
         {
-            ["irsignature"] = 0.007,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Fortifications",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "AntiAir Armed Vehicles",
+                [11] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.007,
         }, -- end of ["house2arm"]
-        ["F-15E"] = 
+        ["ural_atz5_civil"] = 
         {
-            ["irsignature"] = 0.91,
-        }, -- end of ["F-15E"]
-        ["M45_Quadmount"] = 
-        {
-            ["irsignature"] = 0.01,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 386,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
             ["detection"] = 0,
-            ["threat"] = 1500,
-        }, -- end of ["M45_Quadmount"]
-        ["Churchill_VII"] = 
-        {
-            ["irsignature"] = 0.105,
-            ["detection"] = 0,
-            ["threat"] = 3000,
-        }, -- end of ["Churchill_VII"]
-        ["B-52H"] = 
-        {
-            ["irsignature"] = 4,
-        }, -- end of ["B-52H"]
-        ["AS32-p25"] = 
-        {
-        }, -- end of ["AS32-p25"]
-        ["SturmPzIV"] = 
-        {
             ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 4500,
-        }, -- end of ["SturmPzIV"]
-        ["T155_Firtina"] = 
-        {
-            ["irsignature"] = 0.11,
-            ["detection"] = 0,
-            ["threat"] = 41000,
-        }, -- end of ["T155_Firtina"]
-        ["oiltank_cargo"] = 
-        {
-        }, -- end of ["oiltank_cargo"]
-        ["Carrier LSO Personell 2"] = 
-        {
-        }, -- end of ["Carrier LSO Personell 2"]
-        ["Freya_Shelter_Brick"] = 
-        {
-        }, -- end of ["Freya_Shelter_Brick"]
-        ["Building04_PBR"] = 
-        {
-        }, -- end of ["Building04_PBR"]
-        ["A-20G"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["A-20G"]
-        ["r11_volvo"] = 
-        {
-        }, -- end of ["r11_volvo"]
-        ["Container_40ft"] = 
-        {
-        }, -- end of ["Container_40ft"]
-        ["Predator GCS"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Predator GCS"]
-        ["hy_launcher"] = 
-        {
-            ["irsignature"] = 0.01,
-            ["detection"] = 100000,
-            ["threat"] = 100000,
-        }, -- end of ["hy_launcher"]
-        ["Bf-109K-4"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["Bf-109K-4"]
-        ["Seawise_Giant"] = 
-        {
-            ["irsignature"] = 0.4,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Seawise_Giant"]
-        ["LST_Mk2"] = 
-        {
-            ["irsignature"] = 0.3,
-            ["detection"] = 0,
-            ["threat"] = 4000,
-        }, -- end of ["LST_Mk2"]
-        ["m1_vla"] = 
-        {
-        }, -- end of ["m1_vla"]
-        ["Mirage-F1BQ"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1BQ"]
-        ["ZU-23 Closed Insurgent"] = 
-        {
-            ["irsignature"] = 0.006,
-            ["detection"] = 5000,
-            ["threat"] = 2500,
-        }, -- end of ["ZU-23 Closed Insurgent"]
-        ["HQ-7_LN_P"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 8000,
-            ["threat"] = 12000,
-        }, -- end of ["HQ-7_LN_P"]
-        ["snr s-125 tr"] = 
-        {
-            ["irsignature"] = 0.06,
-            ["detection"] = 100000,
-            ["threat"] = 0,
-        }, -- end of ["snr s-125 tr"]
-        ["Siegfried Line"] = 
-        {
-        }, -- end of ["Siegfried Line"]
-        ["SAU Msta"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 23500,
-        }, -- end of ["SAU Msta"]
-        ["Tent02"] = 
-        {
-        }, -- end of ["Tent02"]
-        ["outpost_road"] = 
-        {
-            ["irsignature"] = 0.007,
-            ["detection"] = 0,
-            ["threat"] = 800,
-        }, -- end of ["outpost_road"]
-        ["Vulcan"] = 
-        {
-            ["irsignature"] = 0.09,
-            ["detection"] = 5000,
-            ["threat"] = 2000,
-        }, -- end of ["Vulcan"]
-        ["Dragonteeth 2"] = 
-        {
-        }, -- end of ["Dragonteeth 2"]
-        ["leopard-2A4_trs"] = 
-        {
-            ["irsignature"] = 0.12,
-            ["detection"] = 0,
-            ["threat"] = 3500,
-        }, -- end of ["leopard-2A4_trs"]
-        ["Sd_Kfz_7"] = 
-        {
-            ["irsignature"] = 0.075,
-            ["detection"] = 0,
-        }, -- end of ["Sd_Kfz_7"]
-        ["container_40ft"] = 
-        {
-        }, -- end of ["container_40ft"]
-        ["TYPE-59"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 2500,
-        }, -- end of ["TYPE-59"]
-        ["SpGH_Dana"] = 
-        {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
-            ["threat"] = 18700,
-        }, -- end of ["SpGH_Dana"]
-        ["Ski Ramp"] = 
-        {
-        }, -- end of ["Ski Ramp"]
-        ["BMP-2"] = 
-        {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
-            ["threat"] = 3000,
-        }, -- end of ["BMP-2"]
-        ["santafe"] = 
-        {
-        }, -- end of ["santafe"]
-        ["Allies_Director"] = 
-        {
-            ["irsignature"] = 0.03,
-            ["detection"] = 30000,
-            ["threat"] = 0,
-        }, -- end of ["Allies_Director"]
-        ["F-5E"] = 
-        {
-            ["irsignature"] = 0.4,
-        }, -- end of ["F-5E"]
-        ["VAB_Mephisto"] = 
-        {
-            ["irsignature"] = 0.085,
-            ["detection"] = 0,
-            ["threat"] = 3800,
-        }, -- end of ["VAB_Mephisto"]
-        ["Cargo06"] = 
-        {
-        }, -- end of ["Cargo06"]
-        ["Stug_IV"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 3000,
-        }, -- end of ["Stug_IV"]
-        ["F-4E"] = 
-        {
-            ["irsignature"] = 1,
-        }, -- end of ["F-4E"]
-        ["M-109"] = 
-        {
-            ["irsignature"] = 0.11,
-            ["detection"] = 1000,
-            ["threat"] = 22000,
-        }, -- end of ["M-109"]
-        ["LAZ Bus"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["LAZ Bus"]
-        ["UH-60A"] = 
-        {
-            ["irsignature"] = 0.22,
-        }, -- end of ["UH-60A"]
-        ["Beer Bomb"] = 
-        {
-        }, -- end of ["Beer Bomb"]
-        ["ATZ-10"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["ATZ-10"]
-        ["P20_01"] = 
-        {
-        }, -- end of ["P20_01"]
-        ["Elefant_SdKfz_184"] = 
-        {
-            ["irsignature"] = 0.11,
-            ["detection"] = 0,
-            ["threat"] = 6000,
-        }, -- end of ["Elefant_SdKfz_184"]
-        ["M978 HEMTT Tanker"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["M978 HEMTT Tanker"]
-        ["Mirage-F1CE"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1CE"]
-        ["Marder"] = 
-        {
-            ["irsignature"] = 0.085,
-            ["detection"] = 0,
-            ["threat"] = 1500,
-        }, -- end of ["Marder"]
-        ["HarborTug"] = 
-        {
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["HarborTug"]
-        ["CVN_72"] = 
-        {
-            ["irsignature"] = 0.4,
-            ["detection"] = 50000,
-            ["threat"] = 25000,
-        }, -- end of ["CVN_72"]
-        ["Sandbag_11"] = 
-        {
-        }, -- end of ["Sandbag_11"]
-        ["BRDM-2"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 1600,
-        }, -- end of ["BRDM-2"]
-        ["ATZ-5"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["ATZ-5"]
-        ["Tent01"] = 
-        {
-        }, -- end of ["Tent01"]
-        ["An-26B"] = 
-        {
-            ["irsignature"] = 0.5,
-        }, -- end of ["An-26B"]
-        ["LiAZ Bus"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["LiAZ Bus"]
-        ["soldier_wwii_us"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
-            ["threat"] = 500,
-        }, -- end of ["soldier_wwii_us"]
-        ["trunks_small_cargo"] = 
-        {
-        }, -- end of ["trunks_small_cargo"]
-        ["Tiger_II_H"] = 
-        {
-            ["irsignature"] = 0.105,
-            ["detection"] = 0,
-            ["threat"] = 6000,
-        }, -- end of ["Tiger_II_H"]
-        ["KC130"] = 
-        {
-            ["irsignature"] = 1,
-        }, -- end of ["KC130"]
-        ["LAV-25"] = 
-        {
-            ["irsignature"] = 0.085,
-            ["detection"] = 0,
-            ["threat"] = 2500,
-        }, -- end of ["LAV-25"]
-        ["SK_C_28_naval_gun"] = 
-        {
-            ["irsignature"] = 0.01,
-            ["detection"] = 0,
-            ["threat"] = 20000,
-        }, -- end of ["SK_C_28_naval_gun"]
-        ["Stug_III"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 3000,
-        }, -- end of ["Stug_III"]
-        ["BoomBarrier_open"] = 
-        {
-        }, -- end of ["BoomBarrier_open"]
-        ["tetrapod_cargo"] = 
-        {
-        }, -- end of ["tetrapod_cargo"]
-        ["German_covered_wagon_G10"] = 
-        {
-            ["irsignature"] = 0.01,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["German_covered_wagon_G10"]
-        ["TugHarlan_drivable"] = 
-        {
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["TugHarlan_drivable"]
-        ["UAZ-469"] = 
-        {
-            ["irsignature"] = 0.07,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["UAZ-469"]
-        ["CV_59_NS60"] = 
-        {
-        }, -- end of ["CV_59_NS60"]
-        ["FPS-117 Dome"] = 
-        {
-            ["irsignature"] = 0.07,
-            ["detection"] = 400000,
-            ["threat"] = 0,
-        }, -- end of ["FPS-117 Dome"]
-        ["Building03_PBR"] = 
-        {
-        }, -- end of ["Building03_PBR"]
-        ["Mirage-F1DDA"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1DDA"]
-        ["CH-53E"] = 
-        {
-            ["irsignature"] = 1,
-        }, -- end of ["CH-53E"]
-        ["Mirage-F1CJ"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1CJ"]
-        ["FW-190A8"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["FW-190A8"]
-        ["FuMG-401"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 160000,
-            ["threat"] = 0,
-        }, -- end of ["FuMG-401"]
-        ["Ural-4320T"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Ural-4320T"]
-        ["HandyWind"] = 
-        {
-            ["irsignature"] = 0.35,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["HandyWind"]
-        ["Ka-50"] = 
-        {
-            ["irsignature"] = 0.3,
-        }, -- end of ["Ka-50"]
-        ["Tiger_I"] = 
-        {
-            ["irsignature"] = 0.105,
-            ["detection"] = 0,
-            ["threat"] = 3000,
-        }, -- end of ["Tiger_I"]
-        ["FireExtinguisher03"] = 
-        {
-        }, -- end of ["FireExtinguisher03"]
-        ["Shelter01"] = 
-        {
-        }, -- end of ["Shelter01"]
-        ["Kub 1S91 str"] = 
-        {
-            ["irsignature"] = 0.085,
-            ["detection"] = 70000,
-            ["threat"] = 0,
-        }, -- end of ["Kub 1S91 str"]
-        ["ALBATROS"] = 
-        {
-            ["irsignature"] = 0.35,
-            ["detection"] = 30000,
-            ["threat"] = 16000,
-        }, -- end of ["ALBATROS"]
-        ["M1126 Stryker ICV"] = 
-        {
-            ["irsignature"] = 0.085,
-            ["detection"] = 0,
-            ["threat"] = 1200,
-        }, -- end of ["M1126 Stryker ICV"]
-        ["E-3A"] = 
-        {
-            ["irsignature"] = 4,
-        }, -- end of ["E-3A"]
-        ["Soldier AK"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
-            ["threat"] = 500,
-        }, -- end of ["Soldier AK"]
-        ["SA-18 Igla-S manpad"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 5000,
-            ["threat"] = 5200,
-        }, -- end of ["SA-18 Igla-S manpad"]
-        ["Kub 2P25 ln"] = 
-        {
-            ["irsignature"] = 0.085,
-            ["detection"] = 0,
-            ["threat"] = 25000,
-        }, -- end of ["Kub 2P25 ln"]
-        ["Cobra"] = 
-        {
-            ["irsignature"] = 0.07,
-            ["detection"] = 0,
-            ["threat"] = 1200,
-        }, -- end of ["Cobra"]
-        ["MLRS FDDM"] = 
-        {
-            ["irsignature"] = 0.075,
-            ["detection"] = 0,
-            ["threat"] = 1200,
-        }, -- end of ["MLRS FDDM"]
-        ["Mi-8MT"] = 
-        {
-            ["irsignature"] = 0.6,
-        }, -- end of ["Mi-8MT"]
-        ["bofors40"] = 
-        {
-            ["irsignature"] = 0.01,
-            ["detection"] = 0,
-            ["threat"] = 4000,
-        }, -- end of ["bofors40"]
-        ["ZU-23 Insurgent"] = 
-        {
-            ["irsignature"] = 0.006,
-            ["detection"] = 5000,
-            ["threat"] = 2500,
-        }, -- end of ["ZU-23 Insurgent"]
-        ["Ural-4320-31"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Ural-4320-31"]
-        ["Hawk tr"] = 
-        {
-            ["irsignature"] = 0.06,
-            ["detection"] = 90000,
-            ["threat"] = 0,
-        }, -- end of ["Hawk tr"]
-        ["TACAN_beacon"] = 
-        {
-            ["irsignature"] = 0.005,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["TACAN_beacon"]
-        ["SNR_75V"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 100000,
-            ["threat"] = 0,
-        }, -- end of ["SNR_75V"]
-        ["Building08_PBR"] = 
-        {
-        }, -- end of ["Building08_PBR"]
-        ["Stinger comm"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 5000,
-            ["threat"] = 0,
-        }, -- end of ["Stinger comm"]
-        ["IL-76MD"] = 
-        {
-            ["irsignature"] = 4,
-        }, -- end of ["IL-76MD"]
-        ["Su-34"] = 
-        {
-            ["irsignature"] = 1,
-        }, -- end of ["Su-34"]
-        ["soldier_mauser98"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
-            ["threat"] = 500,
-        }, -- end of ["soldier_mauser98"]
-        ["AS32-36A"] = 
-        {
-        }, -- end of ["AS32-36A"]
-        ["S-300PS 40B6MD sr_19J6"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 150000,
-            ["threat"] = 0,
-        }, -- end of ["S-300PS 40B6MD sr_19J6"]
-        ["MJ-1_02"] = 
-        {
-        }, -- end of ["MJ-1_02"]
-        ["M1045 HMMWV TOW"] = 
-        {
-            ["irsignature"] = 0.75,
-            ["detection"] = 0,
-            ["threat"] = 3800,
-        }, -- end of ["M1045 HMMWV TOW"]
-        ["Mirage-F1B"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1B"]
-        ["LHD_LHA"] = 
-        {
-        }, -- end of ["LHD_LHA"]
-        ["HQ-7_LN_SP"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 8000,
-            ["threat"] = 12000,
-        }, -- end of ["HQ-7_LN_SP"]
-        ["SAU Akatsia"] = 
-        {
-            ["irsignature"] = 0.095,
-            ["detection"] = 0,
-            ["threat"] = 17000,
-        }, -- end of ["SAU Akatsia"]
-        ["NASAMS_Radar_MPQ64F1"] = 
-        {
-            ["irsignature"] = 0.06,
-            ["detection"] = 50000,
-            ["threat"] = 0,
-        }, -- end of ["NASAMS_Radar_MPQ64F1"]
-        ["Haystack 4"] = 
-        {
-        }, -- end of ["Haystack 4"]
-        ["HESCO_wallperimeter_5"] = 
-        {
-        }, -- end of ["HESCO_wallperimeter_5"]
-        ["F/A-18A"] = 
-        {
-            ["irsignature"] = 0.73,
-        }, -- end of ["F/A-18A"]
-        ["Revetment_x8"] = 
-        {
-        }, -- end of ["Revetment_x8"]
-        ["Tetrarch"] = 
-        {
-            ["irsignature"] = 0.085,
-            ["detection"] = 0,
-            ["threat"] = 2000,
-        }, -- end of ["Tetrarch"]
-        ["MiG-23MLD"] = 
-        {
-            ["irsignature"] = 0.69,
-        }, -- end of ["MiG-23MLD"]
-        ["M32-10C_04"] = 
-        {
-        }, -- end of ["M32-10C_04"]
-        ["Jagdpanther_G1"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 5000,
-        }, -- end of ["Jagdpanther_G1"]
-        ["Container_10ft"] = 
-        {
-        }, -- end of ["Container_10ft"]
-        ["AV8BNA"] = 
-        {
-            ["irsignature"] = 0.7,
-        }, -- end of ["AV8BNA"]
-        ["Infantry AK Ins"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
-            ["threat"] = 500,
-        }, -- end of ["Infantry AK Ins"]
-        ["Coach cargo"] = 
-        {
-            ["irsignature"] = 0,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Coach cargo"]
-        ["M-2000C"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["M-2000C"]
-        ["Carrier LSO Personell 5"] = 
-        {
-        }, -- end of ["Carrier LSO Personell 5"]
-        ["ZIL-131 KUNG"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["ZIL-131 KUNG"]
-        ["Container_20ft"] = 
-        {
-        }, -- end of ["Container_20ft"]
-        ["ZiL-131 APA-80"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["ZiL-131 APA-80"]
-        ["BMP-3"] = 
-        {
-            ["irsignature"] = 0.095,
-            ["detection"] = 0,
-            ["threat"] = 4000,
-        }, -- end of ["BMP-3"]
-        ["P-47D-30bl1"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["P-47D-30bl1"]
-        ["CVN_75"] = 
-        {
-            ["irsignature"] = 0.4,
-            ["detection"] = 50000,
-            ["threat"] = 25000,
-        }, -- end of ["CVN_75"]
-        ["UH-1H"] = 
-        {
-            ["irsignature"] = 0.2,
-        }, -- end of ["UH-1H"]
-        ["Hummer"] = 
-        {
-            ["irsignature"] = 0.075,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Hummer"]
-        ["Dragonteeth 1"] = 
-        {
-        }, -- end of ["Dragonteeth 1"]
-        ["AH-64D_BLK_II"] = 
-        {
-            ["irsignature"] = 0.2,
-        }, -- end of ["AH-64D_BLK_II"]
-        ["leopard-2A4"] = 
-        {
-            ["irsignature"] = 0.12,
-            ["detection"] = 0,
-            ["threat"] = 3500,
-        }, -- end of ["leopard-2A4"]
-        ["RQ-1A Predator"] = 
-        {
-            ["irsignature"] = 0.01,
-        }, -- end of ["RQ-1A Predator"]
-        ["USS_Arleigh_Burke_IIa"] = 
-        {
-            ["irsignature"] = 0.4,
-            ["detection"] = 150000,
-            ["threat"] = 100000,
-        }, -- end of ["USS_Arleigh_Burke_IIa"]
-        ["Carrier LSO Personell 1"] = 
-        {
-        }, -- end of ["Carrier LSO Personell 1"]
-        ["SA342L"] = 
-        {
-            ["irsignature"] = 0.2,
-        }, -- end of ["SA342L"]
-        ["Sandbag_02"] = 
-        {
-        }, -- end of ["Sandbag_02"]
-        ["Ladder"] = 
-        {
-        }, -- end of ["Ladder"]
-        ["f_bar_cargo"] = 
-        {
-        }, -- end of ["f_bar_cargo"]
-        ["Tornado GR4"] = 
-        {
-            ["irsignature"] = 0.6,
-        }, -- end of ["Tornado GR4"]
-        ["Hawk pcp"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Hawk pcp"]
-        ["S-300PS 40B6M tr"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 160000,
-            ["threat"] = 0,
-        }, -- end of ["S-300PS 40B6M tr"]
-        ["ZU-23 Emplacement Closed"] = 
-        {
-            ["irsignature"] = 0.006,
-            ["detection"] = 5000,
-            ["threat"] = 2500,
-        }, -- end of ["ZU-23 Emplacement Closed"]
-        ["ZIL-135"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["ZIL-135"]
-        ["OH58D"] = 
-        {
-            ["irsignature"] = 0.07,
-        }, -- end of ["OH58D"]
-        ["Bunker"] = 
-        {
-            ["irsignature"] = 0.005,
-            ["detection"] = 0,
-            ["threat"] = 800,
-        }, -- end of ["Bunker"]
-        ["Container_office"] = 
-        {
-        }, -- end of ["Container_office"]
-        ["GAZ-3308"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["GAZ-3308"]
-        ["flak41"] = 
-        {
-            ["irsignature"] = 0.01,
-            ["detection"] = 0,
-            ["threat"] = 5000,
-        }, -- end of ["flak41"]
-        ["SA-11 Buk LN 9A310M1"] = 
-        {
-            ["irsignature"] = 0.095,
-            ["detection"] = 50000,
-            ["threat"] = 35000,
-        }, -- end of ["SA-11 Buk LN 9A310M1"]
-        ["tt_B8M1"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 5000,
-            ["threat"] = 5000,
-        }, -- end of ["tt_B8M1"]
-        ["SON_9"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 55000,
-            ["threat"] = 0,
-        }, -- end of ["SON_9"]
-        ["ZSU-23-4 Shilka"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 5000,
-            ["threat"] = 2500,
-        }, -- end of ["ZSU-23-4 Shilka"]
-        ["Freya_Shelter_Concrete"] = 
-        {
-        }, -- end of ["Freya_Shelter_Concrete"]
-        ["Chieftain_mk3"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 3500,
-        }, -- end of ["Chieftain_mk3"]
-        ["BTR-80"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 1600,
-        }, -- end of ["BTR-80"]
-        ["CV_1143_5"] = 
-        {
-            ["irsignature"] = 0.45,
-            ["detection"] = 25000,
-            ["threat"] = 12000,
-        }, -- end of ["CV_1143_5"]
-        ["r11_volvo_drivable"] = 
-        {
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["r11_volvo_drivable"]
-        ["AAV7"] = 
-        {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
-            ["threat"] = 1200,
-        }, -- end of ["AAV7"]
-        ["Ka-27"] = 
-        {
-            ["irsignature"] = 0.5,
-        }, -- end of ["Ka-27"]
-        ["KC135MPRS"] = 
-        {
-            ["irsignature"] = 4,
-        }, -- end of ["KC135MPRS"]
-        ["FPS-117"] = 
-        {
-            ["irsignature"] = 0.07,
-            ["detection"] = 463000,
-            ["threat"] = 0,
-        }, -- end of ["FPS-117"]
-        ["HEMTT_C-RAM_Phalanx"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 10000,
-            ["threat"] = 2000,
-        }, -- end of ["HEMTT_C-RAM_Phalanx"]
-        ["Patriot ln"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 0,
-            ["threat"] = 100000,
-        }, -- end of ["Patriot ln"]
-        ["H-6J"] = 
-        {
-            ["irsignature"] = 2.5,
-        }, -- end of ["H-6J"]
-        ["E-2C"] = 
-        {
-            ["irsignature"] = 0.5,
-        }, -- end of ["E-2C"]
-        ["offshore WindTurbine"] = 
-        {
-        }, -- end of ["offshore WindTurbine"]
-        ["NASAMS_LN_B"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 0,
-            ["threat"] = 15000,
-        }, -- end of ["NASAMS_LN_B"]
-        ["ZU-23 Emplacement"] = 
-        {
-            ["irsignature"] = 0.006,
-            ["detection"] = 5000,
-            ["threat"] = 2500,
-        }, -- end of ["ZU-23 Emplacement"]
-        ["tt_ZU-23"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 2500,
-        }, -- end of ["tt_ZU-23"]
-        ["Ural-4320 APA-5D"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Ural-4320 APA-5D"]
-        ["S-300PS 5P85D ln"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 120000,
-        }, -- end of ["S-300PS 5P85D ln"]
-        ["Coach a passenger"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Coach a passenger"]
-        ["Dry-cargo ship-1"] = 
-        {
-            ["irsignature"] = 0.2,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Dry-cargo ship-1"]
-        ["Mirage-F1C"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1C"]
-        ["Tu-22M3"] = 
-        {
-            ["irsignature"] = 4,
-        }, -- end of ["Tu-22M3"]
-        ["Boxcartrinity"] = 
-        {
-            ["irsignature"] = 0,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Boxcartrinity"]
-        ["M8_Greyhound"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 2000,
-        }, -- end of ["M8_Greyhound"]
-        ["us carrier tech"] = 
-        {
-        }, -- end of ["us carrier tech"]
-        ["Mirage-F1BE"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1BE"]
-        ["M2A1_halftrack"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 1200,
-        }, -- end of ["M2A1_halftrack"]
-        ["DRG_Class_86"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["DRG_Class_86"]
-        ["MB-339APAN"] = 
-        {
-            ["irsignature"] = 0.2,
-        }, -- end of ["MB-339APAN"]
-        ["S-300PS 5H63C 30H6_tr"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 120000,
-            ["threat"] = 0,
-        }, -- end of ["S-300PS 5H63C 30H6_tr"]
-        ["p-19 s-125 sr"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 160000,
-            ["threat"] = 0,
-        }, -- end of ["p-19 s-125 sr"]
-        ["Carrier LSO Personell 4"] = 
-        {
-        }, -- end of ["Carrier LSO Personell 4"]
-        ["Infantry AK"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
-            ["threat"] = 500,
-        }, -- end of ["Infantry AK"]
-        ["APFC fuel"] = 
-        {
-        }, -- end of ["APFC fuel"]
-        ["T-80UD"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 5000,
-        }, -- end of ["T-80UD"]
-        ["Type_054A"] = 
-        {
-            ["detection"] = 160000,
-            ["threat"] = 45000,
-        }, -- end of ["Type_054A"]
-        ["Tu-160"] = 
-        {
-            ["irsignature"] = 4,
-        }, -- end of ["Tu-160"]
-        ["Dragonteeth 5"] = 
-        {
-        }, -- end of ["Dragonteeth 5"]
-        ["Type_052B"] = 
-        {
-            ["detection"] = 100000,
-            ["threat"] = 30000,
-        }, -- end of ["Type_052B"]
-        ["A-10C_2"] = 
-        {
-            ["irsignature"] = 0.53,
-        }, -- end of ["A-10C_2"]
-        ["CH-47D"] = 
-        {
-            ["irsignature"] = 0.72,
-        }, -- end of ["CH-47D"]
-        ["AH-64A"] = 
-        {
-            ["irsignature"] = 0.2,
-        }, -- end of ["AH-64A"]
-        ["Challenger2"] = 
-        {
-            ["irsignature"] = 0.11,
-            ["detection"] = 0,
-            ["threat"] = 3500,
-        }, -- end of ["Challenger2"]
-        ["QF_37_AA"] = 
-        {
-            ["irsignature"] = 0.01,
-            ["detection"] = 0,
-            ["threat"] = 9000,
-        }, -- end of ["QF_37_AA"]
-        ["WingLoong-I"] = 
-        {
-            ["irsignature"] = 0.02,
-        }, -- end of ["WingLoong-I"]
-        ["Patriot EPP"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Patriot EPP"]
-        ["S-3B Tanker"] = 
-        {
-            ["irsignature"] = 0.53,
-        }, -- end of ["S-3B Tanker"]
-        ["Su-25T"] = 
-        {
-            ["irsignature"] = 0.7,
-        }, -- end of ["Su-25T"]
-        ["HESCO_watchtower_2"] = 
-        {
-        }, -- end of ["HESCO_watchtower_2"]
-        ["ELNYA"] = 
-        {
-            ["irsignature"] = 0.3,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["ELNYA"]
-        ["Mirage-F1C-200"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1C-200"]
-        ["Ural-375 PBU"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Ural-375 PBU"]
-        ["Smerch_HE"] = 
-        {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
-            ["threat"] = 70000,
-        }, -- end of ["Smerch_HE"]
-        ["M6 Linebacker"] = 
-        {
-            ["irsignature"] = 0.095,
-            ["detection"] = 8000,
-            ["threat"] = 4500,
-        }, -- end of ["M6 Linebacker"]
-        ["Mirage-F1CT"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1CT"]
-        ["Leopard-2A5"] = 
-        {
-            ["irsignature"] = 0.12,
-            ["detection"] = 0,
-            ["threat"] = 3500,
-        }, -- end of ["Leopard-2A5"]
-        ["P-51D"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["P-51D"]
-        ["Mirage-F1EH"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1EH"]
-        ["WindTurbine"] = 
-        {
-        }, -- end of ["WindTurbine"]
-        ["F-16C bl.52d"] = 
-        {
-            ["irsignature"] = 0.6,
-        }, -- end of ["F-16C bl.52d"]
-        ["PT_76"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 2000,
-        }, -- end of ["PT_76"]
-        ["ZWEZDNY"] = 
-        {
-            ["irsignature"] = 0.3,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["ZWEZDNY"]
-        ["MLRS"] = 
-        {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
-            ["threat"] = 32000,
-        }, -- end of ["MLRS"]
-        ["Mirage-F1CG"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1CG"]
-        ["Infantry AK ver2"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
-            ["threat"] = 500,
-        }, -- end of ["Infantry AK ver2"]
-        ["J-11A"] = 
-        {
-            ["irsignature"] = 1,
-        }, -- end of ["J-11A"]
-        ["SpitfireLFMkIX"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["SpitfireLFMkIX"]
-        ["Dog Ear radar"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 35000,
-            ["threat"] = 0,
-        }, -- end of ["Dog Ear radar"]
-        ["Revetment_x4"] = 
-        {
-        }, -- end of ["Revetment_x4"]
-        ["HESCO_post_1"] = 
-        {
-        }, -- end of ["HESCO_post_1"]
-        ["P-51D-30-NA"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["P-51D-30-NA"]
-        ["M1043 HMMWV Armament"] = 
-        {
-            ["irsignature"] = 0.075,
-            ["detection"] = 3000,
-            ["threat"] = 1200,
-        }, -- end of ["M1043 HMMWV Armament"]
-        ["S-300PS 40B6MD sr"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 60000,
-            ["threat"] = 0,
-        }, -- end of ["S-300PS 40B6MD sr"]
-        ["Mirage-F1EE"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1EE"]
-        ["Barrier A"] = 
-        {
-        }, -- end of ["Barrier A"]
-        ["Tu-95MS"] = 
-        {
-            ["irsignature"] = 1.1,
-        }, -- end of ["Tu-95MS"]
-        ["HL_B8M1"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 5000,
-            ["threat"] = 5000,
-        }, -- end of ["HL_B8M1"]
-        ["KAMAZ Truck"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["KAMAZ Truck"]
-        ["Toolbox02"] = 
-        {
-        }, -- end of ["Toolbox02"]
-        ["Mirage-F1CZ"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1CZ"]
-        ["Carrier LSO Personell"] = 
-        {
-        }, -- end of ["Carrier LSO Personell"]
-        ["CV_59_Large_Forklift"] = 
-        {
-        }, -- end of ["CV_59_Large_Forklift"]
-        ["Ju-88A4"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["Ju-88A4"]
-        ["Silkworm_SR"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 200000,
-            ["threat"] = 0,
-        }, -- end of ["Silkworm_SR"]
-        ["NEUSTRASH"] = 
-        {
-            ["irsignature"] = 0.35,
-            ["detection"] = 27000,
-            ["threat"] = 12000,
-        }, -- end of ["NEUSTRASH"]
-        ["SKP-11"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["SKP-11"]
-        ["FarpHide_Dmed"] = 
-        {
-        }, -- end of ["FarpHide_Dmed"]
-        ["JagdPz_IV"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 3000,
-        }, -- end of ["JagdPz_IV"]
-        ["USS_Samuel_Chase"] = 
-        {
-            ["irsignature"] = 0.4,
-            ["detection"] = 0,
-            ["threat"] = 7000,
-        }, -- end of ["USS_Samuel_Chase"]
-        ["BMP-1"] = 
-        {
-            ["irsignature"] = 0.085,
-            ["detection"] = 0,
-            ["threat"] = 3000,
-        }, -- end of ["BMP-1"]
-        ["T-55"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 2500,
-        }, -- end of ["T-55"]
-        ["Su-17M4"] = 
-        {
-            ["irsignature"] = 0.69,
-        }, -- end of ["Su-17M4"]
-        ["rapier_fsa_launcher"] = 
-        {
-            ["irsignature"] = 0.03,
-            ["detection"] = 30000,
-            ["threat"] = 6800,
-        }, -- end of ["rapier_fsa_launcher"]
-        ["F-4E-45MC"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["F-4E-45MC"]
-        ["Log ramps 3"] = 
-        {
-        }, -- end of ["Log ramps 3"]
-        ["HESCO_wallperimeter_3"] = 
-        {
-        }, -- end of ["HESCO_wallperimeter_3"]
-        ["L118_Unit"] = 
-        {
-            ["detection"] = 500,
-            ["threat"] = 16500,
-        }, -- end of ["L118_Unit"]
-        ["CHAP_TOS1A"] = 
-        {
-            ["threat"] = 5900,
-        }, -- end of ["CHAP_TOS1A"]
-        ["CHAP_M142_GMLRS_M31"] = 
-        {   
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
-            ["threat"] = 68524,
-        }, -- end of ["CHAP_M142_GMLRS_M31"]
-        ["DR_50Ton_Flat_Wagon"] = 
-        {
-            ["irsignature"] = 0,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["DR_50Ton_Flat_Wagon"]
-        ["Su-30"] = 
-        {
-            ["irsignature"] = 1,
-        }, -- end of ["Su-30"]
-        ["KILO"] = 
-        {
-            ["irsignature"] = 0.2,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["KILO"]
-        ["Leopard1A3"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 2500,
-        }, -- end of ["Leopard1A3"]
-        ["M2A1-105"] = 
-        {
-            ["irsignature"] = 0.04,
-            ["detection"] = 0,
-            ["threat"] = 11500,
-        }, -- end of ["M2A1-105"]
-        ["Tu-142"] = 
-        {
-            ["irsignature"] = 1.1,
-        }, -- end of ["Tu-142"]
-        ["Twall_x6"] = 
-        {
-        }, -- end of ["Twall_x6"]
-        ["Gas platform"] = 
-        {
-        }, -- end of ["Gas platform"]
+        }, -- end of ["ural_atz5_civil"]
         ["B600_drivable"] = 
         {
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 38,
+                [5] = "Cars",
+                [6] = "human_vehicle",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
         }, -- end of ["B600_drivable"]
         ["T-72B"] = 
         {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 4000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
         }, -- end of ["T-72B"]
-        ["NF-2_LightOff02"] = 
+        ["T155_Firtina"] = 
         {
-        }, -- end of ["NF-2_LightOff02"]
-        ["AJS37"] = 
-        {
-            ["irsignature"] = 0.62,
-        }, -- end of ["AJS37"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 302,
+                [5] = "Artillery",
+                [6] = "Datalink",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "Indirect fire",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 41000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.11,
+        }, -- end of ["T155_Firtina"]
         ["55G6 EWR"] = 
         {
-            ["irsignature"] = 0.07,
-            ["detection"] = 400000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 2,
+                [5] = "EWR",
+                [6] = "NonAndLightArmoredUnits",
+                [7] = "NonArmoredUnits",
+                [8] = "Air Defence",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Air Defence vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 400000,
+            ["irsignature"] = 0.07,
         }, -- end of ["55G6 EWR"]
-        ["MOLNIYA"] = 
+        ["Suidae"] = 
         {
-            ["irsignature"] = 0.35,
-            ["detection"] = 21000,
-            ["threat"] = 2000,
-        }, -- end of ["MOLNIYA"]
-        ["IL-78M"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 47,
+                [5] = "Cars",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.004,
+        }, -- end of ["Suidae"]
+        ["prmg_loc_beacon"] = 
         {
-            ["irsignature"] = 4,
-        }, -- end of ["IL-78M"]
-        ["MiG-15bis"] = 
-        {
-            ["irsignature"] = 0.26,
-        }, -- end of ["MiG-15bis"]
-        ["Log ramps 2"] = 
-        {
-        }, -- end of ["Log ramps 2"]
-        ["MJ-1_01"] = 
-        {
-        }, -- end of ["MJ-1_01"]
-        ["Haystack 1"] = 
-        {
-        }, -- end of ["Haystack 1"]
-        ["ZSU_57_2"] = 
-        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 385,
+                [5] = "PRMG_LOCALIZER",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
             ["irsignature"] = 0.1,
-            ["detection"] = 5000,
-            ["threat"] = 7000,
-        }, -- end of ["ZSU_57_2"]
-        ["Invisible FARP"] = 
+        }, -- end of ["prmg_loc_beacon"]
+        ["Predator GCS"] = 
         {
-        }, -- end of ["Invisible FARP"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
+        }, -- end of ["Predator GCS"]
+        ["hy_launcher"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 339,
+                [5] = "SS_missile",
+                [6] = "Artillery",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "Indirect fire",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 100000,
+            ["detection"] = 100000,
+            ["irsignature"] = 0.01,
+        }, -- end of ["hy_launcher"]
+        ["P20_drivable"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 38,
+                [5] = "Cars",
+                [6] = "human_vehicle",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+        }, -- end of ["P20_drivable"]
         ["Uragan_BM-27"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 63,
+                [5] = "MLRS",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+                [16] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 35800,
             ["irsignature"] = 0.08,
             ["detection"] = 0,
-            ["threat"] = 35800,
+            ["threatmin"] = 11500,
         }, -- end of ["Uragan_BM-27"]
-        ["FarpHide_Dsmall"] = 
-        {
-        }, -- end of ["FarpHide_Dsmall"]
-        ["MosquitoFBMkVI"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["MosquitoFBMkVI"]
         ["houseA_arm"] = 
         {
-            ["irsignature"] = 0.007,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Fortifications",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "AntiAir Armed Vehicles",
+                [11] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.007,
         }, -- end of ["houseA_arm"]
-        ["F-14A-135-GR"] = 
-        {
-            ["irsignature"] = 0.9,
-        }, -- end of ["F-14A-135-GR"]
         ["SAU Gvozdika"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 1,
+                [5] = "Artillery",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 15000,
             ["irsignature"] = 0.09,
             ["detection"] = 0,
-            ["threat"] = 15000,
+            ["threatmin"] = 30,
         }, -- end of ["SAU Gvozdika"]
-        ["Type_071"] = 
+        ["HQ-7_LN_P"] = 
         {
-            ["detection"] = 300000,
-            ["threat"] = 150000,
-        }, -- end of ["Type_071"]
-        ["Sandbag_13"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 102,
+                [4] = 346,
+                [5] = "AA_missile",
+                [6] = "SR SAM",
+                [7] = "SAM SR",
+                [8] = "SAM TR",
+                [9] = "SAM LL",
+                [10] = "RADAR_BAND1_FOR_ARM",
+                [11] = "RADAR_BAND2_FOR_ARM",
+                [12] = "All",
+                [13] = "Ground Units",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "NonArmoredUnits",
+                [18] = "Air Defence",
+                [19] = "SAM related",
+                [20] = "SAM elements",
+                [21] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 15000,
+            ["detection"] = 20000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["HQ-7_LN_P"]
+        ["snr s-125 tr"] = 
         {
-        }, -- end of ["Sandbag_13"]
-        ["Mirage-F1BD"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 73,
+                [5] = "MR SAM",
+                [6] = "SAM TR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "RADAR_BAND2_FOR_ARM",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "NonArmoredUnits",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 100000,
+            ["irsignature"] = 0.06,
+        }, -- end of ["snr s-125 tr"]
+        ["Predator TrojanSpirit"] = 
         {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1BD"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
+        }, -- end of ["Predator TrojanSpirit"]
+        ["CHAP_T90M"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 352,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Datalink",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 5000,
+            ["irsignature"] = 0.1,
+            ["detection"] = 8000,
+            ["threatmin"] = 100,
+        }, -- end of ["CHAP_T90M"]
+        ["SAU Msta"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 1,
+                [5] = "Artillery",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 23500,
+            ["irsignature"] = 0.1,
+            ["detection"] = 0,
+            ["threatmin"] = 30,
+        }, -- end of ["SAU Msta"]
+        ["Stinger comm dsr"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 59,
+                [5] = "MANPADS AUX",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Infantry",
+                [13] = "Rocket Attack Valid AirDefence",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+                [19] = "SAM AUX",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.004,
+        }, -- end of ["Stinger comm dsr"]
+        ["Vulcan"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 105,
+                [4] = 46,
+                [5] = "AA_flak",
+                [6] = "SAM TR",
+                [7] = "Mobile AAA",
+                [8] = "Datalink",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "NonArmoredUnits",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+                [18] = "Armed Air Defence",
+                [19] = "Rocket Attack Valid AirDefence",
+                [20] = "AAA",
+            }, -- end of ["attr"]
+            ["threat"] = 2000,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.09,
+        }, -- end of ["Vulcan"]
         ["Tankcartrinity"] = 
         {
-            ["irsignature"] = 0,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = 51,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0,
         }, -- end of ["Tankcartrinity"]
         ["2S6 Tunguska"] = 
         {
-            ["irsignature"] = 0.1,
-            ["detection"] = 18000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 103,
+                [4] = 29,
+                [5] = "AA_missile",
+                [6] = "AA_flak",
+                [7] = "Mobile AAA",
+                [8] = "SR SAM",
+                [9] = "SAM SR",
+                [10] = "SAM TR",
+                [11] = "RADAR_BAND1_FOR_ARM",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "Armed Air Defence",
+                [16] = "Rocket Attack Valid AirDefence",
+                [17] = "AAA",
+                [18] = "All",
+                [19] = "Ground Units",
+                [20] = "Vehicles",
+                [21] = "Ground vehicles",
+                [22] = "SAM related",
+                [23] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 8000,
+            ["detection"] = 18000,
+            ["irsignature"] = 0.1,
         }, -- end of ["2S6 Tunguska"]
-        ["Hawk"] = 
+        ["CHAP_IRISTSLM_LN"] = 
         {
-            ["irsignature"] = 0.62,
-        }, -- end of ["Hawk"]
-        ["Dry-cargo ship-2"] = 
-        {
-            ["irsignature"] = 0.3,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 361,
+                [5] = "AA_missile",
+                [6] = "SAM LL",
+                [7] = "Datalink",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+                [17] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 40000,
+            ["irsignature"] = 0.08,
             ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Dry-cargo ship-2"]
-        ["FuSe-65"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 60000,
-            ["threat"] = 0,
-        }, -- end of ["FuSe-65"]
+            ["threatmin"] = 1000,
+        }, -- end of ["CHAP_IRISTSLM_LN"]
         ["tacr2a"] = 
         {
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 25,
+                [3] = 14,
+                [4] = 340,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
         }, -- end of ["tacr2a"]
         ["S_75M_Volhov"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 380,
+                [5] = "AA_missile",
+                [6] = "LR SAM",
+                [7] = "SAM LL",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+                [17] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 43000,
             ["irsignature"] = 0.03,
             ["detection"] = 0,
-            ["threat"] = 43000,
+            ["threatmin"] = 7000,
         }, -- end of ["S_75M_Volhov"]
-        ["Pz_V_Panther_G"] = 
+        ["BMP-2"] = 
         {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 104,
+                [4] = 7,
+                [5] = "IFV",
+                [6] = "ATGM",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 3000,
-        }, -- end of ["Pz_V_Panther_G"]
-        ["Camouflage03"] = 
-        {
-        }, -- end of ["Camouflage03"]
-        ["FW-190D9"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["FW-190D9"]
-        ["Sandbag_16"] = 
-        {
-        }, -- end of ["Sandbag_16"]
-        ["Su-27"] = 
-        {
-            ["irsignature"] = 1,
-        }, -- end of ["Su-27"]
+            ["detection"] = 0,
+            ["irsignature"] = 0.09,
+        }, -- end of ["BMP-2"]
         ["Leopard-2"] = 
         {
-            ["irsignature"] = 0.12,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 299,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 3500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.12,
         }, -- end of ["Leopard-2"]
         ["generator_5i57"] = 
         {
-            ["irsignature"] = 0.07,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 9,
+                [3] = 25,
+                [4] = 293,
+                [5] = "AD Auxillary Equipment",
+                [6] = "NonAndLightArmoredUnits",
+                [7] = "NonArmoredUnits",
+                [8] = "Air Defence",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Air Defence vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["generator_5i57"]
-        ["Sd_Kfz_2"] = 
-        {
-            ["irsignature"] = 0.065,
             ["detection"] = 0,
-        }, -- end of ["Sd_Kfz_2"]
+            ["irsignature"] = 0.07,
+        }, -- end of ["generator_5i57"]
+        ["VAB_Mephisto"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 104,
+                [4] = 80,
+                [5] = "IFV",
+                [6] = "ATGM",
+                [7] = "Datalink",
+                [8] = "Infantry carriers",
+                [9] = "Armored vehicles",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Ground Units Non Airdefence",
+                [13] = "Armed ground units",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "Armed vehicles",
+                [17] = "AntiAir Armed Vehicles",
+                [18] = "NonAndLightArmoredUnits",
+                [19] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.085,
+        }, -- end of ["VAB_Mephisto"]
         ["Strela-10M3"] = 
         {
-            ["irsignature"] = 0.085,
-            ["detection"] = 8000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 104,
+                [4] = 26,
+                [5] = "AA_missile",
+                [6] = "SR SAM",
+                [7] = "IR Guided SAM",
+                [8] = "SAM TR",
+                [9] = "NonAndLightArmoredUnits",
+                [10] = "NonArmoredUnits",
+                [11] = "Air Defence",
+                [12] = "SAM related",
+                [13] = "Armed Air Defence",
+                [14] = "All",
+                [15] = "Ground Units",
+                [16] = "Vehicles",
+                [17] = "Ground vehicles",
+                [18] = "SAM",
+                [19] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 5000,
+            ["detection"] = 8000,
+            ["irsignature"] = 0.085,
         }, -- end of ["Strela-10M3"]
-        ["HESCO_wallperimeter_1"] = 
+        ["M-109"] = 
         {
-        }, -- end of ["HESCO_wallperimeter_1"]
-        ["S-3B"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 1,
+                [5] = "Artillery",
+                [6] = "Datalink",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "Indirect fire",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 22000,
+            ["irsignature"] = 0.11,
+            ["detection"] = 0,
+            ["threatmin"] = 30,
+        }, -- end of ["M-109"]
+        ["LAZ Bus"] = 
         {
-            ["irsignature"] = 0.53,
-        }, -- end of ["S-3B"]
-        ["Camouflage06"] = 
-        {
-        }, -- end of ["Camouflage06"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 58,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["LAZ Bus"]
         ["TZ-22_KrAZ"] = 
         {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 312,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["TZ-22_KrAZ"]
-        ["BTR-82A"] = 
-        {
-            ["irsignature"] = 0.08,
             ["detection"] = 0,
-            ["threat"] = 2000,
-        }, -- end of ["BTR-82A"]
+            ["irsignature"] = 0.09,
+        }, -- end of ["TZ-22_KrAZ"]
+        ["MaxxPro_MRAP"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 347,
+                [5] = "APC",
+                [6] = "Datalink",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1200,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["MaxxPro_MRAP"]
         ["Paratrooper RPG-16"] = 
         {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 500,
-        }, -- end of ["Paratrooper RPG-16"]
-        ["Willys_MB"] = 
-        {
-            ["irsignature"] = 0.07,
             ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Willys_MB"]
-        ["AH-1W"] = 
+            ["irsignature"] = 0.004,
+        }, -- end of ["Paratrooper RPG-16"]
+        ["Smerch"] = 
         {
-            ["irsignature"] = 0.2,
-        }, -- end of ["AH-1W"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 63,
+                [5] = "MLRS",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+                [16] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 70000,
+            ["irsignature"] = 0.09,
+            ["detection"] = 0,
+            ["threatmin"] = 20000,
+        }, -- end of ["Smerch"]
+        ["M978 HEMTT Tanker"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["M978 HEMTT Tanker"]
+        ["Wellcarnsc"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = 51,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0,
+        }, -- end of ["Wellcarnsc"]
+        ["Marder"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 7,
+                [5] = "IFV",
+                [6] = "ATGM",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.085,
+        }, -- end of ["Marder"]
+        ["BRDM-2"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1600,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["BRDM-2"]
         ["Sd_Kfz_251"] = 
         {
-            ["irsignature"] = 0.075,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 1100,
-        }, -- end of ["Sd_Kfz_251"]
-        ["ElevatedPlatform_down"] = 
-        {
-        }, -- end of ["ElevatedPlatform_down"]
-        ["Container_watchtower"] = 
-        {
-        }, -- end of ["Container_watchtower"]
-        ["Carrier Airboss"] = 
-        {
-        }, -- end of ["Carrier Airboss"]
-        ["LeFH_18-40-105"] = 
-        {
-            ["irsignature"] = 0.04,
             ["detection"] = 0,
-            ["threat"] = 10500,
-        }, -- end of ["LeFH_18-40-105"]
-        ["ammo_cargo"] = 
+            ["irsignature"] = 0.075,
+        }, -- end of ["Sd_Kfz_251"]
+        ["LiAZ Bus"] = 
         {
-        }, -- end of ["ammo_cargo"]
-        ["Tower Crane"] = 
-        {
-        }, -- end of ["Tower Crane"]
-        ["Oil rig"] = 
-        {
-        }, -- end of ["Oil rig"]
-        ["Tent05"] = 
-        {
-        }, -- end of ["Tent05"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 58,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["LiAZ Bus"]
         ["Trolley bus"] = 
         {
-            ["irsignature"] = 0.06,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 49,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.06,
         }, -- end of ["Trolley bus"]
-        ["Su-25"] = 
-        {
-            ["irsignature"] = 0.7,
-        }, -- end of ["Su-25"]
-        ["FARP_SINGLE_01"] = 
-        {
-        }, -- end of ["FARP_SINGLE_01"]
-        ["offshore WindTurbine2"] = 
-        {
-        }, -- end of ["offshore WindTurbine2"]
-        ["Cargo01"] = 
-        {
-        }, -- end of ["Cargo01"]
         ["tt_KORD"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 5000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 324,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 1200,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.08,
         }, -- end of ["tt_KORD"]
-        ["Orca"] = 
-        {
-        }, -- end of ["Orca"]
         ["Tigr_233036"] = 
         {
-            ["irsignature"] = 0.075,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "human_vehicle",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.075,
         }, -- end of ["Tigr_233036"]
         ["MAZ-6303"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 70,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
         }, -- end of ["MAZ-6303"]
-        ["M48 Chaparral"] = 
+        ["LAV-25"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 7,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
+            ["detection"] = 0,
             ["irsignature"] = 0.085,
-            ["detection"] = 10000,
-            ["threat"] = 8500,
-        }, -- end of ["M48 Chaparral"]
-        ["1L13 EWR"] = 
+        }, -- end of ["LAV-25"]
+        ["GPS_Spoofer_Red"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 382,
+                [5] = "Trucks",
+                [6] = "Jammer",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
             ["irsignature"] = 0.07,
-            ["detection"] = 300000,
+        }, -- end of ["GPS_Spoofer_Red"]
+        ["TugHarlan_drivable"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 38,
+                [5] = "Cars",
+                [6] = "human_vehicle",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["1L13 EWR"]
-        ["BDK-775"] = 
-        {
-            ["irsignature"] = 0.35,
-            ["detection"] = 25000,
-            ["threat"] = 6000,
-        }, -- end of ["BDK-775"]
-        ["fueltank_cargo"] = 
-        {
-        }, -- end of ["fueltank_cargo"]
-        ["Haystack 3"] = 
-        {
-        }, -- end of ["Haystack 3"]
-        ["SA-18 Igla manpad"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 5000,
-            ["threat"] = 5200,
-        }, -- end of ["SA-18 Igla manpad"]
-        ["SA342M"] = 
-        {
-            ["irsignature"] = 0.2,
-        }, -- end of ["SA342M"]
-        ["S-300PS 5P85C ln"] = 
-        {
-            ["irsignature"] = 0.08,
             ["detection"] = 0,
-            ["threat"] = 120000,
-        }, -- end of ["S-300PS 5P85C ln"]
-        ["Ka-50_3"] = 
+        }, -- end of ["TugHarlan_drivable"]
+        ["UAZ-469"] = 
         {
-            ["irsignature"] = 0.6,
-        }, -- end of ["Ka-50_3"]
-        ["Type_052C"] = 
-        {
-            ["detection"] = 260000,
-            ["threat"] = 100000,
-        }, -- end of ["Type_052C"]
-        ["Czech hedgehogs 1"] = 
-        {
-        }, -- end of ["Czech hedgehogs 1"]
-        ["trunks_long_cargo"] = 
-        {
-        }, -- end of ["trunks_long_cargo"]
-        ["Sandbag_12"] = 
-        {
-        }, -- end of ["Sandbag_12"]
-        ["Cargo02"] = 
-        {
-        }, -- end of ["Cargo02"]
-        ["Hemmkurvenhindernis"] = 
-        {
-        }, -- end of ["Hemmkurvenhindernis"]
-        ["Sandbag_04"] = 
-        {
-        }, -- end of ["Sandbag_04"]
-        ["leander-gun-condell"] = 
-        {
-            ["detection"] = 150000,
-            ["threat"] = 100000,
-        }, -- end of ["leander-gun-condell"]
-        ["Soldier M4"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
-            ["threat"] = 500,
-        }, -- end of ["Soldier M4"]
-        ["FA-18C_hornet"] = 
-        {
-            ["irsignature"] = 0.75,
-        }, -- end of ["FA-18C_hornet"]
-        ["AS32-32A"] = 
-        {
-        }, -- end of ["AS32-32A"]
-        ["GAZ-3307"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 38,
+                [5] = "Cars",
+                [6] = "human_vehicle",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["GAZ-3307"]
+            ["detection"] = 0,
+            ["irsignature"] = 0.07,
+        }, -- end of ["UAZ-469"]
+        ["FPS-117 Dome"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 327,
+                [5] = "EWR",
+                [6] = "NonAndLightArmoredUnits",
+                [7] = "NonArmoredUnits",
+                [8] = "Air Defence",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Air Defence vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 400000,
+            ["irsignature"] = 0.07,
+        }, -- end of ["FPS-117 Dome"]
         ["RD_75"] = 
         {
-            ["irsignature"] = 0.05,
-            ["detection"] = 100000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 337,
+                [5] = "MR SAM",
+                [6] = "SAM TR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "RADAR_BAND2_FOR_ARM",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "NonArmoredUnits",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 100000,
+            ["irsignature"] = 0.05,
         }, -- end of ["RD_75"]
-        ["Yak-52"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["Yak-52"]
-        ["container_20ft"] = 
-        {
-        }, -- end of ["container_20ft"]
-        ["billboard_motorized"] = 
-        {
-        }, -- end of ["billboard_motorized"]
         ["2B11 mortar"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 1,
+                [5] = "Artillery",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 7000,
             ["irsignature"] = 0.005,
             ["detection"] = 0,
-            ["threat"] = 7000,
+            ["threatmin"] = 30,
         }, -- end of ["2B11 mortar"]
-        ["FarpHide_small"] = 
-        {
-        }, -- end of ["FarpHide_small"]
         ["Soldier stinger"] = 
         {
-            ["irsignature"] = 0.004,
-            ["detection"] = 5000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 56,
+                [5] = "MANPADS",
+                [6] = "IR Guided SAM",
+                [7] = "New infantry",
+                [8] = "NonAndLightArmoredUnits",
+                [9] = "NonArmoredUnits",
+                [10] = "Air Defence",
+                [11] = "SAM related",
+                [12] = "Armed Air Defence",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+                [17] = "SAM",
+                [18] = "Ground Units Non Airdefence",
+                [19] = "Armed ground units",
+                [20] = "Infantry",
+                [21] = "Rocket Attack Valid AirDefence",
+            }, -- end of ["attr"]
             ["threat"] = 4500,
-        }, -- end of ["Soldier stinger"]
-        ["Log posts 2"] = 
-        {
-        }, -- end of ["Log posts 2"]
-        ["Cow"] = 
-        {
-        }, -- end of ["Cow"]
-        ["LARC-V"] = 
-        {
-            ["detection"] = 500,
-            ["threat"] = 0,
-        }, -- end of ["LARC-V"]
-        ["P-47D-30"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["P-47D-30"]
-        ["SA-18 Igla-S comm"] = 
-        {
-            ["irsignature"] = 0.004,
             ["detection"] = 5000,
+            ["irsignature"] = 0.004,
+        }, -- end of ["Soldier stinger"]
+        ["PL8 Loadout"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Missile",
+                [6] = "NonArmoredUnits",
+                [7] = "NonAndLightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["SA-18 Igla-S comm"]
+            ["detection"] = 0,
+            ["irsignature"] = 0,
+        }, -- end of ["PL8 Loadout"]
+        ["Ural-4320T"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 75,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["Ural-4320T"]
         ["RPC_5N62V"] = 
         {
-            ["detection"] = 400000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 313,
+                [5] = "LR SAM",
+                [6] = "SAM TR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "RADAR_BAND2_FOR_ARM",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "NonArmoredUnits",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 400000,
         }, -- end of ["RPC_5N62V"]
-        ["Dragonteeth 4"] = 
-        {
-        }, -- end of ["Dragonteeth 4"]
-        ["P-47D-40"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["P-47D-40"]
         ["HL_ZU-23"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 5000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 325,
+                [5] = "AA_flak",
+                [6] = "Mobile AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 2500,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.04,
         }, -- end of ["HL_ZU-23"]
-        ["I-16"] = 
+        ["Infantry AK ver3"] = 
         {
-            ["irsignature"] = 0.1,
-        }, -- end of ["I-16"]
-        ["BMD-1"] = 
-        {
-            ["irsignature"] = 0.08,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "New infantry",
+                [7] = "Skeleton_type_A",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 500,
             ["detection"] = 0,
-            ["threat"] = 3000,
-        }, -- end of ["BMD-1"]
-        ["Mirage-F1CH"] = 
+            ["irsignature"] = 0.004,
+        }, -- end of ["Infantry AK ver3"]
+        ["M-1 Abrams"] = 
         {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1CH"]
-        ["Camouflage07"] = 
-        {
-        }, -- end of ["Camouflage07"]
-        ["S_75_ZIL"] = 
-        {
-            ["irsignature"] = 0.1,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Datalink",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3500,
             ["detection"] = 0,
+            ["irsignature"] = 0.15,
+        }, -- end of ["M-1 Abrams"]
+        ["Bedford_MWD"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["S_75_ZIL"]
-        ["F-14B"] = 
-        {
-            ["irsignature"] = 0.9,
-        }, -- end of ["F-14B"]
-        ["M30_CC"] = 
-        {
-            ["irsignature"] = 0.08,
             ["detection"] = 0,
+            ["irsignature"] = 0.07,
+        }, -- end of ["Bedford_MWD"]
+        ["Kub 1S91 str"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 21,
+                [5] = "MR SAM",
+                [6] = "SAM SR",
+                [7] = "SAM TR",
+                [8] = "RADAR_BAND1_FOR_ARM",
+                [9] = "RADAR_BAND2_FOR_ARM",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "NonArmoredUnits",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 70000,
+            ["irsignature"] = 0.085,
+        }, -- end of ["Kub 1S91 str"]
+        ["CHAP_TOS1A"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = "</WSTYPE>",
+                [4] = "MLRS",
+                [5] = "All",
+                [6] = "Ground Units",
+                [7] = "Ground Units Non Airdefence",
+                [8] = "Armed ground units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Armed vehicles",
+                [12] = "Indirect fire",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "LightArmoredUnits",
+                [15] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 6000,
+            ["irsignature"] = 0.11,
+            ["detection"] = 0,
+            ["threatmin"] = 400,
+        }, -- end of ["CHAP_TOS1A"]
+        ["M1126 Stryker ICV"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 80,
+                [5] = "APC",
+                [6] = "Datalink",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 1200,
-        }, -- end of ["M30_CC"]
-        ["Belgian gate"] = 
-        {
-        }, -- end of ["Belgian gate"]
-        ["C-130"] = 
-        {
-            ["irsignature"] = 1,
-        }, -- end of ["C-130"]
-        ["Carrier Seaman"] = 
-        {
-        }, -- end of ["Carrier Seaman"]
-        ["Mirage-F1JA"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1JA"]
+            ["detection"] = 0,
+            ["irsignature"] = 0.085,
+        }, -- end of ["M1126 Stryker ICV"]
         ["GAZ-66"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 67,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
             ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
         }, -- end of ["GAZ-66"]
-        ["Locomotive"] = 
+        ["Type_98_So_Da"] = 
         {
-            ["irsignature"] = 0.15,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["Locomotive"]
-        ["F-14A"] = 
-        {
-            ["irsignature"] = 0.97,
-        }, -- end of ["F-14A"]
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["Type_98_So_Da"]
         ["HL_DSHK"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 5000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 321,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 1200,
-        }, -- end of ["HL_DSHK"]
-        ["CV_59_H60"] = 
-        {
-        }, -- end of ["CV_59_H60"]
-        ["L-39C"] = 
-        {
-            ["irsignature"] = 0.2,
-        }, -- end of ["L-39C"]
-        ["S-300PS 64H6E sr"] = 
-        {
+            ["detection"] = 5000,
             ["irsignature"] = 0.08,
-            ["detection"] = 160000,
-            ["threat"] = 0,
-        }, -- end of ["S-300PS 64H6E sr"]
-        ["CVN_73"] = 
+        }, -- end of ["HL_DSHK"]
+        ["Soldier AK"] = 
         {
-            ["irsignature"] = 0.4,
-            ["detection"] = 50000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.004,
+        }, -- end of ["Soldier AK"]
+        ["BMD-1"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 104,
+                [4] = 7,
+                [5] = "IFV",
+                [6] = "ATGM",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["BMD-1"]
+        ["Kub 2P25 ln"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 22,
+                [5] = "AA_missile",
+                [6] = "SAM LL",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Air Defence",
+                [14] = "SAM related",
+                [15] = "SAM elements",
+                [16] = "Armed Air Defence",
+            }, -- end of ["attr"]
             ["threat"] = 25000,
-        }, -- end of ["CVN_73"]
+            ["detection"] = 0,
+            ["irsignature"] = 0.085,
+        }, -- end of ["Kub 2P25 ln"]
         ["HQ-7_STR_SP"] = 
         {
-            ["irsignature"] = 0.08,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 278,
+                [5] = "SR SAM",
+                [6] = "SAM CC",
+                [7] = "SAM SR",
+                [8] = "RADAR_BAND1_FOR_ARM",
+                [9] = "RADAR_BAND2_FOR_ARM",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "NonArmoredUnits",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
             ["detection"] = 30000,
-            ["threat"] = 0,
+            ["irsignature"] = 0.08,
         }, -- end of ["HQ-7_STR_SP"]
-        ["Mi-24P"] = 
+        ["Cobra"] = 
         {
-            ["irsignature"] = 0.5,
-        }, -- end of ["Mi-24P"]
-        ["SOM"] = 
-        {
-            ["irsignature"] = 0.2,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1200,
             ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["SOM"]
-        ["TugHarlan"] = 
+            ["irsignature"] = 0.07,
+        }, -- end of ["Cobra"]
+        ["MLRS FDDM"] = 
         {
-        }, -- end of ["TugHarlan"]
-        ["Yak-40"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 14,
+                [5] = "APC",
+                [6] = "Datalink",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1200,
+            ["detection"] = 0,
+            ["irsignature"] = 0.075,
+        }, -- end of ["MLRS FDDM"]
+        ["bofors40"] = 
         {
-            ["irsignature"] = 0.5,
-        }, -- end of ["Yak-40"]
-        ["Igla manpad INS"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 47,
+                [5] = "AA_flak",
+                [6] = "Static AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 4000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.01,
+        }, -- end of ["bofors40"]
+        ["ZU-23 Insurgent"] = 
         {
-            ["irsignature"] = 0.004,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 70,
+                [5] = "AA_flak",
+                [6] = "Static AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
             ["detection"] = 5000,
-            ["threat"] = 5200,
-        }, -- end of ["Igla manpad INS"]
-        ["Sandbag_05"] = 
+            ["irsignature"] = 0.006,
+        }, -- end of ["ZU-23 Insurgent"]
+        ["Ural-4320-31"] = 
         {
-        }, -- end of ["Sandbag_05"]
-        ["HESCO_wallperimeter_2"] = 
-        {
-        }, -- end of ["HESCO_wallperimeter_2"]
-        ["soldier_wwii_br_01"] = 
-        {
-            ["irsignature"] = 0.004,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
             ["detection"] = 0,
-            ["threat"] = 500,
-        }, -- end of ["soldier_wwii_br_01"]
+            ["irsignature"] = 0.08,
+        }, -- end of ["Ural-4320-31"]
         ["Hawk sr"] = 
         {
-            ["irsignature"] = 0.06,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 39,
+                [5] = "MR SAM",
+                [6] = "SAM SR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "RADAR_BAND2_FOR_ARM",
+                [9] = "Datalink",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "NonArmoredUnits",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
             ["detection"] = 90000,
-            ["threat"] = 0,
+            ["irsignature"] = 0.06,
         }, -- end of ["Hawk sr"]
-        ["v1_launcher"] = 
+        ["TACAN_beacon"] = 
         {
-            ["irsignature"] = 0.01,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Fortifications",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "AntiAir Armed Vehicles",
+                [11] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["v1_launcher"]
-        ["Paratrooper AKS-74"] = 
-        {
-            ["irsignature"] = 0.004,
             ["detection"] = 0,
-            ["threat"] = 500,
-        }, -- end of ["Paratrooper AKS-74"]
-        ["MOSCOW"] = 
+            ["irsignature"] = 0.005,
+        }, -- end of ["TACAN_beacon"]
+        ["SNR_75V"] = 
         {
-            ["irsignature"] = 0.4,
-            ["detection"] = 160000,
-            ["threat"] = 75000,
-        }, -- end of ["MOSCOW"]
-        ["Carrier LSO Personell 3"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 256,
+                [5] = "MR SAM",
+                [6] = "SAM TR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "RADAR_BAND2_FOR_ARM",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "NonArmoredUnits",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 100000,
+            ["irsignature"] = 0.05,
+        }, -- end of ["SNR_75V"]
+        ["rsbn_beacon"] = 
         {
-        }, -- end of ["Carrier LSO Personell 3"]
-        ["Mi-26"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 383,
+                [5] = "RSBN",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["rsbn_beacon"]
+        ["Stinger comm"] = 
         {
-            ["irsignature"] = 1,
-        }, -- end of ["Mi-26"]
-        ["Pile of Woods"] = 
-        {
-        }, -- end of ["Pile of Woods"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 57,
+                [5] = "MANPADS AUX",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Infantry",
+                [13] = "Rocket Attack Valid AirDefence",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+                [19] = "SAM AUX",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.004,
+        }, -- end of ["Stinger comm"]
         ["outpost"] = 
         {
-            ["irsignature"] = 0.007,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Fortifications",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "AntiAir Armed Vehicles",
+                [11] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.007,
         }, -- end of ["outpost"]
-        ["JF-17"] = 
+        ["prmg_gp_beacon"] = 
         {
-            ["irsignature"] = 0.6,
-        }, -- end of ["JF-17"]
-        ["KUZNECOW"] = 
-        {
-            ["irsignature"] = 0.45,
-            ["detection"] = 25000,
-            ["threat"] = 12000,
-        }, -- end of ["KUZNECOW"]
-        ["Building07_PBR"] = 
-        {
-        }, -- end of ["Building07_PBR"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 384,
+                [5] = "PRMG_GLIDEPATH",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["prmg_gp_beacon"]
         ["Ural-375"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 40,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
         }, -- end of ["Ural-375"]
         ["Osa 9A33 ln"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 30000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 102,
+                [4] = 23,
+                [5] = "AA_missile",
+                [6] = "SR SAM",
+                [7] = "SAM SR",
+                [8] = "SAM TR",
+                [9] = "RADAR_BAND2_FOR_ARM",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "NonArmoredUnits",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 10300,
-        }, -- end of ["Osa 9A33 ln"]
-        ["REZKY"] = 
-        {
-            ["irsignature"] = 0.35,
             ["detection"] = 30000,
-            ["threat"] = 16000,
-        }, -- end of ["REZKY"]
-        ["Cargo04"] = 
+            ["irsignature"] = 0.08,
+        }, -- end of ["Osa 9A33 ln"]
+        ["Paratrooper AKS-74"] = 
         {
-        }, -- end of ["Cargo04"]
-        ["Oil Barrel"] = 
-        {
-        }, -- end of ["Oil Barrel"]
-        ["Bedford_MWD"] = 
-        {
-            ["irsignature"] = 0.07,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 500,
             ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Bedford_MWD"]
-        ["Sandbag_10"] = 
+            ["irsignature"] = 0.004,
+        }, -- end of ["Paratrooper AKS-74"]
+        ["Igla manpad INS"] = 
         {
-        }, -- end of ["Sandbag_10"]
-        ["OH-58D"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 62,
+                [5] = "MANPADS",
+                [6] = "IR Guided SAM",
+                [7] = "New infantry",
+                [8] = "NonAndLightArmoredUnits",
+                [9] = "NonArmoredUnits",
+                [10] = "Air Defence",
+                [11] = "SAM related",
+                [12] = "Armed Air Defence",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+                [17] = "SAM",
+                [18] = "Ground Units Non Airdefence",
+                [19] = "Armed ground units",
+                [20] = "Infantry",
+                [21] = "Rocket Attack Valid AirDefence",
+            }, -- end of ["attr"]
+            ["threat"] = 5200,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.004,
+        }, -- end of ["Igla manpad INS"]
+        ["M1045 HMMWV TOW"] = 
         {
-            ["irsignature"] = 0.2,
-        }, -- end of ["OH-58D"]
-        ["l118"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 104,
+                [4] = 14,
+                [5] = "APC",
+                [6] = "ATGM",
+                [7] = "Datalink",
+                [8] = "Infantry carriers",
+                [9] = "Armored vehicles",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Ground Units Non Airdefence",
+                [13] = "Armed ground units",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "Armed vehicles",
+                [17] = "AntiAir Armed Vehicles",
+                [18] = "NonAndLightArmoredUnits",
+                [19] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.75,
+        }, -- end of ["M1045 HMMWV TOW"]
+        ["CHAP_M142_GMLRS_M31"] = 
         {
-        }, -- end of ["l118"]
-        ["pipes_big_cargo"] = 
-        {
-        }, -- end of ["pipes_big_cargo"]
-        ["B-17G"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["B-17G"]
-        ["Land_Rover_109_S3"] = 
-        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 365,
+                [5] = "MLRS",
+                [6] = "Datalink",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "Indirect fire",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "LightArmoredUnits",
+                [17] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 70000,
             ["irsignature"] = 0.075,
             ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Land_Rover_109_S3"]
-        ["M32-10C_02"] = 
+            ["threatmin"] = 15000,
+        }, -- end of ["CHAP_M142_GMLRS_M31"]
+        ["HQ-7_LN_SP"] = 
         {
-        }, -- end of ["M32-10C_02"]
-        ["C-101CC"] = 
-        {
-            ["irsignature"] = 0.2,
-        }, -- end of ["C-101CC"]
-        ["Smerch"] = 
-        {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
-            ["threat"] = 70000,
-        }, -- end of ["Smerch"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 102,
+                [4] = 277,
+                [5] = "AA_missile",
+                [6] = "SR SAM",
+                [7] = "SAM TR",
+                [8] = "SAM LL",
+                [9] = "RADAR_BAND1_FOR_ARM",
+                [10] = "RADAR_BAND2_FOR_ARM",
+                [11] = "All",
+                [12] = "Ground Units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "NonArmoredUnits",
+                [17] = "Air Defence",
+                [18] = "SAM related",
+                [19] = "SAM elements",
+                [20] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 15000,
+            ["detection"] = 20000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["HQ-7_LN_SP"]
         ["SAU 2-C9"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 1,
+                [5] = "Artillery",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 7000,
             ["irsignature"] = 0.09,
             ["detection"] = 0,
-            ["threat"] = 7000,
+            ["threatmin"] = 30,
         }, -- end of ["SAU 2-C9"]
-        ["M32-10C_01"] = 
+        ["SAU Akatsia"] = 
         {
-        }, -- end of ["M32-10C_01"]
-        ["fire_control"] = 
-        {
-            ["irsignature"] = 0.01,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 1,
+                [5] = "Artillery",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 17000,
+            ["irsignature"] = 0.095,
             ["detection"] = 0,
-            ["threat"] = 1100,
-        }, -- end of ["fire_control"]
-        ["M32-10C_03"] = 
+            ["threatmin"] = 30,
+        }, -- end of ["SAU Akatsia"]
+        ["CHAP_M142_ATACMS_M39A1"] = 
         {
-        }, -- end of ["M32-10C_03"]
-        ["container_cargo"] = 
-        {
-        }, -- end of ["container_cargo"]
-        ["Type_093"] = 
-        {
-            ["irsignature"] = 0.2,
-            ["detection"] = 40000,
-            ["threat"] = 40000,
-        }, -- end of ["Type_093"]
-        ["TICONDEROG"] = 
-        {
-            ["irsignature"] = 0.4,
-            ["detection"] = 150000,
-            ["threat"] = 100000,
-        }, -- end of ["TICONDEROG"]
-        ["FireExtinguisher02"] = 
-        {
-        }, -- end of ["FireExtinguisher02"]
-        ["FPS-117 ECS"] = 
-        {
-            ["irsignature"] = 0.05,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 366,
+                [5] = "MLRS",
+                [6] = "Datalink",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "Indirect fire",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "LightArmoredUnits",
+                [17] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 300000,
+            ["irsignature"] = 0.075,
             ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["FPS-117 ECS"]
-        ["ara_vdm"] = 
-        {
-            ["detection"] = 18000,
-            ["threat"] = 5000,
-        }, -- end of ["ara_vdm"]
-        ["HESCO_watchtower_1"] = 
-        {
-        }, -- end of ["HESCO_watchtower_1"]
-        ["AA8"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["AA8"]
+            ["threatmin"] = 50000,
+        }, -- end of ["CHAP_M142_ATACMS_M39A1"]
         ["MCV-80"] = 
         {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 2500,
-        }, -- end of ["MCV-80"]
-        ["Building06_PBR"] = 
-        {
-        }, -- end of ["Building06_PBR"]
-        ["Log ramps 1"] = 
-        {
-        }, -- end of ["Log ramps 1"]
-        ["KJ-2000"] = 
-        {
-            ["irsignature"] = 4,
-        }, -- end of ["KJ-2000"]
-        ["HESCO_generator"] = 
-        {
-        }, -- end of ["HESCO_generator"]
-        ["Sandbag_17"] = 
-        {
-        }, -- end of ["Sandbag_17"]
-        ["barrels_cargo"] = 
-        {
-        }, -- end of ["barrels_cargo"]
-        ["M4_Sherman"] = 
-        {
-            ["irsignature"] = 0.1,
             ["detection"] = 0,
-            ["threat"] = 3000,
-        }, -- end of ["M4_Sherman"]
+            ["irsignature"] = 0.09,
+        }, -- end of ["MCV-80"]
         ["ES44AH"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = 48,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
             ["irsignature"] = 0.15,
-            ["detection"] = 0,
-            ["threat"] = 0,
         }, -- end of ["ES44AH"]
-        ["345 Excavator"] = 
+        ["CHAP_MATV"] = 
         {
-        }, -- end of ["345 Excavator"]
-        ["Stanley_LightHouse"] = 
-        {
-        }, -- end of ["Stanley_LightHouse"]
-        ["ATZ-60_Maz"] = 
-        {
-            ["irsignature"] = 0.1,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 354,
+                [5] = "APC",
+                [6] = "Datalink",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1200,
             ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["ATZ-60_Maz"]
-        ["Electric locomotive"] = 
+            ["irsignature"] = 0.085,
+        }, -- end of ["CHAP_MATV"]
+        ["Type_3_80mm_AA"] = 
         {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Electric locomotive"]
-        ["FireExtinguisher01"] = 
-        {
-        }, -- end of ["FireExtinguisher01"]
-        ["SA342Minigun"] = 
-        {
-            ["irsignature"] = 0.2,
-        }, -- end of ["SA342Minigun"]
-        ["Camouflage02"] = 
-        {
-        }, -- end of ["Camouflage02"]
-        ["Wespe124"] = 
-        {
-            ["irsignature"] = 0.07,
-            ["detection"] = 0,
-            ["threat"] = 10500,
-        }, -- end of ["Wespe124"]
-        ["M12_GMC"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 18300,
-        }, -- end of ["M12_GMC"]
-        ["m117_cargo"] = 
-        {
-        }, -- end of ["m117_cargo"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 374,
+                [5] = "AA_flak",
+                [6] = "Static AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 3200,
+            ["detection"] = 10000,
+            ["irsignature"] = 0.01,
+        }, -- end of ["Type_3_80mm_AA"]
         ["VAZ Car"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 47,
+                [5] = "Cars",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
             ["irsignature"] = 0.065,
-            ["detection"] = 0,
-            ["threat"] = 0,
         }, -- end of ["VAZ Car"]
-        ["Toolbox01"] = 
+        ["Infantry AK Ins"] = 
         {
-        }, -- end of ["Toolbox01"]
-        ["ElevatedPlatform_up"] = 
-        {
-        }, -- end of ["ElevatedPlatform_up"]
-        ["Predator TrojanSpirit"] = 
-        {
-            ["irsignature"] = 0.05,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "New infantry",
+                [7] = "Skeleton_type_A",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 500,
             ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Predator TrojanSpirit"]
-        ["Mirage-F1EDA"] = 
+            ["irsignature"] = 0.004,
+        }, -- end of ["Infantry AK Ins"]
+        ["ATZ-60_Maz"] = 
         {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1EDA"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 310,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["ATZ-60_Maz"]
         ["ZIL-4331"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 71,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
         }, -- end of ["ZIL-4331"]
-        ["AH-64D"] = 
+        ["ZIL-131 KUNG"] = 
         {
-            ["irsignature"] = 0.2,
-        }, -- end of ["AH-64D"]
-        ["Dragonteeth 3"] = 
-        {
-        }, -- end of ["Dragonteeth 3"]
-        ["P20_drivable"] = 
-        {
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 79,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["P20_drivable"]
-        ["Mirage-F1ED"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1ED"]
-        ["F-117A"] = 
-        {
-            ["irsignature"] = 0.15,
-        }, -- end of ["F-117A"]
-        ["Cone01"] = 
-        {
-        }, -- end of ["Cone01"]
-        ["M10_GMC"] = 
-        {
-            ["irsignature"] = 0.09,
             ["detection"] = 0,
-            ["threat"] = 6000,
-        }, -- end of ["M10_GMC"]
-        ["Suidae"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Suidae"]
-        ["flak36"] = 
-        {
-            ["irsignature"] = 0.01,
-            ["detection"] = 0,
-            ["threat"] = 5000,
-        }, -- end of ["flak36"]
-        ["RLS_19J6"] = 
-        {
             ["irsignature"] = 0.08,
-            ["detection"] = 150000,
-            ["threat"] = 0,
-        }, -- end of ["RLS_19J6"]
-        ["Tornado IDS"] = 
+        }, -- end of ["ZIL-131 KUNG"]
+        ["Patriot str"] = 
         {
-            ["irsignature"] = 0.6,
-        }, -- end of ["Tornado IDS"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 34,
+                [5] = "LR SAM",
+                [6] = "SAM SR",
+                [7] = "SAM TR",
+                [8] = "RADAR_BAND1_FOR_ARM",
+                [9] = "Datalink",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "NonArmoredUnits",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 160000,
+            ["irsignature"] = 0.07,
+        }, -- end of ["Patriot str"]
+        ["ZiL-131 APA-80"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["ZiL-131 APA-80"]
+        ["BMP-3"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 104,
+                [4] = 7,
+                [5] = "IFV",
+                [6] = "ATGM",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 4000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.095,
+        }, -- end of ["BMP-3"]
         ["rapier_fsa_blindfire_radar"] = 
         {
-            ["irsignature"] = 0.03,
-            ["detection"] = 30000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 262,
+                [5] = "SR SAM",
+                [6] = "SAM TR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "RADAR_BAND2_FOR_ARM",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "NonArmoredUnits",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 30000,
+            ["irsignature"] = 0.03,
         }, -- end of ["rapier_fsa_blindfire_radar"]
-        ["SH-60B"] = 
+        ["Hummer"] = 
         {
-            ["irsignature"] = 0.35,
-        }, -- end of ["SH-60B"]
-        ["ZBD04A"] = 
-        {
-            ["irsignature"] = 0.09,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 14,
+                [5] = "APC",
+                [6] = "Datalink",
+                [7] = "human_vehicle",
+                [8] = "Infantry carriers",
+                [9] = "Armored vehicles",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Ground Units Non Airdefence",
+                [13] = "Armed ground units",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "Armed vehicles",
+                [17] = "AntiAir Armed Vehicles",
+                [18] = "NonAndLightArmoredUnits",
+                [19] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
             ["detection"] = 0,
-            ["threat"] = 4800,
-        }, -- end of ["ZBD04A"]
+            ["irsignature"] = 0.075,
+        }, -- end of ["Hummer"]
         ["KS-19"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 334,
+                [5] = "AA_flak",
+                [6] = "Static AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 20000,
+            ["detection"] = 0,
             ["irsignature"] = 0.01,
-            ["detection"] = 0,
-            ["threat"] = 20000,
         }, -- end of ["KS-19"]
-        ["Strela-1 9P31"] = 
+        ["leopard-2A4"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 5000,
-            ["threat"] = 4200,
-        }, -- end of ["Strela-1 9P31"]
-        ["us carrier shooter"] = 
-        {
-        }, -- end of ["us carrier shooter"]
-        ["M1128 Stryker MGS"] = 
-        {
-            ["irsignature"] = 0.085,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 300,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3500,
             ["detection"] = 0,
-            ["threat"] = 4000,
-        }, -- end of ["M1128 Stryker MGS"]
-        ["leander-gun-lynch"] = 
-        {
-            ["detection"] = 180000,
-            ["threat"] = 140000,
-        }, -- end of ["leander-gun-lynch"]
-        ["MiG-25RBT"] = 
-        {
-            ["irsignature"] = 4,
-        }, -- end of ["MiG-25RBT"]
-        ["F-86F Sabre"] = 
-        {
-            ["irsignature"] = 0.25,
-        }, -- end of ["F-86F Sabre"]
-        ["C-17A"] = 
-        {
-            ["irsignature"] = 3,
-        }, -- end of ["C-17A"]
-        ["CVN_71"] = 
-        {
-            ["irsignature"] = 0.4,
-            ["detection"] = 50000,
-            ["threat"] = 25000,
-        }, -- end of ["CVN_71"]
-        ["VINSON"] = 
-        {
-            ["irsignature"] = 0.4,
-            ["detection"] = 30000,
-            ["threat"] = 15000,
-        }, -- end of ["VINSON"]
-        ["Tent03"] = 
-        {
-        }, -- end of ["Tent03"]
-        ["BoomBarrier_closed"] = 
-        {
-        }, -- end of ["BoomBarrier_closed"]
-        ["Sandbag_06"] = 
-        {
-        }, -- end of ["Sandbag_06"]
-        ["Mirage-F1EQ"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1EQ"]
-        ["Forrestal"] = 
-        {
-            ["detection"] = 50000,
-            ["threat"] = 25000,
-        }, -- end of ["Forrestal"]
-        ["PERRY"] = 
-        {
-            ["irsignature"] = 0.4,
-            ["detection"] = 150000,
-            ["threat"] = 100000,
-        }, -- end of ["PERRY"]
-        ["MiG-19P"] = 
-        {
-            ["irsignature"] = 0.34,
-        }, -- end of ["MiG-19P"]
-        ["MiG-25PD"] = 
-        {
-            ["irsignature"] = 4,
-        }, -- end of ["MiG-25PD"]
-        ["Building05_PBR"] = 
-        {
-        }, -- end of ["Building05_PBR"]
-        ["TPZ"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 1000,
-        }, -- end of ["TPZ"]
-        ["C-101EB"] = 
-        {
-            ["irsignature"] = 0.2,
-        }, -- end of ["C-101EB"]
-        ["An-30M"] = 
-        {
-            ["irsignature"] = 0.5,
-        }, -- end of ["An-30M"]
-        ["S-200_Launcher"] = 
-        {
-            ["detection"] = 0,
-            ["threat"] = 255000,
-        }, -- end of ["S-200_Launcher"]
-        ["Mirage-F1M-EE"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1M-EE"]
-        ["Mirage-F1CR"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1CR"]
-        ["Cargo03"] = 
-        {
-        }, -- end of ["Cargo03"]
-        ["Barrier D"] = 
-        {
-        }, -- end of ["Barrier D"]
-        ["Barrier C"] = 
-        {
-        }, -- end of ["Barrier C"]
-        ["Barrier B"] = 
-        {
-        }, -- end of ["Barrier B"]
-        ["Fire Control Bunker"] = 
-        {
-        }, -- end of ["Fire Control Bunker"]
-        ["rapier_fsa_optical_tracker_unit"] = 
-        {
-            ["irsignature"] = 0.03,
-            ["detection"] = 20000,
-            ["threat"] = 0,
-        }, -- end of ["rapier_fsa_optical_tracker_unit"]
-        ["MJ-1_drivable"] = 
-        {
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["MJ-1_drivable"]
-        ["La_Combattante_II"] = 
-        {
-            ["irsignature"] = 0.35,
-            ["detection"] = 19000,
-            ["threat"] = 4000,
-        }, -- end of ["La_Combattante_II"]
-        ["KC-135"] = 
-        {
-            ["irsignature"] = 4,
-        }, -- end of ["KC-135"]
-        ["MQ-9 Reaper"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["MQ-9 Reaper"]
-        ["Camouflage01"] = 
-        {
-        }, -- end of ["Camouflage01"]
-        ["LHA_Tarawa"] = 
-        {
-            ["detection"] = 150000,
-            ["threat"] = 20000,
-        }, -- end of ["LHA_Tarawa"]
-        ["Scud_B"] = 
-        {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
-            ["threat"] = 285000,
-        }, -- end of ["Scud_B"]
-        ["CHAP_9K720_HE"] = 
-        {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
-            ["threat"] = 398180,
-        }, -- end of ["CHAP_9K720_HE"]
-        ["CHAP_9K720_Cluster"] = 
-        {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
-            ["threat"] = 398180,
-        }, -- end of ["CHAP_9K720_Cluster"]
-        ["NASAMS_LN_C"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 0,
-            ["threat"] = 15000,
-        }, -- end of ["NASAMS_LN_C"]
-        ["B600"] = 
-        {
-        }, -- end of ["B600"]
-        ["CCKW_353"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["CCKW_353"]
-        ["SA-18 Igla comm"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 5000,
-            ["threat"] = 0,
-        }, -- end of ["SA-18 Igla comm"]
+            ["irsignature"] = 0.12,
+        }, -- end of ["leopard-2A4"]
         ["T-90"] = 
         {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 358,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Datalink",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 5000,
+            ["irsignature"] = 0.11,
+            ["detection"] = 6000,
+            ["threatmin"] = 100,
         }, -- end of ["T-90"]
-        ["Patriot ECS"] = 
+        ["flak18"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 314,
+                [5] = "AA_flak",
+                [6] = "Static AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 5000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.01,
+        }, -- end of ["flak18"]
+        ["CHAP_IRISTSLM_CP"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 25,
+                [4] = 362,
+                [5] = "Trucks",
+                [6] = "SAM CC",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["CHAP_IRISTSLM_CP"]
+        ["Type_94_25mm_AA_Truck"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 377,
+                [5] = "AA_flak",
+                [6] = "Mobile AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 3500,
+            ["detection"] = 10000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["Type_94_25mm_AA_Truck"]
+        ["S-200_Launcher"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 381,
+                [5] = "AA_missile",
+                [6] = "LR SAM",
+                [7] = "SAM LL",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+                [17] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 255000,
+            ["threatmin"] = 17000,
+            ["detection"] = 0,
+        }, -- end of ["S-200_Launcher"]
+        ["Hawk pcp"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 25,
+                [4] = 6,
+                [5] = "SAM CC",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Air Defence",
+                [13] = "SAM related",
+                [14] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
             ["irsignature"] = 0.05,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Patriot ECS"]
-        ["A-10A"] = 
-        {
-            ["irsignature"] = 0.53,
-        }, -- end of ["A-10A"]
-        ["NF-2_LightOn"] = 
-        {
-        }, -- end of ["NF-2_LightOn"]
-        ["Pak40"] = 
-        {
-            ["irsignature"] = 0.04,
-            ["detection"] = 0,
-            ["threat"] = 3000,
-        }, -- end of ["Pak40"]
-        ["Coach cargo open"] = 
-        {
-            ["irsignature"] = 0,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Coach cargo open"]
+        }, -- end of ["Hawk pcp"]
         ["IKARUS Bus"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 46,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
         }, -- end of ["IKARUS Bus"]
+        ["CHAP_FV101"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 351,
+                [5] = "Tanks",
+                [6] = "Datalink",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 5000,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.06,
+        }, -- end of ["CHAP_FV101"]
+        ["ZU-23 Emplacement Closed"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 48,
+                [5] = "AA_flak",
+                [6] = "Static AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.006,
+        }, -- end of ["ZU-23 Emplacement Closed"]
+        ["ZIL-135"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 311,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["ZIL-135"]
+        ["MJ-1_drivable"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 38,
+                [5] = "Cars",
+                [6] = "human_vehicle",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+        }, -- end of ["MJ-1_drivable"]
+        ["Soldier M4"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.004,
+        }, -- end of ["Soldier M4"]
+        ["Bunker"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Fortifications",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "AntiAir Armed Vehicles",
+                [11] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.005,
+        }, -- end of ["Bunker"]
+        ["GAZ-3308"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 69,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["GAZ-3308"]
+        ["SA-18 Igla comm"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 55,
+                [5] = "MANPADS AUX",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Infantry",
+                [13] = "Rocket Attack Valid AirDefence",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+                [19] = "SAM AUX",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.004,
+        }, -- end of ["SA-18 Igla comm"]
+        ["SA-11 Buk LN 9A310M1"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 102,
+                [4] = 19,
+                [5] = "AA_missile",
+                [6] = "MR SAM",
+                [7] = "SAM TR",
+                [8] = "SAM LL",
+                [9] = "RADAR_BAND1_FOR_ARM",
+                [10] = "RADAR_BAND2_FOR_ARM",
+                [11] = "All",
+                [12] = "Ground Units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "NonArmoredUnits",
+                [17] = "Air Defence",
+                [18] = "SAM related",
+                [19] = "SAM elements",
+                [20] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 50000,
+            ["detection"] = 50000,
+            ["irsignature"] = 0.095,
+        }, -- end of ["SA-11 Buk LN 9A310M1"]
+        ["Patriot ECS"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 25,
+                [4] = 36,
+                [5] = "Trucks",
+                [6] = "SAM CC",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
+        }, -- end of ["Patriot ECS"]
+        ["CHAP_T84OplotM"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 356,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Datalink",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 5000,
+            ["irsignature"] = 0.08,
+            ["detection"] = 8000,
+            ["threatmin"] = 100,
+        }, -- end of ["CHAP_T84OplotM"]
+        ["tt_B8M1"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 63,
+                [5] = "</WSTYPE>",
+                [6] = "MLRS",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "Indirect fire",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "LightArmoredUnits",
+                [17] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 5000,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["tt_B8M1"]
+        ["SON_9"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 335,
+                [5] = "SAM SR",
+                [6] = "SAM TR",
+                [7] = "AAA",
+                [8] = "RADAR_BAND1_FOR_ARM",
+                [9] = "RADAR_BAND2_FOR_ARM",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "NonArmoredUnits",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+                [19] = "Armed Air Defence",
+                [20] = "Rocket Attack Valid AirDefence",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 55000,
+            ["irsignature"] = 0.05,
+        }, -- end of ["SON_9"]
+        ["CHAP_PantsirS1"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 103,
+                [4] = 355,
+                [5] = "AA_missile",
+                [6] = "AA_flak",
+                [7] = "Mobile AAA",
+                [8] = "SR SAM",
+                [9] = "SAM SR",
+                [10] = "SAM TR",
+                [11] = "RADAR_BAND1_FOR_ARM",
+                [12] = "Datalink",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "NonArmoredUnits",
+                [15] = "Air Defence",
+                [16] = "Armed Air Defence",
+                [17] = "Rocket Attack Valid AirDefence",
+                [18] = "AAA",
+                [19] = "All",
+                [20] = "Ground Units",
+                [21] = "Vehicles",
+                [22] = "Ground vehicles",
+                [23] = "SAM related",
+                [24] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 20000,
+            ["detection"] = 36000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["CHAP_PantsirS1"]
         ["house1arm"] = 
         {
-            ["irsignature"] = 0.007,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Fortifications",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "AntiAir Armed Vehicles",
+                [11] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.007,
         }, -- end of ["house1arm"]
         ["Hawk ln"] = 
         {
-            ["irsignature"] = 0.05,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 41,
+                [5] = "AA_missile",
+                [6] = "SAM LL",
+                [7] = "Datalink",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+                [17] = "Armed Air Defence",
+            }, -- end of ["attr"]
             ["threat"] = 45000,
-        }, -- end of ["Hawk ln"]
-        ["SA Ski Ramp"] = 
-        {
-        }, -- end of ["SA Ski Ramp"]
-        ["Mi-28N"] = 
-        {
-            ["irsignature"] = 0.3,
-        }, -- end of ["Mi-28N"]
-        ["Hawk cwar"] = 
-        {
+            ["detection"] = 0,
             ["irsignature"] = 0.05,
-            ["detection"] = 70000,
-            ["threat"] = 0,
-        }, -- end of ["Hawk cwar"]
-        ["F-16C bl.50"] = 
+        }, -- end of ["Hawk ln"]
+        ["BTR-80"] = 
         {
-            ["irsignature"] = 0.6,
-        }, -- end of ["F-16C bl.50"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1600,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["BTR-80"]
+        ["r11_volvo_drivable"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+        }, -- end of ["r11_volvo_drivable"]
         ["SA-11 Buk SR 9S18M1"] = 
         {
-            ["irsignature"] = 0.095,
-            ["detection"] = 100000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 18,
+                [5] = "MR SAM",
+                [6] = "SAM SR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 100000,
+            ["irsignature"] = 0.095,
         }, -- end of ["SA-11 Buk SR 9S18M1"]
-        ["Sd_Kfz_234_2_Puma"] = 
+        ["AAV7"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 2000,
-        }, -- end of ["Sd_Kfz_234_2_Puma"]
-        ["Schnellboot_type_S130"] = 
-        {
-            ["irsignature"] = 0.3,
-            ["detection"] = 10000,
-            ["threat"] = 4000,
-        }, -- end of ["Schnellboot_type_S130"]
-        ["AS32-31A"] = 
-        {
-        }, -- end of ["AS32-31A"]
-        ["M1097 Avenger"] = 
-        {
-            ["irsignature"] = 0.075,
-            ["detection"] = 5200,
-            ["threat"] = 4500,
-        }, -- end of ["M1097 Avenger"]
-        ["flak38"] = 
-        {
-            ["irsignature"] = 0.01,
-            ["detection"] = 0,
-            ["threat"] = 2500,
-        }, -- end of ["flak38"]
-        ["WindTurbine_11"] = 
-        {
-        }, -- end of ["WindTurbine_11"]
-        ["M4_Tractor"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 1200,
-        }, -- end of ["M4_Tractor"]
+            ["detection"] = 0,
+            ["irsignature"] = 0.09,
+        }, -- end of ["AAV7"]
+        ["FPS-117"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 329,
+                [5] = "EWR",
+                [6] = "NonAndLightArmoredUnits",
+                [7] = "NonArmoredUnits",
+                [8] = "Air Defence",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Air Defence vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 463000,
+            ["irsignature"] = 0.07,
+        }, -- end of ["FPS-117"]
+        ["HEMTT_C-RAM_Phalanx"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 105,
+                [4] = 342,
+                [5] = "AA_flak",
+                [6] = "SAM TR",
+                [7] = "Mobile AAA",
+                [8] = "C-RAM",
+                [9] = "Datalink",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "NonArmoredUnits",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+                [19] = "Armed Air Defence",
+                [20] = "Rocket Attack Valid AirDefence",
+                [21] = "AAA",
+            }, -- end of ["attr"]
+            ["threat"] = 2000,
+            ["detection"] = 10000,
+            ["irsignature"] = 0.1,
+        }, -- end of ["HEMTT_C-RAM_Phalanx"]
         ["JTAC"] = 
         {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["JTAC"]
-        ["Mirage-F1M-CE"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1M-CE"]
-        ["M1_37mm"] = 
-        {
-            ["irsignature"] = 0.01,
             ["detection"] = 0,
-            ["threat"] = 5700,
-        }, -- end of ["M1_37mm"]
+            ["irsignature"] = 0.004,
+        }, -- end of ["JTAC"]
+        ["Patriot ln"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 37,
+                [5] = "AA_missile",
+                [6] = "SAM LL",
+                [7] = "Datalink",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+                [17] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 100000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
+        }, -- end of ["Patriot ln"]
         ["KrAZ6322"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "human_vehicle",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
         }, -- end of ["KrAZ6322"]
-        ["Stinger comm dsr"] = 
+        ["tt_DSHK"] = 
         {
-            ["irsignature"] = 0.004,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 323,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1200,
             ["detection"] = 5000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["tt_DSHK"]
+        ["GD-20"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 378,
+                [5] = "Trucks",
+                [6] = "Cars",
+                [7] = "human_vehicle",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Ground Units Non Airdefence",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "NonArmoredUnits",
+                [15] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["Stinger comm dsr"]
-        ["Higgins_boat"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 3000,
-            ["threat"] = 1000,
-        }, -- end of ["Higgins_boat"]
-        ["Su-24MR"] = 
-        {
-            ["irsignature"] = 1.5,
-        }, -- end of ["Su-24MR"]
-        ["Jerrycan"] = 
-        {
-        }, -- end of ["Jerrycan"]
-        ["warning_board_b"] = 
-        {
-        }, -- end of ["warning_board_b"]
-        ["ATMZ-5"] = 
-        {
-            ["irsignature"] = 0.08,
             ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["GD-20"]
+        ["FPS-117 ECS"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 328,
+                [5] = "SAM CC",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Air Defence",
+                [13] = "SAM related",
+                [14] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["ATMZ-5"]
-        ["leander-gun-andromeda"] = 
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
+        }, -- end of ["FPS-117 ECS"]
+        ["S-300PS 5H63C 30H6_tr"] = 
         {
-            ["detection"] = 180000,
-            ["threat"] = 140000,
-        }, -- end of ["leander-gun-andromeda"]
-        ["SA342Mistral"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 344,
+                [5] = "LR SAM",
+                [6] = "SAM TR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 120000,
+            ["irsignature"] = 0.05,
+        }, -- end of ["S-300PS 5H63C 30H6_tr"]
+        ["HL_B8M1"] = 
         {
-            ["irsignature"] = 0.2,
-        }, -- end of ["SA342Mistral"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 63,
+                [5] = "</WSTYPE>",
+                [6] = "MLRS",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "Indirect fire",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "LightArmoredUnits",
+                [17] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 5000,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["HL_B8M1"]
+        ["NASAMS_LN_B"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 307,
+                [5] = "AA_missile",
+                [6] = "SAM LL",
+                [7] = "Datalink",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+                [17] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 15000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
+        }, -- end of ["NASAMS_LN_B"]
+        ["ZU-23 Emplacement"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 47,
+                [5] = "AA_flak",
+                [6] = "Static AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.006,
+        }, -- end of ["ZU-23 Emplacement"]
+        ["NASAMS_LN_C"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 308,
+                [5] = "AA_missile",
+                [6] = "SAM LL",
+                [7] = "Datalink",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+                [17] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 15000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
+        }, -- end of ["NASAMS_LN_C"]
         ["SA-11 Buk CC 9S470M1"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 25,
+                [4] = 17,
+                [5] = "SAM CC",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Air Defence",
+                [13] = "SAM related",
+                [14] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
             ["irsignature"] = 0.095,
-            ["detection"] = 0,
-            ["threat"] = 0,
         }, -- end of ["SA-11 Buk CC 9S470M1"]
-        ["German_tank_wagon"] = 
+        ["tt_ZU-23"] = 
         {
-            ["irsignature"] = 0.01,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 326,
+                [5] = "AA_flak",
+                [6] = "Mobile AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
             ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["German_tank_wagon"]
+            ["irsignature"] = 0.08,
+        }, -- end of ["tt_ZU-23"]
         ["Soldier M4 GRG"] = 
         {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "New infantry",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 500,
-        }, -- end of ["Soldier M4 GRG"]
-        ["Mi-24V"] = 
-        {
-            ["irsignature"] = 0.5,
-        }, -- end of ["Mi-24V"]
-        ["MiG-31"] = 
-        {
-            ["irsignature"] = 3,
-        }, -- end of ["MiG-31"]
-        ["leander-gun-achilles"] = 
-        {
-            ["detection"] = 180000,
-            ["threat"] = 8000,
-        }, -- end of ["leander-gun-achilles"]
-        ["M-113"] = 
-        {
-            ["irsignature"] = 0.09,
             ["detection"] = 0,
-            ["threat"] = 1200,
-        }, -- end of ["M-113"]
-        ["MB-339A"] = 
+            ["irsignature"] = 0.004,
+        }, -- end of ["Soldier M4 GRG"]
+        ["M4_Sherman"] = 
         {
-            ["irsignature"] = 0.2,
-        }, -- end of ["MB-339A"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Old Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["M4_Sherman"]
+        ["Ural-4320 APA-5D"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["Ural-4320 APA-5D"]
+        ["S-300PS 5P85D ln"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 9,
+                [5] = "AA_missile",
+                [6] = "SAM LL",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Air Defence",
+                [14] = "SAM related",
+                [15] = "SAM elements",
+                [16] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 120000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["S-300PS 5P85D ln"]
+        ["Coach a passenger"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = 54,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
+        }, -- end of ["Coach a passenger"]
+        ["KAMAZ Truck"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 57,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["KAMAZ Truck"]
         ["Soldier M249"] = 
         {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "Prone",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 700,
-        }, -- end of ["Soldier M249"]
-        ["Mirage 2000-5"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage 2000-5"]
-        ["Tent04"] = 
-        {
-        }, -- end of ["Tent04"]
-        ["flak18"] = 
-        {
-            ["irsignature"] = 0.01,
             ["detection"] = 0,
-            ["threat"] = 5000,
-        }, -- end of ["flak18"]
-        ["Building02_PBR"] = 
+            ["irsignature"] = 0.004,
+        }, -- end of ["Soldier M249"]
+        ["M48 Chaparral"] = 
         {
-        }, -- end of ["Building02_PBR"]
-        ["MiG-21Bis"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 50,
+                [5] = "AA_missile",
+                [6] = "SR SAM",
+                [7] = "IR Guided SAM",
+                [8] = "Datalink",
+                [9] = "NonAndLightArmoredUnits",
+                [10] = "NonArmoredUnits",
+                [11] = "Air Defence",
+                [12] = "SAM related",
+                [13] = "Armed Air Defence",
+                [14] = "All",
+                [15] = "Ground Units",
+                [16] = "Vehicles",
+                [17] = "Ground vehicles",
+                [18] = "SAM",
+            }, -- end of ["attr"]
+            ["threat"] = 8500,
+            ["detection"] = 10000,
+            ["irsignature"] = 0.085,
+        }, -- end of ["M48 Chaparral"]
+        ["CHAP_IRISTSLM_STR"] = 
         {
-            ["irsignature"] = 0.6,
-        }, -- end of ["MiG-21Bis"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 360,
+                [5] = "MR SAM",
+                [6] = "SAM SR",
+                [7] = "SAM TR",
+                [8] = "RADAR_BAND1_FOR_ARM",
+                [9] = "RADAR_BAND2_FOR_ARM",
+                [10] = "Datalink",
+                [11] = "All",
+                [12] = "Ground Units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "NonArmoredUnits",
+                [17] = "Air Defence",
+                [18] = "SAM related",
+                [19] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 250000,
+            ["irsignature"] = 0.09,
+        }, -- end of ["CHAP_IRISTSLM_STR"]
+        ["Patriot EPP"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 36,
+                [5] = "Trucks",
+                [6] = "SAM CC",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
+        }, -- end of ["Patriot EPP"]
+        ["Challenger2"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.11,
+        }, -- end of ["Challenger2"]
+        ["Boxcartrinity"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = 51,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0,
+        }, -- end of ["Boxcartrinity"]
         ["Roland Radar"] = 
         {
-            ["irsignature"] = 0.085,
-            ["detection"] = 35000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 32,
+                [5] = "SAM SR",
+                [6] = "RADAR_BAND1_FOR_ARM",
+                [7] = "RADAR_BAND2_FOR_ARM",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 35000,
+            ["irsignature"] = 0.085,
         }, -- end of ["Roland Radar"]
-        ["MiG-29S"] = 
+        ["Type_89_I_Go"] = 
         {
-            ["irsignature"] = 0.77,
-        }, -- end of ["MiG-29S"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Old Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3000,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.095,
+        }, -- end of ["Type_89_I_Go"]
         ["Ural ATsP-6"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
         }, -- end of ["Ural ATsP-6"]
-        ["Su-33"] = 
-        {
-            ["irsignature"] = 1,
-        }, -- end of ["Su-33"]
         ["Coach a tank blue"] = 
         {
-            ["irsignature"] = 0,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = 50,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0,
         }, -- end of ["Coach a tank blue"]
-        ["Centaur_IV"] = 
+        ["Type_98_Ke_Ni"] = 
         {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 6000,
-        }, -- end of ["Centaur_IV"]
-        ["M4A4_Sherman_FF"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Old Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 3000,
-        }, -- end of ["M4A4_Sherman_FF"]
-        ["Christen Eagle II"] = 
+            ["detection"] = 5000,
+            ["irsignature"] = 0.09,
+        }, -- end of ["Type_98_Ke_Ni"]
+        ["ZU-23 Closed Insurgent"] = 
         {
-            ["irsignature"] = 0.04,
-        }, -- end of ["Christen Eagle II"]
-        ["Sandbag_03"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 71,
+                [5] = "AA_flak",
+                [6] = "Static AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.006,
+        }, -- end of ["ZU-23 Closed Insurgent"]
+        ["M2A1_halftrack"] = 
         {
-        }, -- end of ["Sandbag_03"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1200,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["M2A1_halftrack"]
+        ["1L13 EWR"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 1,
+                [5] = "EWR",
+                [6] = "NonAndLightArmoredUnits",
+                [7] = "NonArmoredUnits",
+                [8] = "Air Defence",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Air Defence vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 300000,
+            ["irsignature"] = 0.07,
+        }, -- end of ["1L13 EWR"]
+        ["RLS_19J6"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 309,
+                [5] = "LR SAM",
+                [6] = "SAM SR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "RADAR_BAND2_FOR_ARM",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "NonArmoredUnits",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 150000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["RLS_19J6"]
         ["BTR_D"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 104,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "ATGM",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3000,
+            ["detection"] = 0,
             ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 3000,
         }, -- end of ["BTR_D"]
-        ["Nodding_Donkey_Pump"] = 
+        ["p-19 s-125 sr"] = 
         {
-        }, -- end of ["Nodding_Donkey_Pump"]
-        ["AM32a-60_01"] = 
-        {
-        }, -- end of ["AM32a-60_01"]
-        ["AM32a-60_02"] = 
-        {
-        }, -- end of ["AM32a-60_02"]
-        ["Kubelwagen_82"] = 
-        {
-            ["irsignature"] = 0.065,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 75,
+                [5] = "MR SAM",
+                [6] = "SAM SR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "RADAR_BAND2_FOR_ARM",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "NonArmoredUnits",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["Kubelwagen_82"]
-        ["flak37"] = 
+            ["detection"] = 160000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["p-19 s-125 sr"]
+        ["GPS_Spoofer_Blue"] = 
         {
-            ["irsignature"] = 0.01,
-            ["detection"] = 0,
-            ["threat"] = 5000,
-        }, -- end of ["flak37"]
-        ["Twall_x1"] = 
-        {
-        }, -- end of ["Twall_x1"]
-        ["Sandbag_15"] = 
-        {
-        }, -- end of ["Sandbag_15"]
-        ["M-2 Bradley"] = 
-        {
-            ["irsignature"] = 0.095,
-            ["detection"] = 0,
-            ["threat"] = 3800,
-        }, -- end of ["M-2 Bradley"]
-        ["M-1 Abrams"] = 
-        {
-            ["irsignature"] = 0.15,
-            ["detection"] = 0,
-            ["threat"] = 3500,
-        }, -- end of ["M-1 Abrams"]
-        ["Cromwell_IV"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 3000,
-        }, -- end of ["Cromwell_IV"]
-        ["F-16C_50"] = 
-        {
-            ["irsignature"] = 0.6,
-        }, -- end of ["F-16C_50"]
-        ["PIOTR"] = 
-        {
-            ["irsignature"] = 0.4,
-            ["detection"] = 250000,
-            ["threat"] = 190000,
-        }, -- end of ["PIOTR"]
-        ["Wellcarnsc"] = 
-        {
-            ["irsignature"] = 0,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 379,
+                [5] = "Trucks",
+                [6] = "Jammer",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["Wellcarnsc"]
-        ["Building01_PBR"] = 
+            ["irsignature"] = 0.07,
+        }, -- end of ["GPS_Spoofer_Blue"]
+        ["Infantry AK"] = 
         {
-        }, -- end of ["Building01_PBR"]
-        ["Cargo05"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "New infantry",
+                [7] = "Skeleton_type_A",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.004,
+        }, -- end of ["Infantry AK"]
+        ["HEMTT TFFT"] = 
         {
-        }, -- end of ["Cargo05"]
-        ["Sandbag_01"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["HEMTT TFFT"]
+        ["Ural-375 ZU-23"] = 
         {
-        }, -- end of ["Sandbag_01"]
-        ["Camouflage04"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 49,
+                [5] = "AA_flak",
+                [6] = "Mobile AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["Ural-375 ZU-23"]
+        ["Hawk tr"] = 
         {
-        }, -- end of ["Camouflage04"]
-        ["SH-3W"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 40,
+                [5] = "MR SAM",
+                [6] = "SAM TR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "RADAR_BAND2_FOR_ARM",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "NonAndLightArmoredUnits",
+                [14] = "NonArmoredUnits",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 90000,
+            ["irsignature"] = 0.06,
+        }, -- end of ["Hawk tr"]
+        ["NASAMS_Command_Post"] = 
         {
-            ["irsignature"] = 0.72,
-        }, -- end of ["SH-3W"]
-        ["F-15ESE"] = 
-        {
-            ["irsignature"] = 0.91,
-        }, -- end of ["F-15ESE"]
-        ["SpitfireLFMkIXCW"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["SpitfireLFMkIXCW"]
-        ["S-300PS 54K6 cp"] = 
-        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 25,
+                [4] = 306,
+                [5] = "Trucks",
+                [6] = "SAM CC",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
             ["irsignature"] = 0.05,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["S-300PS 54K6 cp"]
-        ["hms_invincible"] = 
+        }, -- end of ["NASAMS_Command_Post"]
+        ["CHAP_9K720_Cluster"] = 
         {
-            ["detection"] = 100000,
-            ["threat"] = 74000,
-        }, -- end of ["hms_invincible"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 369,
+                [5] = "SS_missile",
+                [6] = "Artillery",
+                [7] = "Datalink",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "Indirect fire",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 400000,
+            ["irsignature"] = 0.085,
+            ["detection"] = 0,
+            ["threatmin"] = 75000,
+        }, -- end of ["CHAP_9K720_Cluster"]
+        ["T-80UD"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 5000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["T-80UD"]
+        ["rapier_fsa_optical_tracker_unit"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 261,
+                [5] = "SR SAM",
+                [6] = "SAM SR",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Air Defence",
+                [14] = "SAM related",
+                [15] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 20000,
+            ["irsignature"] = 0.03,
+        }, -- end of ["rapier_fsa_optical_tracker_unit"]
+        ["SA-18 Igla-S comm"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 53,
+                [5] = "MANPADS AUX",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Infantry",
+                [13] = "Rocket Attack Valid AirDefence",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+                [19] = "SAM AUX",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.004,
+        }, -- end of ["SA-18 Igla-S comm"]
+        ["M1128 Stryker MGS"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 80,
+                [5] = "IFV",
+                [6] = "Tanks",
+                [7] = "Modern Tanks",
+                [8] = "Datalink",
+                [9] = "Infantry carriers",
+                [10] = "Armored vehicles",
+                [11] = "All",
+                [12] = "Ground Units",
+                [13] = "Ground Units Non Airdefence",
+                [14] = "Armed ground units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+                [17] = "Armed vehicles",
+                [18] = "AntiAir Armed Vehicles",
+                [19] = "NonAndLightArmoredUnits",
+                [20] = "LightArmoredUnits",
+                [21] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 4000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.085,
+        }, -- end of ["M1128 Stryker MGS"]
+        ["ZSU-23-4 Shilka"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 105,
+                [4] = 30,
+                [5] = "AA_flak",
+                [6] = "Mobile AAA",
+                [7] = "SAM TR",
+                [8] = "RADAR_BAND1_FOR_ARM",
+                [9] = "NonAndLightArmoredUnits",
+                [10] = "NonArmoredUnits",
+                [11] = "Air Defence",
+                [12] = "Armed Air Defence",
+                [13] = "Rocket Attack Valid AirDefence",
+                [14] = "AAA",
+                [15] = "All",
+                [16] = "Ground Units",
+                [17] = "Vehicles",
+                [18] = "Ground vehicles",
+                [19] = "SAM related",
+                [20] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["ZSU-23-4 Shilka"]
+        ["TYPE-59"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Old Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["TYPE-59"]
+        ["BTR-82A"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 258,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 2000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["BTR-82A"]
+        ["M1043 HMMWV Armament"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 14,
+                [5] = "APC",
+                [6] = "Datalink",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1200,
+            ["detection"] = 2000,
+            ["irsignature"] = 0.075,
+        }, -- end of ["M1043 HMMWV Armament"]
+        ["LARC-V"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 10,
+                [3] = 26,
+                [4] = 333,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 500,
+        }, -- end of ["LARC-V"]
+        ["S_75_ZIL"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 338,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["S_75_ZIL"]
+        ["kamaz_tent_civil"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 57,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["kamaz_tent_civil"]
+        ["outpost_road"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Fortifications",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "AntiAir Armed Vehicles",
+                [11] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.007,
+        }, -- end of ["outpost_road"]
+        ["Electric locomotive"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = "Ground Units",
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Vehicles",
+                [8] = "Ground vehicles",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["Electric locomotive"]
+        ["M1A2C_SEP_V3"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Datalink",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.15,
+        }, -- end of ["M1A2C_SEP_V3"]
         ["Tor 9A331"] = 
         {
-            ["irsignature"] = 0.1,
-            ["detection"] = 25000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 102,
+                [4] = 28,
+                [5] = "AA_missile",
+                [6] = "SR SAM",
+                [7] = "SAM SR",
+                [8] = "SAM TR",
+                [9] = "RADAR_BAND1_FOR_ARM",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "NonArmoredUnits",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 12000,
+            ["detection"] = 25000,
+            ["irsignature"] = 0.1,
         }, -- end of ["Tor 9A331"]
         ["Sandbox"] = 
         {
-            ["irsignature"] = 0,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Fortifications",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "AntiAir Armed Vehicles",
+                [11] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 800,
-        }, -- end of ["Sandbox"]
-        ["IMPROVED_KILO"] = 
-        {
-            ["irsignature"] = 0.2,
             ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["IMPROVED_KILO"]
-        ["Flakscheinwerfer_37"] = 
+            ["irsignature"] = 0,
+        }, -- end of ["Sandbox"]
+        ["Hawk cwar"] = 
         {
-            ["irsignature"] = 0.3,
-            ["detection"] = 15000,
-            ["threat"] = 15000,
-        }, -- end of ["Flakscheinwerfer_37"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 42,
+                [5] = "MR SAM",
+                [6] = "SAM SR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "RADAR_BAND2_FOR_ARM",
+                [9] = "Datalink",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "NonArmoredUnits",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 70000,
+            ["irsignature"] = 0.05,
+        }, -- end of ["Hawk cwar"]
+        ["S-300PS 40B6MD sr_19J6"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 345,
+                [5] = "LR SAM",
+                [6] = "SAM SR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 150000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["S-300PS 40B6MD sr_19J6"]
         ["T-72B3"] = 
         {
-            ["irsignature"] = 0.105,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 4000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.105,
         }, -- end of ["T-72B3"]
-        ["Ural-375 ZU-23"] = 
+        ["ural_4230_civil_b"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 40,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
             ["irsignature"] = 0.08,
-            ["detection"] = 5000,
-            ["threat"] = 2500,
-        }, -- end of ["Ural-375 ZU-23"]
-        ["KDO_Mod40"] = 
-        {
-            ["irsignature"] = 0.03,
-            ["detection"] = 30000,
-            ["threat"] = 0,
-        }, -- end of ["KDO_Mod40"]
-        ["Patriot str"] = 
-        {
-            ["irsignature"] = 0.07,
-            ["detection"] = 160000,
-            ["threat"] = 0,
-        }, -- end of ["Patriot str"]
-        ["F-5E-3"] = 
-        {
-            ["irsignature"] = 0.4,
-        }, -- end of ["F-5E-3"]
-        ["HEMTT TFFT"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["HEMTT TFFT"]
-        ["Cone02"] = 
-        {
-        }, -- end of ["Cone02"]
-        ["M-60"] = 
-        {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
-            ["threat"] = 8000,
-        }, -- end of ["M-60"]
-        ["Stennis"] = 
-        {
-            ["irsignature"] = 0.4,
-            ["detection"] = 50000,
-            ["threat"] = 25000,
-        }, -- end of ["Stennis"]
-        ["Shelter02"] = 
-        {
-        }, -- end of ["Shelter02"]
-        ["Mirage-F1CK"] = 
-        {
-            ["irsignature"] = 0.8,
-        }, -- end of ["Mirage-F1CK"]
-        ["F-15C"] = 
-        {
-            ["irsignature"] = 0.85,
-        }, -- end of ["F-15C"]
-        ["Su-25TM"] = 
-        {
-            ["irsignature"] = 0.7,
-        }, -- end of ["Su-25TM"]
-        ["iso_container_small"] = 
-        {
-        }, -- end of ["iso_container_small"]
-        ["Container_generator"] = 
-        {
-        }, -- end of ["Container_generator"]
-        ["Maschinensatz_33"] = 
-        {
-            ["irsignature"] = 0.07,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Maschinensatz_33"]
-        ["TF-51D"] = 
-        {
-            ["irsignature"] = 0.1,
-        }, -- end of ["TF-51D"]
-        ["Leclerc"] = 
-        {
-            ["irsignature"] = 0.12,
-            ["detection"] = 0,
-            ["threat"] = 3500,
-        }, -- end of ["Leclerc"]
-        ["Blitz_36-6700A"] = 
-        {
-            ["irsignature"] = 0.75,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Blitz_36-6700A"]
-        ["NASAMS_Command_Post"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["NASAMS_Command_Post"]
-        ["Infantry AK ver3"] = 
-        {
-            ["irsignature"] = 0.004,
-            ["detection"] = 0,
-            ["threat"] = 500,
-        }, -- end of ["Infantry AK ver3"]
-        ["MiG-27K"] = 
-        {
-            ["irsignature"] = 0.69,
-        }, -- end of ["MiG-27K"]
-        ["Camouflage05"] = 
-        {
-        }, -- end of ["Camouflage05"]
-        ["Log posts 3"] = 
-        {
-        }, -- end of ["Log posts 3"]
-        ["Coach a platform"] = 
-        {
-            ["irsignature"] = 0,
-            ["detection"] = 0,
-            ["threat"] = 0,
-        }, -- end of ["Coach a platform"]
-        ["iso_container"] = 
-        {
-        }, -- end of ["iso_container"]
-        ["A-10C"] = 
-        {
-            ["irsignature"] = 0.53,
-        }, -- end of ["A-10C"]
-        ["Small_LightHouse"] = 
-        {
-        }, -- end of ["Small_LightHouse"]
-        ["speedboat"] = 
-        {
-            ["irsignature"] = 0.05,
-            ["detection"] = 5000,
-            ["threat"] = 1000,
-        }, -- end of ["speedboat"]
-        ["Su-24M"] = 
-        {
-            ["irsignature"] = 1.5,
-        }, -- end of ["Su-24M"]
-        ["HESCO_wallperimeter_4"] = 
-        {
-        }, -- end of ["HESCO_wallperimeter_4"]
-        ["HL_KORD"] = 
-        {
-            ["irsignature"] = 0.08,
-            ["detection"] = 5000,
-            ["threat"] = 1200,
-        }, -- end of ["HL_KORD"]
-        ["MiG-29A"] = 
-        {
-            ["irsignature"] = 0.77,
-        }, -- end of ["MiG-29A"]
-        ["NF-2_LightOff01"] = 
-        {
-        }, -- end of ["NF-2_LightOff01"]
+        }, -- end of ["ural_4230_civil_b"]
         ["Ural-375 ZU-23 Insurgent"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 5000,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 72,
+                [5] = "AA_flak",
+                [6] = "Mobile AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 2500,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.08,
         }, -- end of ["Ural-375 ZU-23 Insurgent"]
+        ["Type_88_75mm_AA"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 375,
+                [5] = "AA_flak",
+                [6] = "Static AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 3500,
+            ["detection"] = 10000,
+            ["irsignature"] = 0.01,
+        }, -- end of ["Type_88_75mm_AA"]
+        ["S-300PS 64H6E sr"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 7,
+                [5] = "LR SAM",
+                [6] = "SAM SR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 160000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["S-300PS 64H6E sr"]
+        ["MTLB"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.09,
+        }, -- end of ["MTLB"]
+        ["ZBD04A"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 104,
+                [4] = 276,
+                [5] = "IFV",
+                [6] = "ATGM",
+                [7] = "Datalink",
+                [8] = "Infantry carriers",
+                [9] = "Armored vehicles",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Ground Units Non Airdefence",
+                [13] = "Armed ground units",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "Armed vehicles",
+                [17] = "AntiAir Armed Vehicles",
+                [18] = "NonAndLightArmoredUnits",
+                [19] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 4800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.09,
+        }, -- end of ["ZBD04A"]
+        ["AA8"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 295,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["AA8"]
+        ["Coach cargo"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = 51,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0,
+        }, -- end of ["Coach cargo"]
+        ["CHAP_M1083"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 353,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.095,
+        }, -- end of ["CHAP_M1083"]
+        ["NASAMS_Radar_MPQ64F1"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 305,
+                [5] = "MR SAM",
+                [6] = "SAM SR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "RADAR_BAND2_FOR_ARM",
+                [9] = "Datalink",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "NonArmoredUnits",
+                [16] = "Air Defence",
+                [17] = "SAM related",
+                [18] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 50000,
+            ["irsignature"] = 0.06,
+        }, -- end of ["NASAMS_Radar_MPQ64F1"]
+        ["CHAP_BMPT"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 370,
+                [5] = "IFV",
+                [6] = "ATGM",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 6000,
+            ["irsignature"] = 0.1,
+            ["detection"] = 7000,
+            ["threatmin"] = 800,
+        }, -- end of ["CHAP_BMPT"]
+        ["M1134 Stryker ATGM"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 104,
+                [4] = 80,
+                [5] = "IFV",
+                [6] = "ATGM",
+                [7] = "Datalink",
+                [8] = "Infantry carriers",
+                [9] = "Armored vehicles",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Ground Units Non Airdefence",
+                [13] = "Armed ground units",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "Armed vehicles",
+                [17] = "AntiAir Armed Vehicles",
+                [18] = "NonAndLightArmoredUnits",
+                [19] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.085,
+        }, -- end of ["M1134 Stryker ATGM"]
+        ["Ural-375 PBU"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 41,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["Ural-375 PBU"]
+        ["Smerch_HE"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 63,
+                [5] = "MLRS",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+                [16] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 70000,
+            ["irsignature"] = 0.09,
+            ["detection"] = 0,
+            ["threatmin"] = 20000,
+        }, -- end of ["Smerch_HE"]
+        ["Land_Rover_109_S3"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.075,
+        }, -- end of ["Land_Rover_109_S3"]
+        ["T-55"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Old Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["T-55"]
+        ["Leclerc"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.12,
+        }, -- end of ["Leclerc"]
+        ["M6 Linebacker"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 104,
+                [4] = 51,
+                [5] = "AA_missile",
+                [6] = "AA_flak",
+                [7] = "SR SAM",
+                [8] = "IR Guided SAM",
+                [9] = "Datalink",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Air Defence",
+                [13] = "SAM related",
+                [14] = "Armed Air Defence",
+                [15] = "All",
+                [16] = "Ground Units",
+                [17] = "Vehicles",
+                [18] = "Ground vehicles",
+                [19] = "SAM",
+            }, -- end of ["attr"]
+            ["threat"] = 4500,
+            ["detection"] = 8000,
+            ["irsignature"] = 0.095,
+        }, -- end of ["M6 Linebacker"]
+        ["M1097 Avenger"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 104,
+                [4] = 33,
+                [5] = "AA_missile",
+                [6] = "AA_flak",
+                [7] = "SR SAM",
+                [8] = "IR Guided SAM",
+                [9] = "Datalink",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Air Defence",
+                [13] = "SAM related",
+                [14] = "Armed Air Defence",
+                [15] = "All",
+                [16] = "Ground Units",
+                [17] = "Vehicles",
+                [18] = "Ground vehicles",
+                [19] = "SAM",
+            }, -- end of ["attr"]
+            ["threat"] = 4500,
+            ["detection"] = 5200,
+            ["irsignature"] = 0.075,
+        }, -- end of ["M1097 Avenger"]
+        ["gaz-66_civil"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 67,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["gaz-66_civil"]
+        ["GAZ-3307"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 68,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["GAZ-3307"]
+        ["S-300PS 40B6M tr"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 4,
+                [5] = "LR SAM",
+                [6] = "SAM TR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 160000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["S-300PS 40B6M tr"]
+        ["Leopard-2A5"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 298,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.12,
+        }, -- end of ["Leopard-2A5"]
+        ["Coach a platform"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = 53,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0,
+        }, -- end of ["Coach a platform"]
+        ["zil-131_civil"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 387,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["zil-131_civil"]
+        ["CHAP_9K720_HE"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 368,
+                [5] = "SS_missile",
+                [6] = "Artillery",
+                [7] = "Datalink",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "Indirect fire",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 400000,
+            ["irsignature"] = 0.085,
+            ["detection"] = 0,
+            ["threatmin"] = 75000,
+        }, -- end of ["CHAP_9K720_HE"]
+        ["outpost_road_l"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Fortifications",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "AntiAir Armed Vehicles",
+                [11] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.007,
+        }, -- end of ["outpost_road_l"]
+        ["Leopard1A3"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Old Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["Leopard1A3"]
+        ["TPZ"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["TPZ"]
+        ["PT_76"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 296,
+                [5] = "Tanks",
+                [6] = "Armored vehicles",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "AntiAir Armed Vehicles",
+                [15] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 2000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["PT_76"]
+        ["HL_KORD"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 322,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1200,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["HL_KORD"]
+        ["MLRS"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 63,
+                [5] = "MLRS",
+                [6] = "Datalink",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "Indirect fire",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "LightArmoredUnits",
+                [17] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 32000,
+            ["irsignature"] = 0.09,
+            ["detection"] = 0,
+            ["threatmin"] = 10000,
+        }, -- end of ["MLRS"]
+        ["M-60"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Old Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 8000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["M-60"]
+        ["Infantry AK ver2"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 90,
+                [5] = "Infantry",
+                [6] = "New infantry",
+                [7] = "Skeleton_type_A",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.004,
+        }, -- end of ["Infantry AK ver2"]
         ["ZTZ96B"] = 
         {
-            ["irsignature"] = 0.12,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 275,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Datalink",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 5000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.12,
         }, -- end of ["ZTZ96B"]
         ["Grad-URAL"] = 
         {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 63,
+                [5] = "MLRS",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+                [16] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 19000,
             ["irsignature"] = 0.08,
             ["detection"] = 0,
-            ["threat"] = 19000,
+            ["threatmin"] = 5000,
         }, -- end of ["Grad-URAL"]
-        ["Haystack 2"] = 
+        ["SA-18 Igla manpad"] = 
         {
-        }, -- end of ["Haystack 2"]
-        ["HESCO_watchtower_3"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 54,
+                [5] = "MANPADS",
+                [6] = "IR Guided SAM",
+                [7] = "New infantry",
+                [8] = "NonAndLightArmoredUnits",
+                [9] = "NonArmoredUnits",
+                [10] = "Air Defence",
+                [11] = "SAM related",
+                [12] = "Armed Air Defence",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+                [17] = "SAM",
+                [18] = "Ground Units Non Airdefence",
+                [19] = "Armed ground units",
+                [20] = "Infantry",
+                [21] = "Rocket Attack Valid AirDefence",
+            }, -- end of ["attr"]
+            ["threat"] = 5200,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.004,
+        }, -- end of ["SA-18 Igla manpad"]
+        ["Strela-1 9P31"] = 
         {
-        }, -- end of ["HESCO_watchtower_3"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 25,
+                [5] = "AA_missile",
+                [6] = "SR SAM",
+                [7] = "IR Guided SAM",
+                [8] = "NonAndLightArmoredUnits",
+                [9] = "NonArmoredUnits",
+                [10] = "Air Defence",
+                [11] = "SAM related",
+                [12] = "Armed Air Defence",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+                [17] = "SAM",
+            }, -- end of ["attr"]
+            ["threat"] = 4200,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["Strela-1 9P31"]
         ["Coach a tank yellow"] = 
         {
-            ["irsignature"] = 0,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = 98,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0,
         }, -- end of ["Coach a tank yellow"]
-        ["Uboat_VIIC"] = 
+        ["Chieftain_mk3"] = 
         {
-            ["irsignature"] = 0.25,
-            ["detection"] = 20000,
-            ["threat"] = 4000,
-        }, -- end of ["Uboat_VIIC"]
-        ["Sandbag_09"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 297,
+                [5] = "Tanks",
+                [6] = "Old Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
+        }, -- end of ["Chieftain_mk3"]
+        ["ZSU_57_2"] = 
         {
-        }, -- end of ["Sandbag_09"]
-        ["B-1B"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 26,
+                [4] = 257,
+                [5] = "AA_flak",
+                [6] = "Mobile AAA",
+                [7] = "NonAndLightArmoredUnits",
+                [8] = "NonArmoredUnits",
+                [9] = "Air Defence",
+                [10] = "Armed Air Defence",
+                [11] = "Rocket Attack Valid AirDefence",
+                [12] = "AAA",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 7000,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.1,
+        }, -- end of ["ZSU_57_2"]
+        ["Dog Ear radar"] = 
         {
-            ["irsignature"] = 3,
-        }, -- end of ["B-1B"]
-        ["Sandbag_07"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 27,
+                [5] = "SAM SR",
+                [6] = "RADAR_BAND1_FOR_ARM",
+                [7] = "RADAR_BAND2_FOR_ARM",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 35000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["Dog Ear radar"]
+        ["S-300PS 54K6 cp"] = 
         {
-        }, -- end of ["Sandbag_07"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 25,
+                [4] = 6,
+                [5] = "SAM CC",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "NonAndLightArmoredUnits",
+                [11] = "NonArmoredUnits",
+                [12] = "Air Defence",
+                [13] = "SAM related",
+                [14] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
+        }, -- end of ["S-300PS 54K6 cp"]
         ["PLZ05"] = 
         {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 279,
+                [5] = "Artillery",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 23500,
-        }, -- end of ["PLZ05"]
-        ["C-47"] = 
-        {
             ["irsignature"] = 0.1,
-        }, -- end of ["C-47"]
-        ["F-16A"] = 
-        {
-            ["irsignature"] = 0.6,
-        }, -- end of ["F-16A"]
-        ["leander-gun-ariadne"] = 
-        {
-            ["detection"] = 150000,
-            ["threat"] = 100000,
-        }, -- end of ["leander-gun-ariadne"]
-        ["F-16A MLU"] = 
-        {
-            ["irsignature"] = 0.6,
-        }, -- end of ["F-16A MLU"]
-        ["M1134 Stryker ATGM"] = 
-        {
-            ["irsignature"] = 0.085,
             ["detection"] = 0,
-            ["threat"] = 3800,
-        }, -- end of ["M1134 Stryker ATGM"]
-        ["FlagPole"] = 
+            ["threatmin"] = 60,
+        }, -- end of ["PLZ05"]
+        ["PL5EII Loadout"] = 
         {
-        }, -- end of ["FlagPole"]
-        ["Roland ADS"] = 
-        {
-            ["irsignature"] = 0.085,
-            ["detection"] = 12000,
-            ["threat"] = 8000,
-        }, -- end of ["Roland ADS"]
-        ["MiG-29G"] = 
-        {
-            ["irsignature"] = 0.77,
-        }, -- end of ["MiG-29G"]
-        ["Twall_x6_3mts"] = 
-        {
-        }, -- end of ["Twall_x6_3mts"]
-        ["F/A-18C"] = 
-        {
-            ["irsignature"] = 0.73,
-        }, -- end of ["F/A-18C"]
-        ["warning_board_a"] = 
-        {
-        }, -- end of ["warning_board_a"]
-        ["Ship_Tilde_Supply"] = 
-        {
-            ["irsignature"] = 0.35,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Missile",
+                [6] = "NonArmoredUnits",
+                [7] = "NonAndLightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 0,
-        }, -- end of ["Ship_Tilde_Supply"]
-        ["Sandbag_08"] = 
+            ["detection"] = 0,
+            ["irsignature"] = 0,
+        }, -- end of ["PL5EII Loadout"]
+        ["CHAP_M142_GMLRS_M30"] = 
         {
-        }, -- end of ["Sandbag_08"]
-        ["Land_Rover_101_FC"] = 
-        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 364,
+                [5] = "MLRS",
+                [6] = "Datalink",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Ground Units Non Airdefence",
+                [10] = "Armed ground units",
+                [11] = "Vehicles",
+                [12] = "Ground vehicles",
+                [13] = "Armed vehicles",
+                [14] = "Indirect fire",
+                [15] = "NonAndLightArmoredUnits",
+                [16] = "LightArmoredUnits",
+                [17] = "Artillery",
+            }, -- end of ["attr"]
+            ["threat"] = 70000,
             ["irsignature"] = 0.075,
             ["detection"] = 0,
+            ["threatmin"] = 15000,
+        }, -- end of ["CHAP_M142_GMLRS_M30"]
+        ["SA-18 Igla-S manpad"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 27,
+                [4] = 52,
+                [5] = "MANPADS",
+                [6] = "IR Guided SAM",
+                [7] = "New infantry",
+                [8] = "NonAndLightArmoredUnits",
+                [9] = "NonArmoredUnits",
+                [10] = "Air Defence",
+                [11] = "SAM related",
+                [12] = "Armed Air Defence",
+                [13] = "All",
+                [14] = "Ground Units",
+                [15] = "Vehicles",
+                [16] = "Ground vehicles",
+                [17] = "SAM",
+                [18] = "Ground Units Non Airdefence",
+                [19] = "Armed ground units",
+                [20] = "Infantry",
+                [21] = "Rocket Attack Valid AirDefence",
+            }, -- end of ["attr"]
+            ["threat"] = 5200,
+            ["detection"] = 5000,
+            ["irsignature"] = 0.004,
+        }, -- end of ["SA-18 Igla-S manpad"]
+        ["outpost_road_r"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 96,
+                [5] = "Fortifications",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "AntiAir Armed Vehicles",
+                [11] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.007,
+        }, -- end of ["outpost_road_r"]
+        ["CHAP_FV107"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 350,
+                [5] = "APC",
+                [6] = "Datalink",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 2500,
+            ["detection"] = 6000,
+            ["irsignature"] = 0.06,
+        }, -- end of ["CHAP_FV107"]
+        ["Coach cargo open"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = 51,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0,
+        }, -- end of ["Coach cargo open"]
+        ["Roland ADS"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 102,
+                [4] = 31,
+                [5] = "AA_missile",
+                [6] = "SR SAM",
+                [7] = "SAM SR",
+                [8] = "SAM TR",
+                [9] = "SAM LL",
+                [10] = "RADAR_BAND1_FOR_ARM",
+                [11] = "RADAR_BAND2_FOR_ARM",
+                [12] = "All",
+                [13] = "Ground Units",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "NonArmoredUnits",
+                [18] = "Air Defence",
+                [19] = "SAM related",
+                [20] = "SAM elements",
+                [21] = "Armed Air Defence",
+            }, -- end of ["attr"]
+            ["threat"] = 8000,
+            ["detection"] = 12000,
+            ["irsignature"] = 0.085,
+        }, -- end of ["Roland ADS"]
+        ["S-300PS 40B6MD sr"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 16,
+                [3] = 101,
+                [4] = 5,
+                [5] = "LR SAM",
+                [6] = "SAM SR",
+                [7] = "RADAR_BAND1_FOR_ARM",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Air Defence",
+                [15] = "SAM related",
+                [16] = "SAM elements",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 60000,
+            ["irsignature"] = 0.08,
+        }, -- end of ["S-300PS 40B6MD sr"]
+        ["leopard-2A4_trs"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 301,
+                [5] = "Tanks",
+                [6] = "Modern Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3500,
+            ["detection"] = 0,
+            ["irsignature"] = 0.12,
+        }, -- end of ["leopard-2A4_trs"]
+        ["M-2 Bradley"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 104,
+                [4] = 7,
+                [5] = "IFV",
+                [6] = "ATGM",
+                [7] = "Datalink",
+                [8] = "Infantry carriers",
+                [9] = "Armored vehicles",
+                [10] = "All",
+                [11] = "Ground Units",
+                [12] = "Ground Units Non Airdefence",
+                [13] = "Armed ground units",
+                [14] = "Vehicles",
+                [15] = "Ground vehicles",
+                [16] = "Armed vehicles",
+                [17] = "AntiAir Armed Vehicles",
+                [18] = "NonAndLightArmoredUnits",
+                [19] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 3800,
+            ["detection"] = 0,
+            ["irsignature"] = 0.095,
+        }, -- end of ["M-2 Bradley"]
+        ["SpGH_Dana"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 1,
+                [5] = "Artillery",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Ground Units Non Airdefence",
+                [9] = "Armed ground units",
+                [10] = "Vehicles",
+                [11] = "Ground vehicles",
+                [12] = "Armed vehicles",
+                [13] = "Indirect fire",
+                [14] = "NonAndLightArmoredUnits",
+                [15] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 18700,
+            ["irsignature"] = 0.09,
+            ["detection"] = 0,
+            ["threatmin"] = 30,
+        }, -- end of ["SpGH_Dana"]
+        ["ATZ-5"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 294,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["ATZ-5"]
+        ["Locomotive"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 8,
+                [3] = 100,
+                [4] = 48,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.15,
+        }, -- end of ["Locomotive"]
+        ["Land_Rover_101_FC"] = 
+        {
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.075,
         }, -- end of ["Land_Rover_101_FC"]
         ["Pz_IV_H"] = 
         {
-            ["irsignature"] = 0.1,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 16,
+                [5] = "Tanks",
+                [6] = "Old Tanks",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "HeavyArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 3000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.1,
         }, -- end of ["Pz_IV_H"]
         ["Grad_FDDM"] = 
         {
-            ["irsignature"] = 0.09,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 10,
+                [5] = "APC",
+                [6] = "Infantry carriers",
+                [7] = "Armored vehicles",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "AntiAir Armed Vehicles",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
             ["threat"] = 1000,
+            ["detection"] = 0,
+            ["irsignature"] = 0.09,
         }, -- end of ["Grad_FDDM"]
-        ["Concertina wire"] = 
+        ["CHAP_M1130"] = 
         {
-        }, -- end of ["Concertina wire"]
-        ["Tetrahydra"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 26,
+                [4] = 359,
+                [5] = "APC",
+                [6] = "Datalink",
+                [7] = "Infantry carriers",
+                [8] = "Armored vehicles",
+                [9] = "All",
+                [10] = "Ground Units",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "Armed ground units",
+                [13] = "Vehicles",
+                [14] = "Ground vehicles",
+                [15] = "Armed vehicles",
+                [16] = "AntiAir Armed Vehicles",
+                [17] = "NonAndLightArmoredUnits",
+                [18] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 1200,
+            ["detection"] = 0,
+            ["irsignature"] = 0.09,
+        }, -- end of ["CHAP_M1130"]
+        ["Blitz_36-6700A"] = 
         {
-        }, -- end of ["Tetrahydra"]
-        ["Log posts 1"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 6,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.75,
+        }, -- end of ["Blitz_36-6700A"]
+        ["ATZ-10"] = 
         {
-        }, -- end of ["Log posts 1"]
-        ["A-50"] = 
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 5,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["ATZ-10"]
+        ["ural_4230_civil_t"] = 
         {
-            ["irsignature"] = 4,
-        }, -- end of ["A-50"]
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 75,
+                [5] = "Trucks",
+                [6] = "All",
+                [7] = "Ground Units",
+                [8] = "Vehicles",
+                [9] = "Ground vehicles",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "NonAndLightArmoredUnits",
+                [12] = "NonArmoredUnits",
+                [13] = "Unarmed vehicles",
+            }, -- end of ["attr"]
+            ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.08,
+        }, -- end of ["ural_4230_civil_t"]
         ["Patriot AMG"] = 
         {
-            ["irsignature"] = 0.05,
-            ["detection"] = 0,
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 25,
+                [4] = 36,
+                [5] = "Trucks",
+                [6] = "SAM CC",
+                [7] = "All",
+                [8] = "Ground Units",
+                [9] = "Vehicles",
+                [10] = "Ground vehicles",
+                [11] = "Ground Units Non Airdefence",
+                [12] = "NonAndLightArmoredUnits",
+                [13] = "NonArmoredUnits",
+                [14] = "Unarmed vehicles",
+                [15] = "Air Defence",
+                [16] = "SAM related",
+                [17] = "SAM elements",
+            }, -- end of ["attr"]
             ["threat"] = 0,
+            ["detection"] = 0,
+            ["irsignature"] = 0.05,
         }, -- end of ["Patriot AMG"]
-        ["tt_DSHK"] = 
+        ["Scud_B"] = 
         {
-            ["irsignature"] = 0.08,
-            ["detection"] = 5000,
-            ["threat"] = 1200,
-        }, -- end of ["tt_DSHK"]
-    }
+            ["attr"] = 
+            {
+                [1] = 2,
+                [2] = 17,
+                [3] = 27,
+                [4] = 63,
+                [5] = "SS_missile",
+                [6] = "Artillery",
+                [7] = "Datalink",
+                [8] = "All",
+                [9] = "Ground Units",
+                [10] = "Ground Units Non Airdefence",
+                [11] = "Armed ground units",
+                [12] = "Vehicles",
+                [13] = "Ground vehicles",
+                [14] = "Armed vehicles",
+                [15] = "Indirect fire",
+                [16] = "NonAndLightArmoredUnits",
+                [17] = "LightArmoredUnits",
+            }, -- end of ["attr"]
+            ["threat"] = 285000,
+            ["irsignature"] = 0.09,
+            ["detection"] = 0,
+            ["threatmin"] = 50000,
+        }, -- end of ["Scud_B"]
+    } -- end of EMBD.tblThreatsRange.lua
 end
 
 --###### UTIL FUNCTIONS ############################################################################
@@ -6070,7 +9891,7 @@ local function getSA(group) -- built a situational awareness check
 
                 local near_e,es,en,dist = nil,0,0,nil
                 for iId,iData in pairs(intelDb) do
-                    if iData.obj:isExist() then
+                    if iData.obj and iData.obj:isExist() then
                         if iData.coa ~= sa.coa and iData.coa ~= 0 and (_now - iData.record) < cfg.intelDbTimeout then
                             local d = getDist(sa.pos,iData.pos)
                             if d < cfg.proxyUnitsDistance then
@@ -6245,45 +10066,47 @@ local function groupfireAtPoint(var)
             if AIEN.config.AIEN_debugProcessDetail == true then
                 env.info((tostring(ModuleName) .. ", groupfireAtPoint variables set"))
             end	
-
-            gController:setTask(_task)
+            gController:pushTask(_task)
             if AIEN.config.AIEN_debugProcessDetail == true then
                 env.info((tostring(ModuleName) .. ", groupfireAtPoint fire mission planned"))
             end
             
             -- message feedback
             if AIEN.config.message_feed == true then
-
-                local lat, lon = coord.LOtoLL(vec3)
-                local MGRS = coord.LLtoMGRS(coord.LOtoLL(vec3))
-                if lat and lon then
-
-                    -- local LL_string = tostringLL(lat, lon, 0, true)
-                    -- local MGRS_string = tostringMGRS(MGRS ,4)
-
-                    local zTgt     = bc:getZoneOfPoint(vec3)
-                    local zoneName = zTgt and zTgt.zone or ""
-
-                    local txt = ""
-                    local fullName  = group:getName()
-                    local shortName = fullName:sub(1,18) 
-                    txt = txt .. "C2, " .. shortName .. ", request fire mission, fire for Effect."
-                    --txt = txt .. "\n" .. tostring(MGRS_string) .. "\n" .. tostring(LL_string)
-                    if zoneName ~= "" then
-                        txt = txt .. "\nZone: " .. zoneName
-                    end
-                    if desc and type(desc) == "string" then
-                        txt = txt .. "\n" .. desc
-                    end
-                    if expd and qty and type(qty) == "number" then
-                        txt = txt .. "\n" .. tostring(qty) .. " rounds"
-                    end
-                    txt = txt .. "\n" .. "Cleared for fire when ready"
-
-                    local vars = {"text", txt, 20, nil, nil, nil, group:getCoalition()}
-
-                    multyTypeMessage(vars)
-
+                local zTgt = bc:getZoneOfPoint(vec3)
+                local zoneName = zTgt and zTgt.zone or ""
+                local fullName = group:getName()
+                local shortName = fullName:sub(1,18)
+                AIEN._msgBatch = AIEN._msgBatch or {}
+                local b = AIEN._msgBatch[fullName]
+                if not b then
+                    b = {short=shortName, zone=zoneName, coal=group:getCoalition(), rounds=0, targets={}, scheduled=false}
+                    AIEN._msgBatch[fullName] = b
+                end
+                if desc and type(desc) == "string" then
+                    local t = string.match(desc, "^Target is%s+(.+)$") or desc
+                    b.targets[t] = (b.targets[t] or 0) + 1
+                end
+                if expd and qty and type(qty) == "number" then
+                    b.rounds = b.rounds + qty
+                end
+                if b.scheduled == false then
+                    b.scheduled = true
+                    timer.scheduleFunction(function()
+                        local bb = AIEN._msgBatch[fullName]; if not bb then return end
+                        local txt = ""
+                        txt = txt .. "C2, " .. bb.short .. ", request fire mission, fire for Effect."
+                        if bb.zone ~= "" then txt = txt .. "\nZone: " .. bb.zone end
+                        for t,c in pairs(bb.targets) do
+                            txt = txt .. "\nTarget is " .. tostring(c) .. " " .. tostring(t)
+                        end
+                        if bb.rounds > 0 then txt = txt .. "\n" .. tostring(bb.rounds) .. " rounds" end
+                        txt = txt .. "\n" .. "Cleared for fire when ready"
+                        local vars = {"text", txt, 20, nil, nil, nil, bb.coal}
+                        multyTypeMessage(vars)
+                        AIEN._msgBatch[fullName] = nil
+                        return
+                    end, {}, timer.getTime() + 0.1)
                 end
             end
 
@@ -7434,14 +11257,10 @@ end
 function AIEN.isScoutActiveForZone(zoneName, side)
     local z = CustomZone:getByName(zoneName); if not z then return false end
     for name,_ in pairs(AIEN.scoutGroups or {}) do
-        if not IsGroupActive(name) then
-            AIEN.scoutGroups[name] = nil
-        else
-            local g = Group.getByName(name)
-            if g and g:isExist() and g:getCoalition() == side then
-                local u = g:getUnit(1)
-                if u and z:isInside(u:getPoint()) then return true end
-            end
+        local g = Group.getByName(name)
+        if g and g:isExist() and g:getCoalition() == side then
+            local u = g:getUnit(1)
+            if u and z:isInside(u:getPoint()) then return true end
         end
     end
     return false
@@ -9269,10 +13088,53 @@ local function populate_Db() -- this one is launched once at mission start and c
                 
                 local s = getGroupSkillNum(gp)
                 --env.info((tostring(ModuleName) .. ", populate_Db: s " .. tostring(s)))
+                local det, thr, thrmin = getRanges(gp)
+                local hasRoute = false
+                for coa_name, coa_data in pairs(env.mission.coalition) do
+                    if type(coa_data) == 'table' then
+                        if coa_data.country then --there is a country table
+                            for cntry_id, cntry_data in pairs(coa_data.country) do
+                                for obj_type_name, obj_type_data in pairs(cntry_data) do
+                                    if obj_type_name == "vehicle" then	-- only these types have points
+                                        if ((type(obj_type_data) == 'table') and obj_type_data.group and (type(obj_type_data.group) == 'table') and (#obj_type_data.group > 0)) then	--there's a group!
+                                            for group_num, group_data in pairs(obj_type_data.group) do
+                                                if group_data and group_data.name == gp:getName() then -- this is the group we are looking for
+                                                    if group_data.route and group_data.route.points and #group_data.route.points > 1 then
+                                                        hasRoute = true
+                                                    end
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+                
                 local det, thr = getRanges(gp)
                 if c then
+                    local foundGuidance = 0
+                    if c == "MLRS" then                        
+                        local units = gp:getUnits()
+                        for _, uData in pairs(units) do
+                            local ammoTbl = uData:getAmmo()
+                            if ammoTbl then
+                                for aId, aData in pairs(ammoTbl) do 
+                                    if aData.desc then
+                                        if aData.desc.guidance then
+                                            foundGuidance = aData.desc.guidance
+                                            env.info((tostring(ModuleName) .. ", populate_Db: adding to groundgroupsDb " .. tostring(gp:getName() .. ", can shoot MLRS with guidance" )))
+                                        end
+                                    end
+                                end
+                            end
+                        end    
+
+                        --env.info((tostring(ModuleName) .. ", populate_Db: MLRS guidance " .. tostring(gp:getName() .. ", class " .. tostring(foundGuidance) )))
+                    end
                     --local r = getMEroute(gp)
-                    groundgroupsDb[gp:getID()] = {group = gp, class = c, n = gp:getName(), coa = gpcoa, detection = det, threat = thr, tasked = false, skill = s, sa = {}}  --, route = r
+                    groundgroupsDb[gp:getID()] = {group = gp, class = c, n = gp:getName(), coa = gpcoa, detection = det, threat = thr, threatmin = thrmin, tasked = false, skill = s, hasMeRoute = hasRoute, artyWpnGuidance = foundGuidance}  --, route = r
                     --env.info((tostring(ModuleName) .. ", populate_Db: adding to groundgroupsDb " .. tostring(gp:getName() .. ", class " .. tostring(c) )))
                 else
                     env.info((tostring(ModuleName) .. ", populate_Db: skipping group due to unable to identify class " .. tostring(gp:getName() )))
@@ -9373,6 +13235,8 @@ local function populate_Db() -- this one is launched once at mission start and c
     end
 	
 end
+
+
 
 
 --###### FINITE STATE MACHINE LOOP #################################################################
@@ -9668,6 +13532,10 @@ function buildJTACFallbackReport(obj, zone, gData, now)
     if not obj:isExist() then
         return nil
     end
+    local life = obj:getLife()
+    if not life or life <= 0 then
+        return nil
+    end
     local group = obj:getGroup()
     if not group or group:getCoalition() == gData.coa then
         return nil
@@ -9780,6 +13648,7 @@ end
                                         local firePoint = nil
                                         local targetId  = nil
                                         local bestReport = nil
+                                        local candidates = {}
                                         local _volume = {
                                             id = world.VolumeType.SPHERE,
                                             params = {
@@ -9789,77 +13658,43 @@ end
                                         }
 
                                         local curPri = 0
- --[[                                        local _search = function(_obj)
-                                            pcall(function()
-                                            if _obj ~= nil and Object.getCategory(_obj) == 1 and _obj:isExist() and _obj:getCoalition() ~= gData.coa then
-                                                    if getDist(gData.sa.pos, _obj:getPoint()) > gData.threat * 0.85 then return end
-                                                    local _obj_id = _obj:getID()
-                                                    local report = intelDb[_obj_id]
-                                                    local zTgt   = bc:getZoneOfPoint(_obj:getPoint())
-                                                    local jtacOK = false
-                                                    if report and (report.cls == "ARTY" or report.cls == "SAM") then
-                                                    jtacOK = true
-                                                else
-                                                    if zTgt and jtacQueue then
-                                                        for _,d in ipairs(jtacQueue) do
-                                                            if d.tgtzone and d.tgtzone.zone == zTgt.zone then
-                                                                jtacOK = true
-                                                                break
-                                                            end
-                                                        end
-                                                    end
-                                                end
-                                                if not jtacOK then return end
-                                                if (not report) and gData.coa == 2 then
-                                                    report = buildJTACFallbackReport(_obj, zTgt, gData, now)
-                                                    if report then
-                                                        intelDb[_obj_id] = report
-                                                        if AIEN.config.AIEN_debugProcessDetail then
-                                                            env.info("ARTY_JTAC "..gData.n.." seeded ".._obj:getName())
-                                                        end
-                                                    end
-                                                end
-                                                if report and report.targeted == nil then
-                                                    local speed = report.speed or 0
-                                                    if speed < 1 then
-                                                        local lastContact = now - report.record
-                                                        if lastContact < AIEN.config.artyFireLastContactThereshold then
-                                                            local timeFactor = (AIEN.config.artyFireLastContactThereshold-lastContact)/AIEN.config.artyFireLastContactThereshold
-                                                            local pri = (classPriority[report.cls] or 0.5) * timeFactor
-                                                            if pri > curPri then
-                                                                if getDangerClose(report.pos, gData.coa) == false then
-                                                                    curPri   = pri
-                                                                    firePoint = report.pos
-                                                                    targetId  = report.cls
-                                                                    bestReport = report
-                                                                elseif AIEN.config.AIEN_debugProcessDetail then
-                                                                    env.info((tostring(ModuleName) .. ", update_ARTY, target skipped for danger close"))
-                                                                end
-                                                            end
-                                                        end
-                                                    end
-                                                    if AIEN.config.AIEN_debugProcessDetail then
-                                                        env.info("ARTY_SCAN "..gData.n.." sees ".._obj:getName()..
-                                                        " cls="..tostring((report and report.cls) or "nil")..
-                                                        " pri="..string.format("%.2f",curPri))
-                                                    end
-                                                end
-                                            end
-                                        end)
-                                    end ]]
                                         local _search = function(_obj)
                                             if _obj ~= nil and Object.getCategory(_obj) == 1 and _obj:isExist() and _obj:getCoalition() ~= gData.coa then
+                                                if _obj.isActive and _obj:isActive() == false then
+                                                    local staleId = _obj:getID()
+                                                    if staleId and intelDb[staleId] then
+                                                        intelDb[staleId] = nil
+                                                    end
+                                                    return
+                                                end
+                                                local life = _obj:getLife()
+                                                if not life or life <= 0 then
+                                                    local staleId = _obj:getID()
+                                                    if intelDb[staleId] then
+                                                        intelDb[staleId] = nil
+                                                    end
+                                                    return
+                                                end
+                                                if getDist(gData.sa.pos, _obj:getPoint()) > gData.threat * 0.85 then 
+                                                    return
+                                                end
+                                                if gData.threatmin then
+                                                    if getDist(gData.sa.pos, _obj:getPoint()) < gData.threatmin * 1.05 then 
+                                                        return
+                                                    end
+                                                end 
                                                 local p = _obj:getPoint()
-                                                if getDist(gData.sa.pos, p) > gData.threat * 0.85 then return end
+
                                                 local _obj_id = _obj:getID()
                                                 local report = intelDb[_obj_id]
                                                 local zTgt   = bc:getZoneOfPoint(p)
                                                 local jtacOK = false
                                                 local jtacSrc = nil
-                                                if report and (report.cls == "ARTY" or report.cls == "SAM") then
-                                                    jtacOK = true
-                                                    jtacSrc = "cls"
-                                                else
+                                                local scoutActive = zTgt and AIEN.isScoutActiveForZone(zTgt.zone, gData.coa) or false
+                                                --if report and (report.cls == "ARTY" or report.cls == "SAM") then
+                                                    --jtacOK = true
+                                                    --jtacSrc = "cls"
+                                               -- else
                                                     if zTgt and jtacQueue then
                                                         for _,d in ipairs(jtacQueue) do
                                                             if d.tgtzone and d.tgtzone.zone == zTgt.zone then
@@ -9869,19 +13704,8 @@ end
                                                             end
                                                         end
                                                     end
-                                                    if (not jtacOK) and zTgt and gData.coa == 2 and AIEN.JTAC9line_isActive and AIEN.JTAC9line_isActive(zTgt.zone, 2) then
-                                                        jtacOK = true
-                                                        jtacSrc = "9line"
-                                                    end
-                                                    if (not jtacOK) and zTgt and gData.coa == 2 and AIEN.isScoutActiveForZone and AIEN.isScoutActiveForZone(zTgt.zone, 2) then
-                                                        jtacOK = true
-                                                        jtacSrc = "scout"
-                                                    end
-                                                end
-                                                if AIEN.config.AIEN_debugProcessDetail and gData.coa == 2 and jtacOK then
-                                                    env.info("ARTY_JTAC "..tostring(gData.n).." zone="..tostring(zTgt and zTgt.zone).." ok="..tostring(jtacOK).." via="..tostring(jtacSrc))
-                                                end
-                                                if not jtacOK then return end
+                                                    if not jtacOK and scoutActive then jtacOK = true jtacSrc = "scout" end
+                                                --end
                                                 if (not report) and gData.coa == 2 then
                                                     report = buildJTACFallbackReport(_obj, zTgt, gData, now)
                                                     if report then
@@ -9891,6 +13715,37 @@ end
                                                         end
                                                     end
                                                 end
+                                                if scoutActive then
+                                                    if report then
+                                                        report.pos = p
+                                                        report.record = now
+                                                        report.life = _obj:getLife() or report.life
+                                                        report.speed = 0
+                                                        report.obj = _obj
+                                                        report.coa = _obj:getCoalition()
+                                                        report.id = _obj_id
+                                                        report.jtacFallback = false
+                                                    else
+                                                        local grp = _obj:getGroup()
+                                                        local cls = (grp and getGroupClass(grp)) or getUnitClass(_obj) or "UNKN"
+                                                        if cls == "none" then cls = "UNKN" end
+                                                        report = { pos = p, cls = cls, record = now, speed = 0, life = _obj:getLife() or 0, jtacFallback = false, obj = _obj, coa = _obj:getCoalition(), id = _obj_id }
+                                                    end
+                                                    intelDb[_obj_id] = report
+                                                    if AIEN.config.AIEN_debugProcessDetail then
+                                                        env.info("ARTY_JTAC "..gData.n.." seeded/refresh ".._obj:getName().." via scout")
+                                                    end
+                                                end
+                                                if (not report) and jtacOK and jtacSrc == "scout" then
+                                                    local grp = _obj:getGroup()
+                                                    local cls = (grp and getGroupClass(grp)) or getUnitClass(_obj) or "UNKN"
+                                                    if cls == "none" then cls = "UNKN" end
+                                                    report = { pos = p, cls = cls, record = now, speed = 0, life = _obj:getLife() or 0, jtacFallback = false, obj = _obj, coa = _obj:getCoalition(), id = _obj_id }
+                                                    intelDb[_obj_id] = report
+                                                    if AIEN.config.AIEN_debugProcessDetail then
+                                                        env.info("ARTY_JTAC "..gData.n.." seeded ".._obj:getName().." via scout")
+                                                    end
+                                                end
                                                 if report and report.targeted == nil then
                                                     local speed = report.speed or 0
                                                     if speed < 1 then
@@ -9898,15 +13753,16 @@ end
                                                         if lastContact < AIEN.config.artyFireLastContactThereshold then
                                                             local timeFactor = (AIEN.config.artyFireLastContactThereshold-lastContact)/AIEN.config.artyFireLastContactThereshold
                                                             local pri = (classPriority[report.cls] or 0.5) * timeFactor
-                                                            if pri > curPri then
-                                                                if getDangerClose(report.pos, gData.coa) == false then
+                                                            if getDangerClose(report.pos, gData.coa) == false then
+                                                                if pri > curPri then
                                                                     curPri   = pri
                                                                     firePoint = report.pos
                                                                     targetId  = report.cls
                                                                     bestReport = report
-                                                                elseif AIEN.config.AIEN_debugProcessDetail then
-                                                                    env.info((tostring(ModuleName) .. ", update_ARTY, target skipped for danger close"))
                                                                 end
+                                                                candidates[#candidates+1] = {pos = report.pos, pri = pri}
+                                                            elseif AIEN.config.AIEN_debugProcessDetail then
+                                                                env.info((tostring(ModuleName) .. ", update_ARTY, target skipped for danger close"))
                                                             end
                                                         end
                                                     end
@@ -9932,9 +13788,17 @@ end
                                             gData.taskTime = cycleTime
                                             local description = targetId and ("Target is " .. targetId) or nil
                                             local isSAM = (targetId == "SAM" or targetId == "MANPADS" or targetId == "AAA")
-                                            local qty    = isSAM and 10 or roundsToFire
-                                            local radius = isSAM and 5  or nil
-                                            groupfireAtPoint({gData.group, firePoint, qty, description, radius})
+                                            local guided = (gData.artyWpnGuidance or 0) > 0
+                                            local qty    = guided and 1 or (isSAM and 10 or roundsToFire)
+                                            local radius = isSAM and 10 or nil
+                                            if guided and #candidates > 0 then
+                                                table.sort(candidates, function(a,b) return a.pri > b.pri end)
+                                                local k = math.min(4, math.max(1, roundsToFire), #candidates)
+                                                local ctrl = gData.group and gData.group:getController(); if ctrl then for j=1,8 do ctrl:popTask() end end
+                                                for i = 1, k do groupfireAtPoint({gData.group, candidates[i].pos, 1, description, radius}) end
+                                            else
+                                                groupfireAtPoint({gData.group, firePoint, qty, description, radius})
+                                            end
                                         end
                                     end
                                 end
@@ -9979,7 +13843,7 @@ local function update_INITIATIVE()
             else
                 if not underAttack[phase_index] then -- skip if group is under attack
                     local gData = groundgroupsDb[phase_index]
-                    if gData then
+                    if gData and gData.hasMeRoute == false then
 
                         local otherCoa = nil
                         local AI_consent = true
@@ -10440,7 +14304,7 @@ end
     
                                         -- shooter is close
                                         if a_pos and position then
-                                            local d = db_group.sa.rng or 1500
+                                            local d = (db_group.class == "ARTY" or db_group.class == "MLRS") and (db_group.threatmin or db_group.sa.rng or 1500) or (db_group.sa.rng or 1500)
                                             local dist = getDist(a_pos, position)
                                             if dist < d then
                                                 s_close = 1
@@ -10646,10 +14510,12 @@ local function event_birth(initiator)
         if objCat == 1 and subCat == 2 then -- unit, ground unit
             local gp = initiator:getGroup()
             local gpName  = gp:getName()
-            
+            local det, thr, thrmin = getRanges(gp)
                 if gp and gpName and string.find(gpName, "^CTLD_CARGO_Scout") then
-                    droneunitDb[gp:getID()] = {group = gp, class = "UAV", n = gpName, coa = coalition, sa = {}}
+                    droneunitDb[gp:getID()] = {group = gp, class = "UAV", n = gpName, coa = coalition,detection = det, threat = thr, threatmin = thrmin, tasked = false, sa = {}}
                 env.info('AIEN.event_birth: adding scout drone ' .. gpName)
+                    AIEN.scoutGroups = AIEN.scoutGroups or {}
+                    AIEN.scoutGroups[gpName] = true
                 return
             end    
             if not initiator:hasAttribute("Infantry") then
@@ -10661,7 +14527,18 @@ local function event_birth(initiator)
                         groupPreventDisperse(gp)
                         
                         --env.info((tostring(ModuleName) .. ", event_birth: s " .. tostring(s)))
-                        groundgroupsDb[gp:getID()] = {group = gp, class = c, n = gpName, coa = coalition, detection = det, threat = thr, tasked = false, skill = s, sa = {} }
+                        local foundGuidance = 0
+                        if c == "MLRS" and gp:getUnits() then
+                            for _, uData in pairs(gp:getUnits()) do
+                                local ammoTbl = uData:getAmmo()
+                                if ammoTbl then
+                                    for _, aData in pairs(ammoTbl) do
+                                        if aData.desc and aData.desc.guidance then foundGuidance = aData.desc.guidance end
+                                    end
+                                end
+                            end
+                        end
+                        groundgroupsDb[gp:getID()] = {group = gp, class = c, n = gpName, coa = coalition, detection = det, threat = thr, tasked = false, skill = s, sa = {}, artyWpnGuidance = foundGuidance}
                         if c == "ARTY" or c == "MLRS" then
                             if coalition == 2 then
                                 AIEN.seedArtillerySA()
