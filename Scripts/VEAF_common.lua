@@ -70,3 +70,66 @@ for _, base in pairs(bases) do
         end
     end
 end
+
+function createDirectoryRecursive(path)
+    -- Remove trailing slash if present
+    path = path:gsub("/$", "")
+    
+    -- Split path into components
+    local parts = {}
+    for part in path:gmatch("[^/\\]+") do
+        table.insert(parts, part)
+    end
+    
+    -- Create each directory level
+    local currentPath = ""
+    for _, part in ipairs(parts) do
+        currentPath = currentPath .. part .. "/"
+        pcall(function() lfs.mkdir(currentPath) end)
+    end
+end
+
+function writeToFile(filepath, content)
+    -- Extract directory path from filepath
+    local dir = filepath:match("(.*/)")
+    
+    -- Create full directory structure if needed
+    if dir then
+        createDirectoryRecursive(dir)
+    end
+    
+    -- Attempt to open file in write mode
+    local file, err = io.open(filepath, "w")
+    
+    -- Check if file opening succeeded
+    if not file then
+        env.info("Error opening file " .. filepath .. ": " .. tostring(err))
+        return false
+    end
+    
+    -- Attempt to write content
+    local success, writeErr = pcall(function()
+        file:write(content)
+    end)
+    
+    -- Always close the file, even if an error occurred
+    file:close()
+    
+    -- Check write result
+    if not success then
+        env.info("Error writing to file " .. filepath .. ": " .. tostring(writeErr))
+        return false
+    end
+    
+    return true
+end
+
+-- Note the persistence filename in a static file for the online SITAC map (./Missions/Saves/foothold.status)
+if lfs and io then
+    local persistence_filename = bc.saveFile
+    local sitac_filename = lfs.writedir() .. [[Missions/Saves/foothold.status]]
+    local result = writeToFile(sitac_filename, persistence_filename.."\n")
+    if result then
+        env.info("Created SITAC file in "..sitac_filename)
+    end
+end
