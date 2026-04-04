@@ -48,7 +48,7 @@ GlobalSettings.supplyDifficultyScaling = { [1]=1.0, [2]=1.0 }
 
 -- ONLY VALID ON CAUCASUS, PERSIAN GULF AND SYRIA.
 -- if false, the mission will start from the other end. Carrier zone will be disabled.
-StartNormal = true
+StartNormal = false
 -- 
 -- When the mission is completed, if you want the server to restart automatically and reset everything, then set this to true.
 -- If false, you will have a menu where you can choose to restart the mission. 
