@@ -7,15 +7,19 @@ radios_collection: # Lists all the radios definitions
         01: 
           title: Guard/UHF
           channel: Guard
-        02: Abu al-Duhur
+        02: 
+          title: Home
+          freq: 255.00
         03: 
           title: Tactical
           freq: 265
-        04: Jirah
-        05: Kuweires
-        06: Hama
-        07: Tabqa
-        08: Palmyra
+        04: 
+          title: Alternate
+          freq: 255.00
+        05: 
+        06: 
+        07: 
+        08: 
         09: 
           title: Tanker MAIN-Airforce
           freq: 266
@@ -34,12 +38,12 @@ radios_collection: # Lists all the radios definitions
         14: 
           title: AWACS
           freq: 255
-        15: Tiyas
-        16: Shayrat
-        17: Al Qusayr
-        18: Rene Mouawad
-        19: Bassel al-Assad
-        20: Tabqa
+        15: 
+        16: 
+        17: 
+        18: 
+        19: 
+        20: 
         21: 
         22: 
         23: 
@@ -112,18 +116,22 @@ radios_collection: # Lists all the radios definitions
       title: UHF 10 channels # name of the radio; used in the exported kneeboard PNG
       type: uhf # will condition the frequency picked up in the channels directory
       channels: # the list of channels defined on this radio
-        01: Bassel al-Assad
-        02: Abu al-Duhur
+        01:
+          title: Home
+          freq: 255.00
+        02:
+          title: Alternate
+          freq: 255.00
         03: 
           title: Tactical
           freq: 265
-        04: Aleppo
-        05: Kuweires
-        06: Jirah
-        07: Tabqa
-        08: Palmyra
-        09: Tiyas
-        10: Shayrat
+        04: 
+        05: 
+        06: 
+        07: 
+        08: 
+        09: 
+        10: 
 
     radio_fm_01_10:
       title: FM1 channels 01-10
