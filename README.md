@@ -1,10 +1,10 @@
-# VEAF Foothold Syria v3.5.0
+# VEAF Foothold Syria v3.6.0
 
 ## Presentation
 
 This is a modification of the original [Foothold Syria](https://www.digitalcombatsimulator.com/en/files/3342279/) mission by Lekaa, that I adapted to make it load all the script files and config directly from the server.
 
-**Done using the latest version updated on 2026.04.04.**
+**Done using the latest version updated on 2026.04.11.**
 
 ## Update
 

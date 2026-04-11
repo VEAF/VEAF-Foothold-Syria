@@ -483,6 +483,33 @@ local function findCrateCargoNameByTemplate(self, templateId, fallbackName)
   return fallbackName
 end
 
+local function samMergeResolveRefundCargo(self, profile, role)
+  if not self or not profile or not role then
+    return nil, nil, nil
+  end
+
+  local templateIds = {}
+  for templateId, mappedRole in pairs(profile.role_by_template_id or {}) do
+    if mappedRole == role then
+      templateIds[#templateIds + 1] = templateId
+    end
+  end
+
+  table.sort(templateIds)
+
+  for _, templateId in ipairs(templateIds) do
+    local cargoName = findCrateCargoNameByTemplate(self, templateId, nil)
+    if cargoName then
+      local cargoObj = self:_FindCratesCargoObject(cargoName)
+      if cargoObj then
+        return cargoObj, cargoName, templateId
+      end
+    end
+  end
+
+  return nil, nil, templateIds[1]
+end
+
 local function removeDroppedTroopGroupByName(self, groupName)
   if not self or not groupName or type(self.DroppedTroops) ~= "table" then return end
   for idx, grp in pairs(self.DroppedTroops) do
@@ -3591,6 +3618,89 @@ function Foothold_ctld:OnAfterGetCrates(From, Event, To, Group, Unit, Cargo)
       registerC130AutoBuildSet(groupName, playerName, unitName, pickupZone, c130Items)
     end
   end
+end
+
+function Foothold_ctld:OnBeforeCratesPacked(From, Event, To, Group, Unit, Cargo, PackedGroup)
+  if not (PackedGroup and PackedGroup.IsAlive and PackedGroup:IsAlive()) then
+    return
+  end
+
+  local cargoName = Cargo and Cargo.GetName and Cargo:GetName() or nil
+  local packedGroupName = PackedGroup.GetName and PackedGroup:GetName() or nil
+  local profile = nil
+
+  for _, candidate in pairs(SAM_MERGE_PROFILES) do
+    if samMergeSystemCargoMatches(candidate, cargoName) or samMergeIsSystemGroupName(candidate, packedGroupName) then
+      profile = candidate
+      break
+    end
+  end
+
+  if not profile then
+    return
+  end
+
+  local counts = samMergeCountRolesInGroup(profile, PackedGroup)
+  local spawnedBefore = #(self.Spawned_Cargo or {})
+  local refunded = {}
+  local refundedMessages = {}
+
+  for _, role in ipairs(profile.role_order or {}) do
+    local baseline = tonumber(profile.baseline_counts and profile.baseline_counts[role]) or 0
+    local current = tonumber(counts[role]) or 0
+    local extra = current - baseline
+
+    if extra > 0 then
+      local addonCargo, addonCargoName, addonTemplateId = samMergeResolveRefundCargo(self, profile, role)
+      if addonCargo then
+        local perSet = addonCargo:GetCratesNeeded() or 1
+        local requestNumber = extra * perSet
+        self:_GetCrates(Group, Unit, addonCargo, requestNumber, false, true, true, true)
+        refunded[#refunded + 1] = string.format("%s x%d", addonCargoName, extra)
+        refundedMessages[#refundedMessages + 1] = string.format(self.gettext:GetEntry("CRATES_POSITIONED", self.locale), requestNumber, addonCargoName)
+      else
+        samMergeLog(self, profile, string.format(
+          "Pack refund skipped: no CTLD cargo mapping for role=%s template=%s.",
+          tostring(role),
+          tostring(addonTemplateId)
+        ))
+      end
+    end
+  end
+
+  if #refunded <= 0 then
+    return
+  end
+
+  local spawnedAddonCargo = {}
+  for idx = spawnedBefore + 1, #(self.Spawned_Cargo or {}) do
+    local cargoItem = self.Spawned_Cargo[idx]
+    if cargoItem then
+      spawnedAddonCargo[#spawnedAddonCargo + 1] = cargoItem
+    end
+  end
+
+  if #spawnedAddonCargo > 0 and self.UseC130LoadAndUnload and Unit and self:IsC130J(Unit) then
+    self:OnAfterGetCrates(From, Event, To, Group, Unit, spawnedAddonCargo)
+  end
+
+  for _, refundedMessage in ipairs(refundedMessages) do
+    self:_SendMessage(refundedMessage, 10, false, Group)
+  end
+
+  samMergeLog(self, profile, string.format(
+    "Pack refund prepared for %s: %s.",
+    tostring(packedGroupName or cargoName or "unknown"),
+    table.concat(refunded, ", ")
+  ))
+end
+
+function Foothold_ctld:OnAfterCratesPacked(From, Event, To, Group, Unit, Cargo)
+  if not (self.UseC130LoadAndUnload and Unit and self:IsC130J(Unit)) then
+    return
+  end
+
+  self:OnAfterGetCrates(From, Event, To, Group, Unit, Cargo)
 end
 
 if lfs then

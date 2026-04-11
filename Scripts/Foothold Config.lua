@@ -48,7 +48,7 @@ GlobalSettings.supplyDifficultyScaling = { [1]=1.0, [2]=1.0 }
 
 -- ONLY VALID ON CAUCASUS, PERSIAN GULF AND SYRIA.
 -- if false, the mission will start from the other end. Carrier zone will be disabled.
-StartNormal = false
+StartNormal = true
 -- 
 -- When the mission is completed, if you want the server to restart automatically and reset everything, then set this to true.
 -- If false, you will have a menu where you can choose to restart the mission. 
@@ -274,6 +274,10 @@ AllowedToCarrySupplies = {
 -- ============================================================================
 -- Shop Settings
 -- ============================================================================
+
+-- if false, people can not use "adminbuy:cap" or "adminbuy:capture". need to use "buy".
+-- adminbuy is to bypass the rank filter and can be used from the f10 map all though not in slot.
+AllowAdminBuy = false
 
 -- Earning per kill by target type.
 RewardContribution = {
@@ -600,6 +604,9 @@ PilotWeight = 80
 
 -- Distance (meters) from the survivor where the helicopter must hover.
 CsarHoverDistance = 20
+
+-- Distance where the pilot will be guided into position for hover pick up.
+CsarGuidanceDistance = 50
 
 -- Hover height (meters AGL) required to complete a CSAR pickup.
 CsarHoverHeight = 60
