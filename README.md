@@ -1,35 +1,48 @@
-# VEAF Foothold Syria v3.6.0
+# VEAF Foothold — Syria
 
-## Presentation
+VEAF adaptation of the **Foothold** campaign by *Lekaa* ([upstream repository](https://github.com/leka1986/Lekas-Foothold)),
+built with the [VEAF Mission Creation Tools](https://github.com/VEAF/VEAF-Mission-Creation-Tools) v6 toolchain.
 
-This is a modification of the original [Foothold Syria](https://www.digitalcombatsimulator.com/en/files/3342279/) mission by Lekaa, that I adapted to make it load all the script files and config directly from the server.
+## What is in this repository
 
-**Done using the latest version updated on 2026.04.11.**
+| Path | What it is |
+|------|------------|
+| `mission.yaml` | the VEAF configuration of this mission — modules, `config_override`, security, presets |
+| `src/mission/` | the upstream `.miz` unpacked (Lekaa's mission itself) |
+| `src/scripts/` | the Lua scripts the mission loads, Foothold's own included |
+| `src/presets.yaml` | the shared VEAF radio presets |
 
-## Update
+Not versioned: the toolchain (`veaf-tools*.exe`, `published/`), the built `.miz`, the build
+reports, and the Lua files `veaf-tools` generates from `mission.yaml`. See `.gitignore`.
 
-### Triggers
+## Building the mission
 
-Add this triggers on MissionStart:
+From this folder, with the toolchain deployed by `veaf-tools-updater.exe`:
 
-**Modern:**
-name: `Foothold loading`
-do_script:
-```lua
-FOOTHOLD_DYNAMIC_PATH = [[C:\Users\veaf\Saved Games\DCS.missions\_TEMPLATES\Missions\foothold\Syria\Modern\]]
-env.info("FOOTHOLD LOADING")
-assert(loadfile(FOOTHOLD_DYNAMIC_PATH .. "VEAF_loader.lua")) ()
+```
+veaf-tools.exe build
 ```
 
-**Cold War:**
-name: `Foothold loading`
-do_script:
-```lua
-FOOTHOLD_DYNAMIC_PATH = [[C:\Users\veaf\Saved Games\DCS.missions\_TEMPLATES\Missions\foothold\Syria\Coldwar\]]
-env.info("FOOTHOLD LOADING")
-assert(loadfile(FOOTHOLD_DYNAMIC_PATH .. "VEAF_loader.lua")) ()
+The output is `VEAF_Foothold_Syria_ICAO_OLBA_<date>.miz`.
+
+> **The file name matters.** `_ICAO_OLBA` is read by the RealWeather extension of DCSServerBot,
+> which fetches Beirut's live METAR at mission start. Renaming the mission without that
+> marker silently disables real weather.
+
+## Updating to a new Lekaa release
+
+Download this map's archive from [Lekaa's releases](https://github.com/leka1986/Lekas-Foothold/releases),
+then, from a clone of the tools repository:
+
+```
+.\tools\Convert-FootholdBatch.ps1 -InputFolder <download folder> -OutputFolder <missions folder> -Update -Build
 ```
 
-### Code
-## Things to do
+`--update` refreshes the third-party scripts and the mission base while **preserving**
+`mission.yaml`. Review the report, then rebuild. The full procedure is in
+[FOOTHOLD.md](https://github.com/VEAF/VEAF-Mission-Creation-Tools/blob/develop/doc/mission-maker/FOOTHOLD.md).
 
+## History
+
+The `last-v5-version` tag marks the last state of this mission before the v6 migration — the era
+when scripts were loaded from the server through a hand-written `VEAF_common.lua`.
