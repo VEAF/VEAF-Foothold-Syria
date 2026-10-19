@@ -1,4 +1,4 @@
-env.info('*** MOOSE GITHUB Commit Hash ID: 2026-08-11T18:34:22+02:00-8b69c197cbe69ee18af9a4ff02f4c60eaa00f2d9 ***')
+env.info('*** MOOSE GITHUB Commit Hash ID: 2026-10-11T11:20:49+02:00-435e66319e047792f4847b6344be8cd07eba7c4d ***')
 if not MOOSE_DEVELOPMENT_FOLDER then
 MOOSE_DEVELOPMENT_FOLDER='Scripts'
 end
@@ -3458,6 +3458,22 @@ end
 function UTILS.GetSunset(Day,Month,Year,Latitude,Longitude,Tlocal)
 local DayOfYear=UTILS.GetDayOfYear(Year,Month,Day)
 return UTILS.GetSunRiseAndSet(DayOfYear,Latitude,Longitude,false,Tlocal)
+end
+function UTILS.GetRecoveryCase(Coordinate,Clock)
+if Coordinate:IsNight(Clock)then
+return 3
+end
+local visibility=UTILS.Weather.GetFogVisibilityDistanceMax()
+local cloudbase=env.mission.weather.clouds.base
+if visibility>0 and visibility<=UTILS.NMToMeters(5)then
+return 3
+end
+if cloudbase<=UTILS.FeetToMeters(1000)then
+return 3
+elseif cloudbase<=UTILS.FeetToMeters(3000)then
+return 2
+end
+return 1
 end
 function UTILS.GetOSTime()
 if os then
@@ -12997,7 +13013,7 @@ if 4095-first<10 then
 first=0
 end
 for i=first+1,4095 do
-if self.STNS[i]==nil then
+if self.SADL[i]==nil then
 found=true
 nextoctal=UTILS.DecimalToOctal(i)
 self.SADL[i]=unitname
@@ -13507,7 +13523,10 @@ else
 unit=unitname
 end
 if unit then
-groupname=unit:GetGroup():GetName()
+local group=unit:GetGroup()
+if group then
+groupname=group:GetName()
+end
 end
 if groupname then
 return self.FLIGHTGROUPS[groupname]
@@ -21365,6 +21384,9 @@ end
 SpawnTemplate.CategoryID=self.SpawnInitCategory or SpawnTemplate.CategoryID
 SpawnTemplate.CountryID=self.SpawnInitCountry or SpawnTemplate.CountryID
 SpawnTemplate.CoalitionID=self.SpawnInitCoalition or SpawnTemplate.CoalitionID
+if self.BeforeTemplateSpawnFunc then
+self:BeforeTemplateSpawnFunc(SpawnTemplate,SpawnIndex)
+end
 end
 if not NoBirth then
 self:HandleEvent(EVENTS.Birth,self._OnBirth)
@@ -21419,6 +21441,10 @@ return self
 end
 function SPAWN:SpawnScheduleStop()
 self.SpawnScheduler:Stop()
+return self
+end
+function SPAWN:OnBeforeTemplateSpawnGroup(BeforeTemplateSpawnFunc)
+self.BeforeTemplateSpawnFunc=BeforeTemplateSpawnFunc
 return self
 end
 function SPAWN:OnSpawnGroup(SpawnCallBackFunction,...)
@@ -24954,7 +24980,7 @@ end
 return self.coordinate
 end
 end
---BASE:E({"Cannot GetCoordinate",Positionable=self,Alive=self:IsAlive()})
+--BASE:E({"Cannot GetCoordinate",Positionable=self,Alive=self:IsAlive(DCSPositionable)})
 return nil
 end
 function POSITIONABLE:GetCoordinate()
@@ -34836,8 +34862,8 @@ point = WeaponObject:getPoint()
 end
 if point then
 self.coordinate=COORDINATE:NewFromVec3(point)
-self.lid=string.format("[%s] %s | ",self.typeName,self.name)
 end
+self.lid=string.format("[%s] %s | ",self.typeName,self.name)
 if self.launcherUnit then
 self.releaseHeading=self.launcherUnit:GetHeading()
 self.releaseAltitudeASL=self.launcherUnit:GetAltitude()
@@ -44200,8 +44226,8 @@ end
 return"nonexistant"
 end
 function RAT:_OnBirth(EventData)
-self:F3(EventData)
-self:T3(self.lid.."Captured event birth!")
+self:F2(EventData)
+self:T2(self.lid.."Captured event birth!")
 local SpawnGroup=EventData.IniGroup
 if SpawnGroup then
 local EventPrefix=self:_GetPrefixFromGroup(SpawnGroup)
@@ -56157,7 +56183,7 @@ end
 MANTIS={
 ClassName="MANTIS",
 name="mymantis",
-version="0.9.44",
+version="0.9.45",
 SAM_Templates_Prefix="",
 SAM_Group=nil,
 EWR_Templates_Prefix="",
@@ -56270,6 +56296,8 @@ MANTIS.SamData={
 ["Tor M2"]={Range=12,Blindspot=1,Height=10,Type="Point",Radar="TorM2",Point="true",ARMCapacity=4},
 ["IRIS-T SLM"]={Range=40,Blindspot=0.5,Height=20,Type="Medium",Radar="CH_IRIST_SLM",ARMCapacity=12},
 ["SON-9"]={Range=20,Blindspot=0,Height=14,Type="Point",Radar="SON_9",Point="true"},
+["HQ-11"]={Range=30,Blindspot=2,Height=15,Type="Medium",Radar="HQ11_USLANTCOM",ARMCapacity=4},
+["Mistral Unimog"]={Range=5,Blindspot=0.6,Height=3,Type="Point",Radar="USLANTCOM_UNIMOG_MISTRAL_CL",Point="true"},
 }
 MANTIS.SamDataHDS={
 ["SA-2 HDS"]={Range=56,Blindspot=7,Height=30,Type="Medium",Radar="V759"},
@@ -56505,6 +56533,8 @@ MANTIS.JammerSAMParams={
 ["THAAD CHM"]={peak=10,mu=90,sigma_L=38,tail_dist=140,band="IJ",floor=0},
 ["WieselOzelot CHM"]={peak=3,mu=3,sigma_L=1,tail_dist=5,band="OPT",floor=0},
 ["USInfantryFIM92K CHM"]={peak=3,mu=3,sigma_L=1,tail_dist=5,band="OPT",floor=0},
+["HQ-11"]={peak=16,mu=23,sigma_L=10,tail_dist=50,band="IJ",floor=2},
+["Mistral Unimog"]={peak=3,mu=3,sigma_L=1,tail_dist=5,band="OPT",floor=0},
 }
 do
 local p=MANTIS.JammerSAMParams
@@ -57378,7 +57408,6 @@ if targetdistance<=rad and zonecheck==true and nofriendlies==true then
 if not closeRadius then
 return true,targetdistance
 end
--- Keep the original distance for SHORAD; a later contact may qualify for the close-threat allowance.
 detectedDistance=detectedDistance or targetdistance
 if targetdistance<=closeRadius then
 return true,detectedDistance,true
@@ -57740,7 +57769,6 @@ if not ammo.trUnits then
 ammo.trUnits={}
 ammo.trLost=nil
 if not self.dynamic then ammo.units={}end
--- The spawn composition distinguishes a lost TR from a site that never needed one.
 local template=_DATABASE:GetGroupTemplate(grpname)
 if ammo.units then ammo.template=template end
 if template then
@@ -57755,7 +57783,6 @@ end
 if tracking then ammo.trUnits[unit.name]=true end
 end
 else
--- Raw DCS spawns may have no registered MOOSE template.
 for _,unit in pairs(Units or group:GetUnits())do
 local name=unit:GetName()
 local DCSUnit=unit:GetDCSObject()
@@ -57764,7 +57791,6 @@ if DCSUnit:getDesc().attributes["SAM TR"]then ammo.trUnits[name]=true end
 end
 end
 end
--- Dynamic sets invalidate through Added; static sets still need periodic repair checks.
 if self.dynamic and ammo.trLost then return end
 local trackingLost=next(ammo.trUnits)~=nil
 for unitname in pairs(ammo.trUnits)do
@@ -57795,20 +57821,21 @@ local ammo=group:GetProperty("MANTIS_AMMO")
 local replaced=false
 if not self.dynamic and not reset and ammo and ammo.trUnits and ammo.object==DCSGroup and ammo.units then
 local DCSUnit=DCSGroup:getUnit(1)
--- An original survivor is not a respawn, even when the first unit has died.
 replaced=(DCSUnit and ammo.units[DCSUnit:getName()]~=DCSUnit)
 or ammo.template~=_DATABASE:GetGroupTemplate(grpname)
 end
 if reset or not ammo or not ammo.trUnits or ammo.object~=DCSGroup or replaced then
 local advancedSleeping=ammo and ammo.advancedSleeping
-ammo={object=DCSGroup,isSAM=group:IsSAM(Units),advancedSleeping=advancedSleeping,}
+ammo={
+object=DCSGroup,
+isSAM=group:IsSAM(Units),
+advancedSleeping=advancedSleeping,
+}
 group:SetProperty("MANTIS_AMMO",ammo)
 end
 self:_RefreshSAMTracking(group,grpname,ammo,nil,Units)
 local missiles=select(5,group:GetAmmunition(DCSGroup,Units))
--- Cache every ground group's missiles; only non-POINT radar SAMs use the sleep veto.
 ammo.canSleep=ammo.isSAM and samType~=MANTIS.SamType.POINT
--- Two scheduled zero samples leave one refresh cycle for the last salvo.
 ammo.empty=missiles==0 and ammo.missiles==0
 ammo.missiles=missiles
 if not self.state2flag then
@@ -57831,7 +57858,7 @@ for _i,_group in pairs(SAM_Grps)do
 local isground=_group:IsGround()
 if(isground or _group:IsShip())and _group:IsAlive()then
 local group=_group
-if (not isground)and self.NavalPerUnit then
+if(not isground)and self.NavalPerUnit then
 group:OptionAlarmStateGreen()
 elseif self.UseEmOnOff then
 group:OptionAlarmStateRed()
@@ -57842,7 +57869,7 @@ end
 group:OptionEngageRange(engagerange)
 local grpname=group:GetName()
 local grpcoord=group:GetCoordinate()
-if (not isground)and self.NavalPerUnit
+if(not isground)and self.NavalPerUnit
 and self:_BuildNavalUnitEntries(group,grpname,SAM_Tbl,SAM_Tbl_lg,SAM_Tbl_md,SAM_Tbl_sh,SAM_Tbl_pt,SEAD_Grps)then
 self:T(grpname.." handled as per-unit naval group")
 else
@@ -57872,7 +57899,7 @@ self:T("SAM "..grpname.." is type SHORT")
 elseif type==MANTIS.SamType.POINT then
 table.insert(SAM_Tbl_pt,record)
 self:T("SAM "..grpname.." is type POINT")
-if (not isground)then
+if(not isground)then
 if self.SEADNaval then
 table.insert(SEAD_Grps,grpname)
 end
@@ -57924,7 +57951,7 @@ local grpname=group:GetName()
 local grpcoord=group:GetCoord(DCSGroup,DCSUnits)
 local units=group:GetUnits(DCSGroup,DCSUnits)
 if grpcoord then grpcoord.Heading=group:GetHeading(DCSGroup,units)or 0 end
-if (not isground)and self.NavalPerUnit
+if(not isground)and self.NavalPerUnit
 and self:_BuildNavalUnitEntries(group,grpname,SAM_Tbl,SAM_Tbl_lg,SAM_Tbl_md,SAM_Tbl_sh,SAM_Tbl_pt,SEAD_Grps,units)then
 self:T(grpname.." handled as per-unit naval group")
 else
@@ -57949,7 +57976,7 @@ self:T({grpname,grprange,grpheight})
 elseif type==MANTIS.SamType.POINT or(not radaralive)then
 table.insert(SAM_Tbl_pt,record)
 self:T({grpname,grprange,grpheight})
-if (not isground)then
+if(not isground)then
 if self.SEADNaval then
 table.insert(SEAD_Grps,grpname)
 end
@@ -58110,7 +58137,6 @@ if self.Shorad and self.Shorad.ActiveGroups and self.Shorad.ActiveGroups[name]th
 activeshorad=true
 end
 if samgroup:GetProperty("SHORAD_ACTIVE")==true and activeshorad==false then activeshorad=true end
--- Close long-range threats may exceed the active limit.
 local canSwitch=switchedon<limit or CloseThreat
 if IsInZone and(shortsam or canSwitch)and(not suppressed)and(not activeshorad)then
 if samalive then
@@ -58255,7 +58281,6 @@ function MANTIS:_CheckAdvState()
 self:T(self.lid.."CheckAdvSate")
 local interval,oldstate=self:_CalcAdvState()
 local newstate=self.adv_state
--- Reuse the scheduled ammo refresh cadence for the existing fail-open policy.
 if newstate~=oldstate or(newstate==2 and self.checkcounter%3==1)then
 if newstate~=oldstate then
 self:__AdvStateChange(1,oldstate,newstate,interval)
@@ -63751,12 +63776,12 @@ GroupUnit:SetState(self,"GT1",GT2)
 GroupUnit:SetState(self,"GV1",GV2)
 local GD=((GV2.x-GV1.x)^2+(GV2.y-GV1.y)^2+(GV2.z-GV1.z)^2)^0.5
 local GT=GT2-GT1
-local GDv={x=GV2.x-CV1.x,y=GV2.y-CV1.y,z=GV2.z-CV1.z}
+local GDv={x=GV2.x-CV2.x,y=GV2.y-CV2.y,z=GV2.z-CV2.z}
 local Alpha_T=math.atan2(GDv.x,GDv.z)-math.atan2(CDv.x,CDv.z)
 local Alpha_R=(Alpha_T<0)and Alpha_T+2*math.pi or Alpha_T
 local Position=math.cos(Alpha_R)
 local GD=((GDv.x)^2+(GDv.z)^2)^0.5
-local Distance=GD*Position+-CS*0.5
+local Distance=GD*Position
 local GV={x=GV2.x-CV2.x,y=GV2.y-CV2.y,z=GV2.z-CV2.z}
 local GH2={x=GV2.x,y=CV2.y+FollowFormation.y,z=GV2.z}
 local alpha=math.atan2(GV.x,GV.z)
@@ -63766,10 +63791,12 @@ local Inclination=(Distance+FollowFormation.x)/10
 if Inclination<-30 then
 Inclination=-30
 end
+local LookAheadSeconds=math.max(10,2*(self.dtFollow+1))
+local LookAheadDistance=math.max(300,CS*LookAheadSeconds)
 local CVI={
-x=CV2.x+CS*10*math.sin(Ca),
+x=CV2.x+LookAheadDistance*math.sin(Ca),
 y=GH2.y+Inclination,
-z=CV2.z+CS*10*math.cos(Ca),
+z=CV2.z+LookAheadDistance*math.cos(Ca),
 }
 local DV={x=CV2.x-CVI.x,y=CV2.y-CVI.y,z=CV2.z-CVI.z}
 local DVu={x=DV.x/FollowDistance,y=DV.y,z=DV.z/FollowDistance}
@@ -63942,6 +63969,7 @@ RHINOF="FA-18F",
 GROWLER="EA-18G",
 CORSAIR="F4U-1D",
 CORSAIR_CW="F4U-1D CW",
+RAFALE="Rafale-M",
 }
 AIRBOSS.CarrierType={
 ROOSEVELT="CVN_71",
@@ -64013,7 +64041,7 @@ HARD="TOPGUN Graduate",
 }
 AIRBOSS.MenuF10={}
 AIRBOSS.MenuF10Root=nil
-AIRBOSS.version="1.4.2"
+AIRBOSS.version="1.5.0"
 function AIRBOSS:New(carriername,alias)
 local self=BASE:Inherit(self,FSM:New())
 self:F2({carriername=carriername,alias=alias})
@@ -64163,7 +64191,7 @@ local r2=stern:Translate(self.carrierparam.rwywidth*0.5,FB-90,true)
 rwy:FlareRed()
 local cR=stern:Translate(self.carrierparam.totwidthstarboard,hdg+90,true)
 local cL=stern:Translate(self.carrierparam.totwidthport,hdg-90,true)
-if self.carrier:GetTypeName()~=AIRBOSS.CarrierType.INVINCIBLE or self.carrier:GetTypeName()~=AIRBOSS.CarrierType.HERMES or self.carrier:GetTypeName()~=AIRBOSS.CarrierType.TARAWA or self.carrier:GetTypeName()~=AIRBOSS.CarrierType.AMERICA or self.carrier:GetTypeName()~=AIRBOSS.CarrierType.JCARLOS or self.carrier:GetTypeName()~=AIRBOSS.CarrierType.CANBERRA then
+if self.carrier:GetTypeName()~=AIRBOSS.CarrierType.INVINCIBLE and self.carrier:GetTypeName()~=AIRBOSS.CarrierType.HERMES and self.carrier:GetTypeName()~=AIRBOSS.CarrierType.TARAWA and self.carrier:GetTypeName()~=AIRBOSS.CarrierType.AMERICA and self.carrier:GetTypeName()~=AIRBOSS.CarrierType.JCARLOS and self.carrier:GetTypeName()~=AIRBOSS.CarrierType.CANBERRA then
 local w1=stern:Translate(self.carrierparam.wire1,FB,true)
 local w2=stern:Translate(self.carrierparam.wire2,FB,true)
 local w3=stern:Translate(self.carrierparam.wire3,FB,true)
@@ -64227,9 +64255,16 @@ self.collisiondist=UTILS.NMToMeters(Distance or 5)
 return self
 end
 function AIRBOSS:SetRecoveryCase(Case)
-self.defaultcase=Case or 1
-self.case=self.defaultcase
+self.defaultcase=Case or 0
+self.case=self:_ResolveRecoveryCase(self.defaultcase)
 return self
+end
+function AIRBOSS:_ResolveRecoveryCase(Case)
+Case=Case or self.defaultcase or 0
+if Case==0 then
+return UTILS.GetRecoveryCase(self:GetCoordinate())
+end
+return Case
 end
 function AIRBOSS:SetHoldingOffsetAngle(Offset)
 self.defaultoffset=Offset or 0
@@ -64268,6 +64303,17 @@ string.format("WARNING: Recovery stop time %s already over. Tnow=%s! Recovery wi
 return self
 end
 case=case or self.defaultcase
+if case==0 then
+local coordinate=self:GetCoordinate()
+case=UTILS.GetRecoveryCase(coordinate,UTILS.SecondsToClock(Tstart))
+local time=Tstart
+while case<3 and time<Tstop do
+time=math.min(time+60,Tstop)
+if coordinate:IsNight(UTILS.SecondsToClock(time))then
+case=3
+end
+end
+end
 holdingoffset=holdingoffset or self.defaultoffset
 if case==1 then
 holdingoffset=0
@@ -64309,15 +64355,21 @@ if Delay and Delay>0 then
 self:ScheduleOnce(Delay,self.CloseCurrentRecoveryWindow,self)
 else
 if self:IsRecovering()and self.recoverywindow and self.recoverywindow.OPEN then
+local window=self.recoverywindow
 self:RecoveryStop()
-self.recoverywindow.OPEN=false
-self.recoverywindow.OVER=true
-self:DeleteRecoveryWindow(self.recoverywindow)
+window.OPEN=false
+window.OVER=true
+self:DeleteRecoveryWindow(window)
 end
 end
 end
 function AIRBOSS:DeleteAllRecoveryWindows(Delay)
+local windows={}
 for _,recovery in pairs(self.recoverytimes)do
+table.insert(windows,recovery)
+end
+for i=#windows,1,-1 do
+local recovery=windows[i]
 self:I(self.lid..string.format("Deleting recovery window ID %s",tostring(recovery.ID)))
 self:DeleteRecoveryWindow(recovery,Delay)
 end
@@ -65114,7 +65166,7 @@ return flight,true
 end
 end
 function AIRBOSS:onbeforeRecoveryCase(From,Event,To,Case,Offset)
-Case=Case or self.defaultcase
+Case=self:_ResolveRecoveryCase(Case)
 Offset=Offset or self.defaultoffset
 if Case==self.case and Offset==self.holdingoffset then
 return false
@@ -65122,7 +65174,7 @@ end
 return true
 end
 function AIRBOSS:onafterRecoveryCase(From,Event,To,Case,Offset)
-Case=Case or self.defaultcase
+Case=self:_ResolveRecoveryCase(Case)
 Offset=Offset or self.defaultoffset
 local text=string.format("Switching recovery case %d ==> %d",self.case,Case)
 if Case>1 then
@@ -65147,10 +65199,10 @@ end
 end
 end
 function AIRBOSS:onafterRecoveryStart(From,Event,To,Case,Offset)
-Case=Case or self.defaultcase
+Case=self:_ResolveRecoveryCase(Case)
 Offset=Offset or self.defaultoffset
-self:_MarshalCallRecoveryStart(Case)
 self:RecoveryCase(Case,Offset)
+self:_MarshalCallRecoveryStart(Case)
 end
 function AIRBOSS:onafterRecoveryStop(From,Event,To)
 self:T(self.lid..string.format("Stopping aircraft recovery."))
@@ -65177,7 +65229,7 @@ local clock=UTILS.SecondsToClock(timer.getAbsTime()+duration)
 self:_MarshalCallRecoveryPausedResumedAt(clock)
 else
 local text=string.format("aircraft recovery is paused until further notice.")
-self:_MarshalCallRecoveryPausedNotice()
+self:_MarshalCallRecoveryPausedUntilFurtherNotice()
 end
 end
 function AIRBOSS:onafterRecoveryUnpause(From,Event,To)
@@ -67524,7 +67576,7 @@ self:E(self.lid..string.format("Player %s did not land in carrier box zone. Mayb
 end
 end
 else
-if self.carriertype~=AIRBOSS.CarrierType.INVINCIBLE or self.carriertype~=AIRBOSS.CarrierType.HERMES or self.carriertype~=AIRBOSS.CarrierType.TARAWA or self.carriertype~=AIRBOSS.CarrierType.AMERICA or self.carriertype~=AIRBOSS.CarrierType.JCARLOS or self.carriertype~=AIRBOSS.CarrierType.CANBERRA then
+if self.carriertype~=AIRBOSS.CarrierType.INVINCIBLE and self.carriertype~=AIRBOSS.CarrierType.HERMES and self.carriertype~=AIRBOSS.CarrierType.TARAWA and self.carriertype~=AIRBOSS.CarrierType.AMERICA and self.carriertype~=AIRBOSS.CarrierType.JCARLOS and self.carriertype~=AIRBOSS.CarrierType.CANBERRA then
 local coord=EventData.IniUnit:GetCoordinate()
 local dist=coord:Get2DDistance(self:GetCoordinate())
 local wire=self:_GetWire(coord,0)
@@ -69448,8 +69500,7 @@ if N==0 and TgrooveVstolUnicorn then
 grade="_OK_"
 points=5.0
 G="Unicorn"
-end
-if N==0 and TgrooveUnicorn then
+elseif N==0 and TgrooveUnicorn then
 if playerData.wire==3 then
 grade="_OK_"
 points=5.0
@@ -71524,14 +71575,15 @@ local call=self:_NewRadioCall(self.MarshalCall.STACKFULL,"AIRBOSS",text,self.Tme
 self:RadioTransmission(self.MarshalRadio,call,nil,nil,nil,true)
 end
 function AIRBOSS:_MarshalCallRecoveryStart(case)
-local radial=self:GetRadial(case,true,true,false)
+local radial=math.floor(self:GetRadial(case,true,true,false)+0.5)%360
+local finalbearing=math.floor(self:GetFinalBearing(true)+0.5)%360
 local text=string.format("Starting aircraft recovery Case %d ops.",case)
 if case==1 then
 text=text..string.format(" BRC %03d°.",self:GetBRC())
 elseif case==2 then
 text=text..string.format(" Marshal radial %03d°. BRC %03d°.",radial,self:GetBRC())
 elseif case==3 then
-text=text..string.format(" Marshal radial %03d°. Final heading %03d°.",radial,self:GetFinalBearing(false))
+text=text..string.format(" Marshal radial %03d°. New final bearing %03d°.",radial,finalbearing)
 end
 self:T(self.lid..text)
 local call=self:_NewRadioCall(self.MarshalCall.STARTINGRECOVERY,"AIRBOSS",text,self.Tmessage,"99")
@@ -71541,6 +71593,11 @@ self:RadioTransmission(self.MarshalRadio,self.MarshalCall.OPS)
 if case>1 then
 self:RadioTransmission(self.MarshalRadio,self.MarshalCall.MARSHALRADIAL)
 self:_Number2Radio(self.MarshalRadio,string.format("%03d",radial),nil,0.2)
+self:RadioTransmission(self.MarshalRadio,self.MarshalCall.DEGREES,nil,nil,nil,case~=3)
+end
+if case==3 then
+self:RadioTransmission(self.MarshalRadio,self.MarshalCall.NEWFB,nil,nil,0.5)
+self:_Number2Radio(self.MarshalRadio,string.format("%03d",finalbearing),nil,0.2)
 self:RadioTransmission(self.MarshalRadio,self.MarshalCall.DEGREES,nil,nil,nil,true)
 end
 end
@@ -71550,15 +71607,42 @@ local angels=self:_GetAngels(altitude)
 local QFE=UTILS.Split(string.format("%.2f",qfe),".")
 local clock=UTILS.Split(charlie,"+")
 local CT=UTILS.Split(clock[1],":")
-local text=string.format("Case %d, expected BRC %03d°, hold at angels %d. Expected Charlie Time %s. Altimeter %.2f. Report see me.",case,brc,angels,charlie,qfe)
+local radial
+local finalbearing
+if case>1 then
+radial=math.floor(self:GetRadial(case,true,true,false)+0.5)%360
+end
+if case==3 then
+finalbearing=math.floor(self:GetFinalBearing(true)+0.5)%360
+end
+local text=string.format("Case %d.",case)
+if case==3 then
+text=text..string.format(" New final bearing %03d°.",finalbearing)
+else
+text=text..string.format(" Expected BRC %03d°.",brc)
+end
+if radial then
+text=text..string.format(" Marshal radial %03d°.",radial)
+end
+text=text..string.format(" Hold at angels %d. Expected Charlie Time %s. Altimeter %.2f. Report see me.",angels,charlie,qfe)
 self:T(self.lid..text)
 local casecall=self:_NewRadioCall(self.MarshalCall.CASE,"MARSHAL",text,self.Tmessage,modex)
 self:RadioTransmission(self.MarshalRadio,casecall)
 self:_Number2Radio(self.MarshalRadio,tostring(case))
+if case==3 then
+self:RadioTransmission(self.MarshalRadio,self.MarshalCall.NEWFB,nil,nil,0.5)
+self:_Number2Radio(self.MarshalRadio,string.format("%03d",finalbearing))
+else
 self:RadioTransmission(self.MarshalRadio,self.MarshalCall.EXPECTED,nil,nil,0.5)
 self:RadioTransmission(self.MarshalRadio,self.MarshalCall.BRC)
 self:_Number2Radio(self.MarshalRadio,string.format("%03d",brc))
+end
 self:RadioTransmission(self.MarshalRadio,self.MarshalCall.DEGREES)
+if radial then
+self:RadioTransmission(self.MarshalRadio,self.MarshalCall.MARSHALRADIAL,nil,nil,0.5)
+self:_Number2Radio(self.MarshalRadio,string.format("%03d",radial))
+self:RadioTransmission(self.MarshalRadio,self.MarshalCall.DEGREES)
+end
 self:RadioTransmission(self.MarshalRadio,self.MarshalCall.HOLDATANGELS,nil,nil,0.5)
 self:_Number2Radio(self.MarshalRadio,tostring(angels))
 self:RadioTransmission(self.MarshalRadio,self.MarshalCall.EXPECTED,nil,nil,0.5)
@@ -92966,24 +93050,7 @@ end
 end
 local waypointcoord=COORDINATE:New(0,0,0)
 if coord then
-local targetcoord=self:GetTargetCoordinate()
-if targetcoord then
-if self.missionWaypointOffsetNM then
-local distM=coord:Get2DDistance(targetcoord)
-local wantM=UTILS.NMToMeters(self.missionWaypointOffsetNM)
-if distM>wantM then
-local frac=(distM-wantM)/distM
-waypointcoord=coord:GetIntermediateCoordinate(targetcoord,frac)
-else
-waypointcoord=coord:GetIntermediateCoordinate(targetcoord,self.missionFraction)
-end
-else
-waypointcoord=coord:GetIntermediateCoordinate(targetcoord,self.missionFraction)
-end
-else
-self:E(self.lid..string.format("ERROR: Cannot get target coordinate for mission waypoint (group %s)!",tostring(group:GetName())))
-waypointcoord=coord
-end
+waypointcoord=coord:GetIntermediateCoordinate(self:GetTargetCoordinate(),self.missionFraction)
 else
 self:E(self.lid..string.format("ERROR: Cannot get coordinate of group %s (alive=%s)!",tostring(group:GetName()),tostring(group:IsAlive())))
 end
@@ -106598,11 +106665,9 @@ local groups=self.detectionset.Set or{}
 if sweep or self._detectionBatchSize then
 if not self:Is("Running")then return self end
 if not sweep then
--- Snapshot membership once; resolve each group from the live set when its batch runs.
 sweep={groups={},units={},recce={},objects={}}
 for name in pairs(groups)do sweep.groups[#sweep.groups+1]=name end
 sweep.interval=self._detectionBatchInterval
--- Finish within the status interval, including large detection sets.
 local batches=math.max(1,math.floor(math.abs(self.statusupdate)/sweep.interval))
 sweep.batchSize=math.max(self._detectionBatchSize,math.ceil(#sweep.groups/batches))
 self._detectionSweep=sweep
@@ -106667,7 +106732,6 @@ end
 return self
 end
 self._detectionSweep=nil
--- Keep the published contact state intact until the entire sweep has finished.
 self.ContactsLost={}
 self.ContactsUnknown={}
 end
@@ -106723,7 +106787,7 @@ local corridorfloor=zone:GetProperty("CorridorFloor")or self.corridorfloor
 local corridorceiling=zone:GetProperty("CorridorCeiling")or self.corridorceiling
 local debugtext="Corridorzone Check for unit "..unit:GetName().."\n"
 debugtext=debugtext..string.format("IsAir %s | Alt %dft | Floor %s | Ceil %s",tostring(unit:IsAir()),tonumber(UTILS.MetersToFeet(unit:GetAltitude())),
-corridorfloor and string.format("%dft",UTILS.MetersToFeet(corridorfloor))or "none",corridorceiling and string.format("%dft",UTILS.MetersToFeet(corridorceiling))or "none")
+corridorfloor and string.format("%dft",UTILS.MetersToFeet(corridorfloor))or"none",corridorceiling and string.format("%dft",UTILS.MetersToFeet(corridorceiling))or"none")
 MESSAGE:New(debugtext,15,"INTEL"):ToAllIf(self.verbose>1):ToLogIf(self.verbose>1)
 if unit:IsAir()and(corridorfloor~=nil or corridorceiling~=nil)then
 local alt=unit:GetAltitude()
@@ -106786,25 +106850,25 @@ if sweep then self:_ReportIntelStatus()end
 return self
 end
 function INTEL:_GetAccousticPlayers()
-local othercoalition=self.coalition==coalition.side.BLUE and coalition.side.RED or coalition.side.BLUE
--- Refresh positions for this batch; never retain them across scheduled batches.
-local rows=self.AccousticPlayerSnapshotProvider and self.AccousticPlayerSnapshotProvider(othercoalition).rows
-local players=rows or coalition.getPlayers(othercoalition)or{}
-local categories=self.DetectAccousticUnitTypes or{Unit.Category.HELICOPTER}
+self:T("_GetAccousticPlayers")
+local OtherCoalition=self.coalition==coalition.side.BLUE and coalition.side.RED or coalition.side.BLUE
+local Rows=self.AccousticPlayerSnapshotProvider and self.AccousticPlayerSnapshotProvider(OtherCoalition).rows
+local Players=Rows or coalition.getPlayers(OtherCoalition)or{}
+local Categories=self.DetectAccousticUnitTypes or{Unit.Category.HELICOPTER}
 local AccousticPlayers={}
-for _,entry in ipairs(players)do
-local unit=rows and entry.unit or entry
-local category
-if rows then category=entry.category else category=unit:getDesc().category end
-for _,allowed in pairs(categories)do
-if category==allowed then
-if unit:isExist()and unit:isActive()and unit:getPlayerName()then
-local name=unit:getName()
-local detectedUnit=UNIT:FindByName(name)
-if detectedUnit then
-local point
-if rows then point=entry.point else point=unit:getPoint()end
-AccousticPlayers[#AccousticPlayers+1]={unit=detectedUnit,name=name,id=unit.id_,point=point}
+for _,Entry in ipairs(Players)do
+local PlayerUnit=Rows and Entry.unit or Entry
+local Category
+if Rows then Category=Entry.category else Category=PlayerUnit:getDesc().category end
+for _,Allowed in pairs(Categories)do
+if Category==Allowed then
+if PlayerUnit:isExist()and PlayerUnit:isActive()and PlayerUnit:getPlayerName()then
+local Name=PlayerUnit:getName()
+local DetectedUnit=UNIT:FindByName(Name)
+if DetectedUnit then
+local Point
+if Rows then Point=Entry.point else Point=PlayerUnit:getPoint()end
+AccousticPlayers[#AccousticPlayers+1]={unit=DetectedUnit,name=Name,id=PlayerUnit.id_,point=Point}
 end
 end
 break
@@ -106998,17 +107062,17 @@ if self.DetectAccousticPlayersOnly then
 if not detectionzone then return end
 AccousticPlayers=AccousticPlayers or self:_GetAccousticPlayers()
 if#AccousticPlayers==0 then return end
-local center=detectionzone:GetCoordinate():SetAlt():GetVec3()
-local radius=detectionzone:GetRadius()
-local radiusSquared=radius*radius
-local reccename=Recce:GetName()
-for _,row in ipairs(AccousticPlayers)do
-local point=row.point
-local dx,dy,dz=point.x-center.x,point.y-center.y,point.z-center.z
-if dx*dx+dy*dy+dz*dz<=radiusSquared then
-DetectedUnits[row.name]=row.unit
-if DetectedObjects then DetectedObjects[row.name]=row.id end
-RecceDetecting[row.name]=reccename
+local Center=detectionzone:GetCoordinate():SetAlt():GetVec3()
+local Radius=detectionzone:GetRadius()
+local RadiusSquared=Radius*Radius
+local RecceName=Recce:GetName()
+for _,Row in ipairs(AccousticPlayers)do
+local Point=Row.point
+local DX,DY,DZ=Point.x-Center.x,Point.y-Center.y,Point.z-Center.z
+if DX*DX+DY*DY+DZ*DZ<=RadiusSquared then
+DetectedUnits[Row.name]=Row.unit
+if DetectedObjects then DetectedObjects[Row.name]=Row.id end
+RecceDetecting[Row.name]=RecceName
 end
 end
 return

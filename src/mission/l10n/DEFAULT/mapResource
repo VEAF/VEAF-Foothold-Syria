@@ -62,10 +62,11 @@ mapResource =
   ResKey_Action_709 = "EWRS.lua",
   ResKey_Action_710 = "AIEN.lua",
   ResKey_Action_712 = "WelcomeMessage.lua",
-  ResKey_Action_714 = "Moose_2026-08-13.lua",
+  ResKey_Action_714 = "Moose_2026-10-11.lua",
   ResKey_Action_722 = "Foothold_Localization.lua",
   ResKey_Action_723 = "Foothold Config.lua",
   ResKey_Action_725 = "zoneCommanderv2.lua",
   ResKey_Action_727 = "footholdSyriaSetup.lua",
+  ResKey_Action_728 = "Enemy supply Convoy Detected Data on your map.ogg",
   ResKey_ImageBriefing_31 = "image.jpg",
 }
