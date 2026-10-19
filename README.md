@@ -23,10 +23,10 @@ From this folder, with the toolchain deployed by `veaf-tools-updater.exe`:
 veaf-tools.exe build
 ```
 
-The output is `VEAF_Foothold_Syria_ICAO_OLBA_<date>.miz`.
+The output is `VEAF_Foothold_Syria_ICAO_LCRA_<date>.miz`.
 
-> **The file name matters.** `_ICAO_OLBA` is read by the RealWeather extension of DCSServerBot,
-> which fetches Beirut's live METAR at mission start. Renaming the mission without that
+> **The file name matters.** `_ICAO_LCRA` is read by the RealWeather extension of DCSServerBot,
+> which fetches Akrotiri's live METAR at mission start. Renaming the mission without that
 > marker silently disables real weather.
 
 ## Updating to a new Lekaa release

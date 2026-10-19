@@ -9,7 +9,7 @@ conversion_profile: foothold
 
 # Name of the built .miz (per map — not part of the shared config).
 mission:
-  name: VEAF_Foothold_Syria_ICAO_OLBA   # _ICAO_ lu par RealWeather (Beyrouth, deja utilise par VEAF)
+  name: VEAF_Foothold_Syria_ICAO_LCRA   # _ICAO_ lu par RealWeather (Akrotiri, base bleue de départ ; OLBA n'a pas de METAR chez CheckWX)
   silence_atc_on_all_airbases: true   # as the v5 VEAF_common.lua did
 
 global_log_level: info
@@ -118,3 +118,4 @@ security:
 #
 build:
   dev_mode: false
+  scripts_path: "D:/dev/_VEAF/_pub/published"
